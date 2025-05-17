@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FoodGo</string>
+    <string name="onbording1">Ваши любимые блюда</string>
+    <string name="onbording2">"Выберите шеф-повара "</string>
+    <string name="onbording3">Бесплатная доставка</string>
+    <string name="onbording4">Собрали все ваши любимые блюда в одном месте. Просто оформите заказ, а мы обо всем позаботимся.</string>
+    <string name="next">СЛЕДУЮЩЕЕ</string>
+    <string name="go">НАЧАТЬ</string>
+    <string name="skip">Пропустить</string>
+</resources>
