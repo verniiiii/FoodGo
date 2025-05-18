@@ -13,6 +13,14 @@ class PreferencesManager(context: Context) {
         private const val IS_USER_LOGGED_IN = "is_user_logged_in"
         private const val REMEMBER_ME = "remember_me"
         private const val USER_TOKEN = "user_token"
+        private const val USER_ID = "user_id"
+        private const val USERNAME = "username"
+        private const val LOGIN = "login"
+        private const val DESCRIPTION = "description"
+        private const val PHONE = "phone"
+        private const val NOTIFICATIONS = "notifications"
+        private const val SEARCH_HISTORY = "search_history"
+        private const val SEARCH_HISTORY_MAX_SIZE = 10
     }
 
     fun isOnboardingCompleted(): Boolean {
@@ -49,9 +57,73 @@ class PreferencesManager(context: Context) {
 
     fun clearUserSession() {
         sharedPreferences.edit {
-            remove(USER_TOKEN)
-            remove(IS_USER_LOGGED_IN) // Явно удаляем флаг входа
-            remove(REMEMBER_ME)
+            remove(USERNAME)
+            remove(LOGIN)
+            remove(DESCRIPTION)
+            remove(PHONE)
+            remove(NOTIFICATIONS)
+        }
+    }
+
+
+    fun saveUserData(
+        id: Int,
+        username: String?,
+        login: String?,
+        description: String?,
+        phone: String?,
+        notificationsEnabled: Boolean
+    ) {
+        sharedPreferences.edit {
+            putInt(USER_ID, id)
+            putString(USERNAME, username)
+            putString(LOGIN, login)
+            putString(DESCRIPTION, description)
+            putString(PHONE, phone)
+            putBoolean(NOTIFICATIONS, notificationsEnabled)
+        }
+    }
+
+    fun getUsername(): String? = sharedPreferences.getString(USERNAME, null)
+    fun getLogin(): String? = sharedPreferences.getString(LOGIN, null)
+    fun getDescription(): String? = sharedPreferences.getString(DESCRIPTION, null)
+    fun getPhone(): String? = sharedPreferences.getString(PHONE, null)
+    fun isNotificationsEnabled(): Boolean = sharedPreferences.getBoolean(NOTIFICATIONS, false)
+
+
+    // Сохраняет историю поиска (максимум SEARCH_HISTORY_MAX_SIZE записей)
+    fun saveSearchHistory(history: List<String>) {
+        val limitedHistory = history.take(SEARCH_HISTORY_MAX_SIZE)
+        sharedPreferences.edit {
+            putStringSet(SEARCH_HISTORY, limitedHistory.toSet())
+        }
+    }
+
+    // Получает историю поиска
+    fun getSearchHistory(): List<String> {
+        return sharedPreferences.getStringSet(SEARCH_HISTORY, emptySet())?.toList() ?: emptyList()
+    }
+
+    // Добавляет новый запрос в историю поиска
+    fun addToSearchHistory(query: String) {
+        if (query.isBlank()) return
+
+        val currentHistory = getSearchHistory().toMutableList()
+
+        // Удаляем дубликаты
+        currentHistory.removeAll { it.equals(query, ignoreCase = true) }
+
+        // Добавляем в начало
+        currentHistory.add(0, query)
+
+        // Сохраняем только последние SEARCH_HISTORY_MAX_SIZE запросов
+        saveSearchHistory(currentHistory.take(SEARCH_HISTORY_MAX_SIZE))
+    }
+
+    // Очищает историю поиска
+    fun clearSearchHistory() {
+        sharedPreferences.edit {
+            remove(SEARCH_HISTORY)
         }
     }
 }

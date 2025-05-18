@@ -1,10 +1,13 @@
 package com.example.foodgo.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.foodgo.PreferencesManager
+import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.screens.CartScreen
 import com.example.foodgo.presentation.screens.SplashScreen
 import com.example.foodgo.presentation.screens.auth.LoginScreen
@@ -13,7 +16,10 @@ import com.example.foodgo.presentation.screens.home.DishDetailsScreen
 import com.example.foodgo.presentation.screens.home.HomeDeliveryScreen
 import com.example.foodgo.presentation.screens.home.RestaurantDetailsScreen
 import com.example.foodgo.presentation.screens.OnboardingScreen
+import com.example.foodgo.presentation.screens.home.Restaurant
 import com.example.foodgo.presentation.screens.profile.ProfileScreen
+import com.google.gson.Gson
+import java.net.URLDecoder
 
 @Composable
 fun AppNavigation(preferencesManager: PreferencesManager) {
@@ -73,11 +79,19 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.HOME_DELIVERY) {
-            HomeDeliveryScreen(navController)
+            HomeDeliveryScreen(navController, preferencesManager = preferencesManager)
         }
 
-        composable(Destination.RESTAURANT_DETAILS) {
-            RestaurantDetailsScreen(navController)
+        composable(
+            route = "${Destination.RESTAURANT_DETAILS}/{restaurantJson}",
+            arguments = listOf(
+                navArgument("restaurantJson") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val encodedJson = backStackEntry.arguments?.getString("restaurantJson") ?: ""
+            val decodedJson = URLDecoder.decode(encodedJson, "UTF-8")
+            val restaurant = Gson().fromJson(decodedJson, RestaurantWithPhotosDTO::class.java)
+            RestaurantDetailsScreen(navController, restaurant)
         }
 
         composable(Destination.DISH_DETAILS) {

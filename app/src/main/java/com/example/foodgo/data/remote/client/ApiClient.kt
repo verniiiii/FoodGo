@@ -1,6 +1,8 @@
 package com.example.foodgo.data.remote.client
 
 import com.example.foodgo.data.remote.api.AuthApi
+import com.example.foodgo.data.remote.api.RestaurantApi
+import com.example.foodgo.data.remote.api.UserApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -13,4 +15,6 @@ object ApiClient {
         .build()
 
     val authApi: AuthApi = retrofit.create(AuthApi::class.java)
+    val restaurantApi: RestaurantApi = retrofit.create(RestaurantApi::class.java)
+    val userApi: UserApi = retrofit.create(UserApi::class.java)
 }

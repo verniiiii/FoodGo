@@ -43,6 +43,7 @@ import com.example.foodgo.R
 import androidx.compose.ui.graphics.Color // Убедитесь, что используете правильный импорт
 import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavHostController
+import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
 import com.example.foodgo.ui.theme.LiteOrange
@@ -54,16 +55,8 @@ import com.google.accompanist.pager.rememberPagerState
 
 
 @Composable
-fun RestaurantDetailsScreen(navController: NavHostController) {
-    val restaurant = Restaurant(
-        name = "Пикантный ресторан",
-        description = "Яркие блюда с острыми специями и экзотическими вкусами, сочетая восточную и средиземноморскую кухни. ",
-        rating = 4.7f,
-        deliveryFee = "Бесплатно",
-        deliveryTime = "20 мин",
-        image = painterResource(id = R.drawable.ic_launcher_background),
-        categories = "Бургер - Сэндвич - Пицца - Суши"
-    )
+fun RestaurantDetailsScreen(navController: NavHostController, restaurant: RestaurantWithPhotosDTO) {
+
 
     val images = listOf(
         painterResource(id = R.drawable.ic_launcher_background),
@@ -184,7 +177,7 @@ fun RestaurantDetailsScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.width(9.dp))
 
                 Text(
-                    text = restaurant.deliveryFee,
+                    text = "Бесплатно",
                     fontSize = 14.sp,
                     color = IconGrey3
                 )
@@ -200,7 +193,7 @@ fun RestaurantDetailsScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.width(9.dp))
 
                 Text(
-                    text = restaurant.deliveryTime,
+                    text = restaurant.deliveryTimeMinutes.toString(),
                     fontSize = 14.sp,
                     color = IconGrey3
                 )
@@ -229,7 +222,7 @@ fun RestaurantDetailsScreen(navController: NavHostController) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val categories = restaurant.categories.split(" - ")
+            val categories = restaurant.categories
             items(categories) { category ->
                 val isSelected = categories.indexOf(category) == 0
                 CategoryButton(
@@ -243,7 +236,7 @@ fun RestaurantDetailsScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "${restaurant.categories.split(" - ")[0]} (10)",
+            text = restaurant.categories[0],
             fontSize = 20.sp,
         )
 

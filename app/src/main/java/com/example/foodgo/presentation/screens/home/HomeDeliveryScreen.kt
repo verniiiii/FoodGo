@@ -1,91 +1,117 @@
 package com.example.foodgo.presentation.screens.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.foodgo.R
+import com.example.foodgo.PreferencesManager
+import com.example.foodgo.data.remote.dto.CategoryDTO
 import com.example.foodgo.presentation.components.FilterDialog
-import com.example.foodgo.ui.theme.Black
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.ProfGrey
+import com.example.foodgo.presentation.components.home.CategoriesSection
+import com.example.foodgo.presentation.components.home.ErrorMessage
+import com.example.foodgo.presentation.components.home.GreetingSection
+import com.example.foodgo.presentation.components.home.HeaderSection
+import com.example.foodgo.presentation.components.home.LoadingIndicator
+import com.example.foodgo.presentation.components.home.RestaurantsSection
+import com.example.foodgo.presentation.components.home.SearchSection
+import com.example.foodgo.presentation.viewmodel.UserViewModel
+import com.example.foodgo.presentation.viewmodel.home.HomeViewModel
 import com.example.foodgo.ui.theme.White
-import com.example.foodgo.ui.theme.Yeylow
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeDeliveryScreen(navController: NavHostController) {
-    var notificationCount = 2
-    val restaurantList = listOf(
-        Restaurant(
-            name = "Ресторан В Розовом Саду",
-            description = "Maecenas sed diam eget risus varius blandit sit amet non magna.",
-            rating = 4.7f,
-            deliveryTime = "20 мин",
-            deliveryFee = "Бесплатно",
-            image = painterResource(id = R.drawable.ic_launcher_background),
-            categories = "Бургер - Курица - Рис - Крылышки"
-        ),
-        Restaurant(
-            name = "Ужин на закате",
-            description = "Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
-            rating = 4.2f,
-            deliveryTime = "25 мин",
-            deliveryFee = "₽50",
-            image = painterResource(id = R.drawable.ic_launcher_background),
-            categories = "Паста - Пицца - Салаты"
-        ),
-        Restaurant(
-            name = "Кафе \"Океанский бриз\"",
-            description = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.",
-            rating = 4.5f,
-            deliveryTime = "30 мин",
-            deliveryFee = "₽75",
-            image = painterResource(id = R.drawable.ic_launcher_background),
-            categories = "Морепродукты - Гриль"
-        )
-    )
-    val categories = listOf(
-        Category("Всё", painterResource(id = R.drawable.ic_launcher_background), true),
-        Category("Хот-дог", painterResource(id = R.drawable.ic_launcher_background), false),
-        Category("Бургер", painterResource(id = R.drawable.ic_launcher_background), false)
-    )
+fun HomeDeliveryScreen(
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel(),
+    preferencesManager: PreferencesManager
+) {
+    val selectedCategory = remember { mutableStateOf("Всё") }
+    val notificationCount = 2
+    val restaurantList = homeViewModel.restaurants.collectAsState()
+    val isLoading = homeViewModel.isLoading.collectAsState()
+    val searchQuery = remember { mutableStateOf("") }
+    val isSearchActive = remember { mutableStateOf(false) }
+    val searchHistory = remember { mutableStateListOf<String>() }
 
-    val isDialogOpen = remember { mutableStateOf(false) }
-
-    if (isDialogOpen.value) {
-        FilterDialog(
-            isDialogOpen = isDialogOpen,
-            onApplyFilters = { offer, time, pricing, rating ->
-                println("Filters applied: $offer, $time, $pricing, $rating")
-            }
-        )
+    LaunchedEffect(Unit) {
+        val history = preferencesManager.getSearchHistory()
+        searchHistory.addAll(history)
     }
+
+    val categoryState = homeViewModel.categories.collectAsState()
+    val categories = listOf(
+        CategoryDTO(
+            name = "Всё",
+            photoUrl = "https://avatars.mds.yandex.net/i?id=8d9adcb506adc573ef87737fa2a372a5_l-8185177-images-thumbs&n=13",
+            isSelected = selectedCategory.value == "Всё"
+        )
+    ) + categoryState.value.map {
+        it.copy(isSelected = it.name == selectedCategory.value)
+    }
+
+    val addresses = userViewModel.userAddresses.collectAsState()
+    val selectedAddress = remember { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
+    val isDialogOpen = remember { mutableStateOf(false) }
+    val userName = userViewModel.userName.collectAsState()
+
+    LaunchedEffect(addresses.value) {
+        if (selectedAddress.value.isEmpty() && addresses.value.isNotEmpty()) {
+            selectedAddress.value = addresses.value[0].addressLine
+        }
+    }
+
+    val focusManager = LocalFocusManager.current
+
+    val keyboardActionHandler = {
+        val query = searchQuery.value.trim()
+        if (query.isNotEmpty()) {
+            searchHistory.remove(query)
+            searchHistory.add(0, query)
+            preferencesManager.saveSearchHistory(searchHistory.take(10))
+        }
+        focusManager.clearFocus()
+    }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    LaunchedEffect(isFocused) {
+        isSearchActive.value = isFocused || searchQuery.value.isNotEmpty()
+    }
+
+    val filterCriteria by homeViewModel.filterCriteria.collectAsState()
+
+    val filteredRestaurants = remember(
+        restaurantList.value,
+        selectedCategory.value,
+        searchQuery.value,
+        filterCriteria
+    ) {
+        homeViewModel.filterRestaurants(restaurantList.value, selectedCategory.value, searchQuery.value, filterCriteria)
+    }
+
+    var selectedDeliveryTime by remember { mutableStateOf("10 мин") }
+    var selectedRating by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -94,380 +120,95 @@ fun HomeDeliveryScreen(navController: NavHostController) {
             .padding(top = 50.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        // Header Section
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(49.dp)
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(GreyLight, shape = CircleShape)
-                    .clickable { navController.navigate("profile") }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.menu_icon),
-                    contentDescription = "Menu",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(18.dp))
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "ДОСТАВИТЬ В",
-                    color = Orange,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                Row(
-                    modifier = Modifier.fillMaxHeight(0.5f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "РТУ МИРЭА",
-                        color = PlaceholderGrey,
-                        fontSize = 14.sp,
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Icon(
-                        painter = painterResource(R.drawable.poligon_bottom),
-                        contentDescription = "Menu",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(Color(0xFF181C2E), shape = CircleShape)
-                    .clickable { navController.navigate("cart") }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.basket_icon),
-                    tint = White,
-                    contentDescription = "Cart",
-                    modifier = Modifier.size(24.dp)
-                )
-
-                if (notificationCount > 0) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(25.dp)
-                            .align(Alignment.TopEnd)
-                            .offset(x = (0).dp, y = (-2.5).dp)
-                            .background(Orange, shape = CircleShape)
-                    ) {
-                        Text(
-                            text = notificationCount.toString(),
-                            color = White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-        }
+        HeaderSection(
+            navController = navController,
+            notificationCount = notificationCount,
+            selectedAddress = selectedAddress,
+            expanded = expanded,
+            addresses = addresses.value
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row {
-            Text(
-                text = "Вероника, ",
-                color = Black,
-                fontSize = 16.sp
-            )
-            Text(
-                text = "Добрый День!",
-                color = Black,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        GreetingSection(userName = userName.value.toString())
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Search Section
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth().height(62.dp),
-            placeholder = {
-                Text(
-                    text = "Поиск блюд, ресторанов",
-                    fontSize = 14.sp,
-                    color = PlaceholderGrey,
-                    modifier = Modifier.fillMaxHeight(),
-                    textAlign = TextAlign.Start,
-                    lineHeight = 31.sp,
-                )
-            },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                containerColor = GreyLight
-            ),
-            leadingIcon = {
-                Icon(
-                    modifier = Modifier.size(20.dp).clickable {
-                        isDialogOpen.value = true
-                    },
-                    painter = painterResource(id = R.drawable.search_icon),
-                    contentDescription = "Search",
-                    tint = Color.Gray
-                )
-            },
-            shape = RoundedCornerShape(10.dp),
+        SearchSection(
+            searchQuery = searchQuery,
+            isSearchActive = isSearchActive,
+            searchHistory = searchHistory,
+            interactionSource = interactionSource,
+            focusManager = focusManager,
+            keyboardActionHandler = keyboardActionHandler,
+            isDialogOpen = isDialogOpen
         )
-        Spacer(modifier = Modifier.height(32.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Все Категории",
-                color = ProfGrey,
-                fontSize = 20.sp
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "Всё",
-                color = ProfGrey,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-
-            Icon(
-                modifier = Modifier.size(6.dp, 12.dp),
-                painter = painterResource(id = R.drawable.right),
-                contentDescription = "Search",
-                tint = PlaceholderGrey
-            )
+        if (isLoading.value) {
+            LoadingIndicator()
+            return@Column
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        val errorMessage by homeViewModel.error.collectAsState()
 
-        // Categories Row
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(13.dp)
-        ) {
-            items(categories) { category ->
-                FoodDeliveryCategoryButton(
-                    text = category.text,
-                    isSelected = category.isSelected,
-                    icon = category.icon
-                )
-            }
+        if (!errorMessage.isNullOrEmpty()) {
+            ErrorMessage(errorMessage!!)
+            return@Column
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Открытые Рестораны",
-                color = ProfGrey,
-                fontSize = 20.sp
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "Всё",
-                color = ProfGrey,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-
-            Icon(
-                modifier = Modifier.size(6.dp, 12.dp),
-                painter = painterResource(id = R.drawable.right),
-                contentDescription = "Search",
-                tint = PlaceholderGrey
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Restaurant Cards
-        LazyColumn {
-            items(restaurantList) { restaurant ->
-                OpenRestaurantColumn(
-                    name = restaurant.name,
-                    categories = restaurant.categories,
-                    rating = restaurant.rating,
-                    deliveryTime = restaurant.deliveryTime,
-                    deliveryFee = restaurant.deliveryFee,
-                    onClick = {
-                        navController.navigate("restaurantDetails")
+        if (isDialogOpen.value) {
+            FilterDialog(
+                isDialogOpen = isDialogOpen,
+                deliveryTime = selectedDeliveryTime,
+                rating = selectedRating,
+                onDeliveryTimeChange = { selectedDeliveryTime = it },
+                onRatingChange = { selectedRating = it },
+                onApplyFilters = { deliveryTime, rating ->
+                    val maxDeliveryTime = when (deliveryTime) {
+                        "10 мин" -> 10
+                        "20 мин" -> 20
+                        "30 мин" -> 30
+                        else -> Int.MAX_VALUE
                     }
-                )
-            }
+                    homeViewModel.applyFilters(
+                        HomeViewModel.FilterCriteria(
+                            minRating = rating,
+                            maxDeliveryTime = maxDeliveryTime
+                        )
+                    )
+                    isDialogOpen.value = false
+                }
+            )
         }
-    }
-}
 
+        Spacer(modifier = Modifier.height(32.dp))
 
-@Composable
-fun FoodDeliveryCategoryButton(text: String, isSelected: Boolean, icon: Painter) {
-    Button(
-        onClick = {},
-        shape = RoundedCornerShape(39.dp),
-        modifier = Modifier
-            .height(60.dp)
-            .shadow(8.dp, RoundedCornerShape(39.dp))
-            .clip(RoundedCornerShape(39.dp)),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Yeylow else White,
-            contentColor = ProfGrey
-        ),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) {
+        CategoriesSection(categories = categories, selectedCategory = selectedCategory)
 
-        // Добавляем изображение и текст
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp) // Размер круга
-                    .clip(CircleShape) // Обрезаем изображение в круг
-                    .background(Color.Gray), // Цвет фона для круга
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = icon,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize() // Заполняет круг изображением
-                )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-            Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = ProfGrey)
-            Spacer(modifier = Modifier.width(5.dp))
-
-        }
+        RestaurantsSection(
+            filteredRestaurants = filteredRestaurants,
+            navController = navController
+        )
     }
 }
 
 
 
-@Composable
-fun OpenRestaurantColumn(
-    name: String,
-    categories: String,
-    rating: Float,
-    deliveryTime: String,
-    deliveryFee: String,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 28.dp)
-            .background(White)
-            .clickable { onClick() }
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "Restaurant Image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Gray),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = name,
-            fontSize = 20.sp,
-            color = Black
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = categories,
-            fontSize = 14.sp,
-            color = PlaceholderGrey
-        )
-        Spacer(modifier = Modifier.height(14.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.star1),
-                    contentDescription = "Rating",
-                    modifier = Modifier.size(20.dp),
-                    tint = Orange
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-
-                Text(
-                    text = "$rating",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = IconGrey3
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.delivery),
-                    contentDescription = "delivery",
-                    modifier = Modifier.size(20.dp),
-                    tint = Orange
-                )
-                Spacer(modifier = Modifier.width(9.dp))
-
-                Text(
-                    text = deliveryFee,
-                    fontSize = 14.sp,
-                    color = IconGrey3
-                )
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "delivery",
-                    modifier = Modifier.size(20.dp),
-                    tint = Orange
-                )
-                Spacer(modifier = Modifier.width(9.dp))
-
-                Text(
-                    text = deliveryTime,
-                    fontSize = 14.sp,
-                    color = IconGrey3
-                )
-            }
-        }
-    }
-}
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun HomeDeliveryScreenPreview() {
-//    HomeDeliveryScreen()
-//}
 
 
-// Модель данных для категории
-data class Category(
-    val text: String,
-    val icon: Painter,
-    val isSelected: Boolean
-)
+
+
+
+
+
+
+
+
+
+
+
+

@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.foodgo"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     implementation("com.google.accompanist:accompanist-pager:0.36.0")
 

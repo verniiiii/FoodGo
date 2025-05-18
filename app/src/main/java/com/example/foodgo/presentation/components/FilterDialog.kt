@@ -38,13 +38,12 @@ import com.example.foodgo.ui.theme.White
 @Composable
 fun FilterDialog(
     isDialogOpen: MutableState<Boolean>,
-    onApplyFilters: (String, String, String, Int) -> Unit
+    deliveryTime: String,
+    rating: Int,
+    onDeliveryTimeChange: (String) -> Unit,
+    onRatingChange: (Int) -> Unit,
+    onApplyFilters: (String, Int) -> Unit
 ) {
-    var selectedOffer by remember { mutableStateOf("") }
-    var selectedDeliveryTime by remember { mutableStateOf("10-15 min") }
-    var selectedPricing by remember { mutableStateOf("$$") }
-    var selectedRating by remember { mutableStateOf(4) }
-
     if (isDialogOpen.value) {
         Dialog(onDismissRequest = { isDialogOpen.value = false }) {
             Surface(
@@ -54,17 +53,14 @@ fun FilterDialog(
                 shape = RoundedCornerShape(16.dp),
                 color = Color.White
             ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    // Заголовок
+                Column(modifier = Modifier.padding(20.dp)) {
+                    // Заголовок и кнопка закрытия - без изменений
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "Фильтр", fontSize = 17.sp)
-
                         IconButton(onClick = { isDialogOpen.value = false }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.krest),
@@ -77,92 +73,20 @@ fun FilterDialog(
 
                     Spacer(modifier = Modifier.height(19.dp))
 
-                    // Offers Section
-                    Text(text = "ТЕГИ", fontSize = 13.sp)
-                    Spacer(modifier = Modifier.height(13.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        FilterOptionButton(
-                            text = "Доставка",
-                            isSelected = selectedOffer == "Доставка",
-                            onClick = { selectedOffer = "Доставка" }
-                        )
-                        FilterOptionButton(
-                            text = "Pick Up",
-                            isSelected = selectedOffer == "Pick Up",
-                            onClick = { selectedOffer = "Pick Up" }
-                        )
-                        FilterOptionButton(
-                            text = "Скидка",
-                            isSelected = selectedOffer == "Скидка",
-                            onClick = { selectedOffer = "Скидка" }
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(9.dp))
-
-                    FilterOptionButton(
-                        text = "Доступна онлайн-оплата",
-                        isSelected = selectedOffer == "Доступна онлайн-оплата",
-                        onClick = { selectedOffer = "Доступна онлайн-оплата" }
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
                     // Delivery Time Section
                     Text(text = "ВРЕМЯ ДОСТАВКИ", fontSize = 13.sp)
-
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        FilterOptionButton(
-                            text = "10-15 мин",
-                            isSelected = selectedDeliveryTime == "10-15 мин",
-                            onClick = { selectedDeliveryTime = "10-15 мин" }
-                        )
-                        FilterOptionButton(
-                            text = "20 мин",
-                            isSelected = selectedDeliveryTime == "20 мин",
-                            onClick = { selectedDeliveryTime = "20 мин" }
-                        )
-                        FilterOptionButton(
-                            text = "30 мин",
-                            isSelected = selectedDeliveryTime == "30 мин",
-                            onClick = { selectedDeliveryTime = "30 мин" }
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Pricing Section
-                    Text(text = "PRICING", fontSize = 13.sp)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(13.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        FilterOptionButton(
-                            text = "$",
-                            isSelected = selectedPricing == "$",
-                            onClick = { selectedPricing = "$" },
-                            isCircular = true
-                        )
-                        FilterOptionButton(
-                            text = "$$",
-                            isSelected = selectedPricing == "$$",
-                            onClick = { selectedPricing = "$$" },
-                            isCircular = true
-                        )
-                        FilterOptionButton(
-                            text = "$$$",
-                            isSelected = selectedPricing == "$$$",
-                            onClick = { selectedPricing = "$$$" },
-                            isCircular = true
-                        )
+                        listOf("10 мин", "20 мин", "30 мин").forEach { time ->
+                            FilterOptionButton(
+                                text = time,
+                                isSelected = deliveryTime == time,
+                                onClick = { onDeliveryTimeChange(time) }
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(32.dp))
@@ -176,7 +100,7 @@ fun FilterDialog(
                     ) {
                         (1..5).forEach { starIndex ->
                             Button(
-                                onClick = { selectedRating = starIndex },
+                                onClick = { onRatingChange(starIndex) },
                                 shape = CircleShape,
                                 modifier = Modifier
                                     .size(48.dp)
@@ -187,14 +111,14 @@ fun FilterDialog(
                                     ),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = White,
-                                    contentColor = if (starIndex <= selectedRating) GreyLight else IconGrey6
+                                    contentColor = if (starIndex <= rating) GreyLight else IconGrey6
                                 ),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.rating),
                                     contentDescription = "$starIndex star",
-                                    tint = if (starIndex <= selectedRating) Orange else GreyLight,
+                                    tint = if (starIndex <= rating) Orange else GreyLight,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -205,7 +129,7 @@ fun FilterDialog(
 
                     Button(
                         onClick = {
-                            onApplyFilters(selectedOffer, selectedDeliveryTime, selectedPricing, selectedRating)
+                            onApplyFilters(deliveryTime, rating)
                             isDialogOpen.value = false
                         },
                         modifier = Modifier
@@ -216,11 +140,29 @@ fun FilterDialog(
                     ) {
                         Text(text = "ПРИМЕНИТЬ", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            onApplyFilters("", 0)
+                            isDialogOpen.value = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(text = "ОТМЕНИТЬ ФИЛЬТРЫ", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    }
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun FilterOptionButton(text: String, isSelected: Boolean, onClick: () -> Unit, isCircular: Boolean = false) {
