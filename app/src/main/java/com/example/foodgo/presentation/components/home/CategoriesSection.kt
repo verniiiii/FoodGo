@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.data.remote.dto.CategoryDTO
-import com.example.foodgo.presentation.screens.home.FoodDeliveryCategoryButton
 import com.example.foodgo.ui.theme.ProfGrey
 
 @Composable
