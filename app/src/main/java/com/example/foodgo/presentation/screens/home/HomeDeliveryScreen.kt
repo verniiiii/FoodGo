@@ -152,9 +152,14 @@ fun HomeDeliveryScreen(
         val errorMessage by homeViewModel.error.collectAsState()
 
         if (!errorMessage.isNullOrEmpty()) {
-            ErrorMessage(errorMessage!!)
+            ErrorMessage(errorMessage = errorMessage!!) {
+                homeViewModel.refreshData()
+                userViewModel.loadUserData()
+            }
             return@Column
         }
+
+
 
         if (isDialogOpen.value) {
             FilterDialog(

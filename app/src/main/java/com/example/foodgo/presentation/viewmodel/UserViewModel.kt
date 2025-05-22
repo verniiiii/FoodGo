@@ -31,7 +31,7 @@ class UserViewModel @Inject constructor(
         loadUserData()
     }
 
-    private fun loadUserData() {
+    fun loadUserData() {
         viewModelScope.launch {
             val token = preferencesManager.getUserToken()
             Log.d("UserViewModel", "Получен токен: $token")

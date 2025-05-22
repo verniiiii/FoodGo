@@ -123,13 +123,20 @@ class HomeViewModel @Inject constructor(
         } ?: searchFiltered
     }
 
+    fun refreshData() {
+        fetchRestaurants()
+        fetchCategories()
+    }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun isRestaurantOpen(openingTime: String, closingTime: String): Boolean {
         val currentTime = LocalTime.now()
         val openTime = LocalTime.parse(openingTime)
         val closeTime = LocalTime.parse(closingTime)
 
-        return !currentTime.isBefore(openTime) && !currentTime.isAfter(closeTime)
+        //return !currentTime.isBefore(openTime) && !currentTime.isAfter(closeTime)
+        return true
     }
 
 }

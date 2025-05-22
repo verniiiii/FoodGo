@@ -7,4 +7,5 @@
     <string name="next">СЛЕДУЮЩЕЕ</string>
     <string name="go">НАЧАТЬ</string>
     <string name="skip">Пропустить</string>
+    <string name="restaurant_section">Открытые Рестораны</string>
 </resources>

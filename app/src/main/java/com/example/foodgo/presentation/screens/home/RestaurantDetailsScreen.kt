@@ -30,6 +30,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,8 +44,14 @@ import com.example.foodgo.R
 
 import androidx.compose.ui.graphics.Color // Убедитесь, что используете правильный импорт
 import androidx.compose.ui.layout.ContentScale
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.presentation.components.restaurants.CategoryButton
+import com.example.foodgo.presentation.components.restaurants.DishCard
+import com.example.foodgo.presentation.viewmodel.restaurants.RestaurantDetailsViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
 import com.example.foodgo.ui.theme.LiteOrange
@@ -55,18 +63,22 @@ import com.google.accompanist.pager.rememberPagerState
 
 
 @Composable
-fun RestaurantDetailsScreen(navController: NavHostController, restaurant: RestaurantWithPhotosDTO) {
-
-
-    val images = listOf(
-        painterResource(id = R.drawable.ic_launcher_background),
-        painterResource(id = R.drawable.ic_launcher_background),
-        painterResource(id = R.drawable.ic_launcher_background),
-        painterResource(id = R.drawable.ic_launcher_background),
-        painterResource(id = R.drawable.ic_launcher_background)
-    )
+fun RestaurantDetailsScreen(
+    navController: NavHostController,
+    restaurant: RestaurantWithPhotosDTO,
+    viewModel: RestaurantDetailsViewModel = hiltViewModel()
+) {
+    LaunchedEffect(Unit) {
+        viewModel.loadRestaurantData(restaurant)
+    }
 
     val pagerState = rememberPagerState()
+    val uiState = viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.value.selectedCategory) {
+        println("Selected category changed to: ${uiState.value.selectedCategory}")
+    }
+
 
     Box(
         modifier = Modifier
@@ -75,35 +87,35 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
             .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
     ) {
         HorizontalPager(
-            count = images.size,
+            count = uiState.value.imageUrls.size,
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            Image(
-                painter = images[page],
+            AsyncImage(
+                model = uiState.value.imageUrls[page],
                 contentDescription = "Restaurant Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
         }
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 8.dp)
-        ) {
-            repeat(images.size) { index ->
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 7.dp)
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (index == pagerState.currentPage) White else PlaceholderGrey
-                        )
-                )
+        if (uiState.value.imageUrls.size > 1) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 8.dp)
+            ) {
+                repeat(uiState.value.imageUrls.size) { index ->
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 7.dp)
+                            .size(10.dp)
+                            .clip(CircleShape)
+                            .background(if (index == pagerState.currentPage) White else PlaceholderGrey)
+                    )
+                }
             }
         }
 
@@ -118,22 +130,6 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
             Icon(
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = "Back",
-                tint = IconGrey3,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-
-        IconButton(
-            onClick = { /* Logic for favorite action */ },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(end = 24.dp, top = 50.dp)
-                .size(45.dp)
-                .background(White, shape = CircleShape)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.more),
-                contentDescription = "More",
                 tint = IconGrey3,
                 modifier = Modifier.size(18.dp)
             )
@@ -159,7 +155,6 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
                     tint = Orange
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-
                 Text(
                     text = restaurant.rating.toString(),
                     fontSize = 16.sp,
@@ -175,14 +170,12 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
                     tint = Orange
                 )
                 Spacer(modifier = Modifier.width(9.dp))
-
                 Text(
                     text = "Бесплатно",
                     fontSize = 14.sp,
                     color = IconGrey3
                 )
             }
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.clock),
@@ -191,9 +184,8 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
                     tint = Orange
                 )
                 Spacer(modifier = Modifier.width(9.dp))
-
                 Text(
-                    text = restaurant.deliveryTimeMinutes.toString(),
+                    text = "${restaurant.deliveryTimeMinutes} мин",
                     fontSize = 14.sp,
                     color = IconGrey3
                 )
@@ -219,26 +211,35 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
         )
 
         Spacer(modifier = Modifier.height(29.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            val categories = restaurant.categories
-            items(categories) { category ->
-                val isSelected = categories.indexOf(category) == 0
-                CategoryButton(
-                    text = category,
-                    isSelected = isSelected,
-                    icon = painterResource(id = R.drawable.ic_launcher_background)
-                )
+
+        if (uiState.value.categories.isNotEmpty()) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(uiState.value.categories) { category ->
+                    CategoryButton(
+                        text = category,
+                        isSelected = uiState.value.selectedCategory == category,
+                        onClick = {
+                            viewModel.selectCategory(category)
+                            println("нажали")
+                        }
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = uiState.value.selectedCategory ?: "Категория не указана",
+                fontSize = 20.sp,
+            )
+        } else {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Категории отсутствуют",
+                fontSize = 16.sp,
+                color = PlaceholderGrey
+            )
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text(
-            text = restaurant.categories[0],
-            fontSize = 20.sp,
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -248,128 +249,31 @@ fun RestaurantDetailsScreen(navController: NavHostController, restaurant: Restau
             verticalArrangement = Arrangement.spacedBy(21.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(10) { index ->
+            // Фильтруем блюда по выбранной категории, если она выбрана
+            val dishesToShow = uiState.value.selectedCategory?.let { category ->
+                uiState.value.dishes.filter { it.category == category }
+            } ?: uiState.value.dishes
+
+
+            items(dishesToShow.size) { i ->
+                val dish = dishesToShow[i]
                 DishCard(
-                    name = "Бургер Фергюсон",
-                    price = "$40",
-                    restaurantName = restaurant.name,
-                    onClick = { navController.navigate("dishDetails") }
+                    name = dish.name,
+                    price = "$${dish.basePrice}", // форматируем цену
+                    icon = dish.photoUrl ?: "https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw",
+                    onClick = { navController.navigate("dishDetails/${dish.id}") } // передаем id блюда в навигацию
                 )
             }
         }
-    }
-}
 
-@Composable
-fun CategoryButton(text: String, isSelected: Boolean, icon: Painter) {
-    Button(
-        onClick = {},
-        shape = RoundedCornerShape(33.dp),
-        modifier = Modifier
-            .height(46.dp)
-            .then(
-                // Добавляем обводку для неактивных элементов
-                if (!isSelected) {
-                    Modifier.border(2.dp, GreyLight, RoundedCornerShape(33.dp))
-                } else {
-                    Modifier
-                }
-            ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) LiteOrange else White,
-            contentColor = if (isSelected) White else IconGrey3 // Меняем цвет текста на черный, если неактивная кнопка
-        ),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) {
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal // Убираем жирное начертание
-        )
     }
 }
 
 
 
 
-@Composable
-fun DishCard(name: String, price: String, restaurantName: String, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .width(153.dp)
-            .height(174.dp)
-            .background(GreyLight)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(1.dp),
-        colors = CardDefaults.cardColors(containerColor = White),
-    ) {
-        Column(
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier.padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "Dish Image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 9.dp, end = 8.dp)
-                    .height(75.dp)
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(Color.Gray)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                text = restaurantName,
-                fontSize = 13.sp,
-                color = PlaceholderGrey
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = price,
-                    fontSize = 16.sp,
-                    color = PlaceholderGrey,
-                    fontWeight = FontWeight.Bold
-                )
 
-                Box(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .background(LiteOrange)
-                        .clickable { /* Обработка нажатия */ },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "+", color = White, fontSize = 20.sp)
-                }
-            }
-        }
-    }
-}
 
-data class Restaurant(
-    val name: String,
-    val description: String,
-    val rating: Float,
-    val deliveryFee: String,
-    val deliveryTime: String,
-    val image: Painter,
-    val categories: String
-)
 
-//@Preview(showBackground = true)
-//@Composable
-//fun RestaurantDetailsScreenPreview() {
-//    RestaurantDetailsScreen()
-//}
+
 

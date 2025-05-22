@@ -16,7 +16,6 @@ import com.example.foodgo.presentation.screens.home.DishDetailsScreen
 import com.example.foodgo.presentation.screens.home.HomeDeliveryScreen
 import com.example.foodgo.presentation.screens.home.RestaurantDetailsScreen
 import com.example.foodgo.presentation.screens.OnboardingScreen
-import com.example.foodgo.presentation.screens.home.Restaurant
 import com.example.foodgo.presentation.screens.profile.ProfileScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
@@ -94,8 +93,14 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             RestaurantDetailsScreen(navController, restaurant)
         }
 
-        composable(Destination.DISH_DETAILS) {
-            DishDetailsScreen()
+        composable(
+            route = "${Destination.DISH_DETAILS}/{dishId}",
+            arguments = listOf(
+                navArgument("dishId") {type = NavType.IntType}
+            )
+        ) {backStackEntry ->
+            val dishId = backStackEntry.arguments?.getInt("dishId") ?: 1
+            DishDetailsScreen(dishId)
         }
 
         composable(Destination.CART) {

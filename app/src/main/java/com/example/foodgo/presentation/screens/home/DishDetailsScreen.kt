@@ -33,7 +33,10 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 
 @Composable
-fun DishDetailsScreen() {
+fun DishDetailsScreen(
+    dishId: Int
+) {
+    println(dishId)
     val dish = Dish(
         name = "Бургер Фергюсон",
         description = "Быстро, вкусно и сытно — идеальный выбор для перекуса или обеда в непринужденной атмосфере.",
@@ -440,8 +443,4 @@ data class Dish(
 
 data class Ingredient(val icon: Int, val name: String)
 
-@Preview(showBackground = true)
-@Composable
-fun DishDetailsScreenPreview() {
-    DishDetailsScreen()
-}
+
