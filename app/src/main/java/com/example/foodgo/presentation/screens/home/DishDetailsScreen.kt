@@ -2,11 +2,17 @@ package com.example.foodgo.presentation.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +25,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.foodgo.R
+import com.example.foodgo.data.remote.api.DishApi
+import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel
+import com.example.foodgo.presentation.viewmodel.RestaurantInfoDTO
 import com.example.foodgo.ui.theme.DarkBlack
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey6
@@ -34,50 +45,56 @@ import com.google.accompanist.pager.rememberPagerState
 
 @Composable
 fun DishDetailsScreen(
-    dishId: Int
+    dishId: Int,
+    dishDetailsViewModel: DishDetailsViewModel = hiltViewModel()
 ) {
-    println(dishId)
-    val dish = Dish(
-        name = "Бургер Фергюсон",
-        description = "Быстро, вкусно и сытно — идеальный выбор для перекуса или обеда в непринужденной атмосфере.",
-        rating = 4.7f,
-        price = "$32",
-        deliveryFee = "Бесплатно",
-        deliveryTime = "30 мин",
-        image = painterResource(id = R.drawable.ic_launcher_background), // Replace with actual image resource
-    )
-    val rest = "Пикантный Ресторан"
-    val selectedSize = "14" // This can be dynamic based on user selection
+    val dish = dishDetailsViewModel.dishState.collectAsState()
+    val restaurantInfo = dishDetailsViewModel.restaurantInfo.collectAsState()
+    val isLoading = dishDetailsViewModel.isLoading.collectAsState()
+    val error = dishDetailsViewModel.error.collectAsState()
+    val selectedSizeLabel = dishDetailsViewModel.selectedSizeLabel.collectAsState()
 
-    // Slider setup
-    val images = listOf(
-        painterResource(id = R.drawable.ic_launcher_background),
-        painterResource(id = R.drawable.ic_launcher_background),
-        painterResource(id = R.drawable.ic_launcher_background)
-    )
 
-    val pagerState = rememberPagerState()
+    LaunchedEffect(dishId) {
+        dishDetailsViewModel.loadDish(dishId)
+    }
+
+    if (isLoading.value) {
+        // Show loading indicator
+        CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+    } else if (error.value != null) {
+        // Show error message
+        Text(text = error.value ?: "Unknown error", color = Color.Red)
+    } else if (dish.value != null && restaurantInfo.value != null) {
+        DishDetailsContent(dish = dish.value!!, restaurantInfo.value!!,
+            selectedSizeLabel = selectedSizeLabel.value,
+            onSizeSelected = dishDetailsViewModel::onSizeSelected)
+    }else {
+        Text(text = "Нет доступных данных", color = Color.Black)
+    }
+}
+
+@Composable
+fun DishDetailsContent(
+    dish: FullDishDTO,
+    restaurantInfo: RestaurantInfoDTO,
+    selectedSizeLabel: String?,
+    onSizeSelected: (String) -> Unit
+) {
+    val count = remember { mutableStateOf(1) }
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
             .height(321.dp)
-            .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)) // Rounded bottom corners
+            .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
     ) {
-        HorizontalPager(
-            count = images.size,
-            state = pagerState,
-            modifier = Modifier.fillMaxSize() // Ensure the pager fills the available space
-        ) { page ->
-            Image(
-                painter = images[page],
-                contentDescription = "Dish Image",
-                modifier = Modifier.fillMaxSize(), // Image should fill the entire space
-                contentScale = ContentScale.Crop
-            )
-        }
+        AsyncImage(
+            model = dish.photoUrl , // Use the photo URL from your dish data
+            contentDescription = "Dish Image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
 
-        // Back button in the top left corner
         IconButton(
             onClick = { /* Logic for returning to the previous screen */ },
             modifier = Modifier
@@ -87,14 +104,13 @@ fun DishDetailsScreen(
                 .background(Color.White, shape = CircleShape)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.back), // Replace with your icon
+                painter = painterResource(id = R.drawable.back),
                 contentDescription = "Back",
                 tint = Color(0xFF181C2E),
                 modifier = Modifier.size(18.dp)
             )
         }
 
-        // Favorite button in the top right corner
         IconButton(
             onClick = { /* Logic for favorite action */ },
             modifier = Modifier
@@ -104,7 +120,7 @@ fun DishDetailsScreen(
                 .background(Color.White, shape = CircleShape)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.favorite), // Replace with your icon
+                painter = painterResource(id = R.drawable.favorite),
                 contentDescription = "Favorite",
                 tint = LiteOrange,
                 modifier = Modifier.size(18.dp)
@@ -112,11 +128,10 @@ fun DishDetailsScreen(
         }
     }
 
-    // Now, everything inside Column
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 321.dp, start = 24.dp, end = 24.dp) // Padding for the content after the image carousel
+            .padding(top = 321.dp, start = 24.dp, end = 24.dp)
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -138,7 +153,7 @@ fun DishDetailsScreen(
             Spacer(modifier = Modifier.width(11.dp))
 
             Text(
-                text = rest,
+                text = restaurantInfo.name, // Replace with actual restaurant name
                 fontSize = 14.sp,
                 color = Color(0xFF181C2E)
             )
@@ -176,7 +191,7 @@ fun DishDetailsScreen(
                 Spacer(modifier = Modifier.width(9.dp))
 
                 Text(
-                    text = dish.deliveryFee,
+                    text = "Бесплатно", // Replace with actual delivery fee
                     fontSize = 14.sp,
                     color = Color(0xFF181C2E)
                 )
@@ -192,7 +207,7 @@ fun DishDetailsScreen(
                 Spacer(modifier = Modifier.width(9.dp))
 
                 Text(
-                    text = dish.deliveryTime,
+                    text = "${restaurantInfo.deliveryTimeMinutes} мин", // Replace with actual delivery time
                     fontSize = 14.sp,
                     color = Color(0xFF181C2E)
                 )
@@ -203,7 +218,7 @@ fun DishDetailsScreen(
         Text(
             text = dish.description,
             fontSize = 14.sp,
-            lineHeight = 24.sp,  // Set line height
+            lineHeight = 24.sp,
             color = PlaceholderGrey
         )
 
@@ -212,7 +227,6 @@ fun DishDetailsScreen(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Size label
             Text(
                 text = "РАЗМЕР:",
                 color = PlaceholderGrey,
@@ -220,126 +234,78 @@ fun DishDetailsScreen(
                 modifier = Modifier.padding(end = 14.dp)
             )
 
-            // Size options
-            listOf("10", "14", "16").forEach { size ->
+            dish.sizes.forEach { size ->
+                val isSelected = size.sizeLabel == selectedSizeLabel
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(70.dp)
                         .background(
-                            color = if (size == selectedSize) LiteOrange else GreyLight,
+                            color = if (isSelected) LiteOrange else GreyLight,
                             shape = CircleShape
-                        ),
+                        )
+                        .clickable(
+                            indication = null, // отключает ripple/эффект нажатия
+                            interactionSource = remember { MutableInteractionSource() } // отключает фокус
+                        ) { onSizeSelected(size.sizeLabel) },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "$size\"",
-                        color = if (size == selectedSize) Color.White else DarkBlack,
+                        text = "${size.sizeLabel}\"",
+                        color = if (isSelected) Color.White else DarkBlack,
                         fontSize = 16.sp,
-                        fontWeight = if (size == selectedSize) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
             }
         }
+
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Ingredients section
         Text(
             text = "ИНГРЕДИЕНТЫ:",
             fontSize = 13.sp,
             color = ProfGrey
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // List of vegetable icons
-        val ingredients = listOf(
-            Ingredient(R.drawable.salt, "Соль"),
-            Ingredient(R.drawable.chicken, "Курица"),
-            Ingredient(R.drawable.onion, "Лук\n(Алерг)"),
-            Ingredient(R.drawable.garlic, "Чеснок"),
-            Ingredient(R.drawable.pappers, "Перец\n(Алерг)"),
-            Ingredient(R.drawable.ginger, "Имбирь"),
-            Ingredient(R.drawable.broccoli, "Брокколи"),
-            Ingredient(R.drawable.orange, "Апельсин"),
-            Ingredient(R.drawable.walnut, "Орехи")
+
+        Text(
+            text = dish.ingredients.joinToString(", "),
+            fontSize = 14.sp,
+            color = PlaceholderGrey,
+            lineHeight = 20.sp,
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            // Grouping the icons into rows, with a maximum of 5 per row
-            ingredients.chunked(5).forEach { row ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    row.forEach { ingredient ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-
-                        ) {
-                            // Icon inside the circle
-                            Box(
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .background(LiteOrange3, shape = CircleShape)
-                                    .padding(8.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = ingredient.icon),
-                                    contentDescription = ingredient.name,
-                                    modifier = Modifier.size(24.dp),
-                                    tint = Orange
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(5.dp))
-                            // Text below the icon
-                            Text(
-                                text = ingredient.name,
-                                fontSize = 12.sp,
-                                color = PlaceholderGrey,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-        }
-
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     Box(
         modifier = Modifier
-            .fillMaxSize() // Заполняем весь экран
+            .fillMaxSize()
     ) {
-        // Нижний блок с ценой, счётчиком и кнопкой
         Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter) // Прикрепляем к низу экрана
-                .fillMaxWidth() // Заполняем всю ширину
-                .height(178.dp) // Указываем фиксированную высоту
-                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)) // Увеличенный радиус закругления верхних углов
-                .background(GreyLight) // Фон для Box
-                .padding(start = 24.dp, end = 24.dp, top = 20.dp) // Padding внутри Box
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(178.dp)
+                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                .background(GreyLight)
+                .padding(start = 24.dp, end = 24.dp, top = 20.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Верхняя строка: цена и счетчик
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
-
                 ) {
-                    // Цена слева
                     Text(
-                        text = "$32",
+                        text = "$${dish.basePrice}",
                         fontSize = 28.sp,
                         color = Color(0xFF181C2E)
                     )
@@ -347,26 +313,24 @@ fun DishDetailsScreen(
                     Row(
                         modifier = Modifier
                             .height(48.dp)
-                            .clip(RoundedCornerShape(50.dp)) // Закругленные углы
+                            .clip(RoundedCornerShape(50.dp))
                             .background(DarkBlack)
-                            .padding(start = 14.dp, end = 14.dp), // Добавляем фон для видимости закругленных углов
+                            .padding(start = 14.dp, end = 14.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        // Кнопка "-"
                         Box(
                             modifier = Modifier
                                 .size(24.dp)
-
-                                .background(IconGrey6, shape = CircleShape), // Кнопка с закругленными углами
+                                .background(IconGrey6, shape = CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             IconButton(
-                                onClick = { /* Логика уменьшения */ },
+                                onClick = { if (count.value > 1) count.value-- },
                                 modifier = Modifier.size(10.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.minus), // Замените на свой иконку
+                                    painter = painterResource(id = R.drawable.minus),
                                     contentDescription = "Decrease",
                                     tint = White,
                                     modifier = Modifier.size(18.dp)
@@ -374,46 +338,40 @@ fun DishDetailsScreen(
                             }
                         }
 
-                        // Число
                         Text(
-                            text = "2", // Число (счётчик)
+                            text = count.value.toString(),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = White
                         )
 
-                        // Кнопка "+"
                         Box(
                             modifier = Modifier
                                 .size(24.dp)
-                                .background(IconGrey6, shape = CircleShape)
-                               , // Кнопка с закругленными углами
+                                .background(IconGrey6, shape = CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             IconButton(
-                                onClick = { /* Логика увеличения */ },
+                                onClick = { count.value++ },
                                 modifier = Modifier.size(10.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.plus), // Замените на свой иконку
+                                    painter = painterResource(id = R.drawable.plus),
                                     contentDescription = "Increase",
                                     tint = Color.White,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
                         }
-
                     }
-
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                // Кнопка "Add to Cart"
                 Button(
                     onClick = { /* Логика добавления в корзину */ },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(62.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Orange), // Цвет фона кнопки
+                    colors = ButtonDefaults.buttonColors(containerColor = Orange),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
@@ -423,24 +381,31 @@ fun DishDetailsScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
             }
         }
     }
-
 }
 
 
-data class Dish(
+
+data class FullDishDTO(
+    val id: Int,
+    val restaurantId: Int,
     val name: String,
+    val basePrice: Double,
     val description: String,
-    val rating: Float,
-    val price: String,
-    val deliveryFee: String,
-    val deliveryTime: String,
-    val image: Painter
+    val rating: Double,
+    val category: String?,
+    val photoUrl: String,
+    val sizes: List<DishSizeDTO>,
+    val ingredients: List<String>
 )
 
-data class Ingredient(val icon: Int, val name: String)
+data class DishSizeDTO(
+    val sizeLabel: String,
+    val price: Double
+)
+
+
 
 

@@ -39,7 +39,7 @@ class RestaurantDetailsViewModel @Inject constructor(
 
             val response = api.getDishesByRestaurant(restaurant.id)
             val dishes = response.body().orEmpty()
-            val uniqueCategories = dishes.mapNotNull { it.category }.distinct()
+            val uniqueCategories = dishes.mapNotNull { it.category }.distinct() +  "Другое"
 
             _uiState.update {
                 it.copy(
