@@ -54,7 +54,6 @@ class UserViewModel @Inject constructor(
                                 login = user.login,
                                 description = user.profileDescription,
                                 phone = user.phoneNumber,
-                                notificationsEnabled = user.notificationsEnabled
                             )
                             _userName.value = user.username
 
@@ -117,4 +116,39 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteAddress(address: UserAddressDTO) {
+        viewModelScope.launch {
+            val token = preferencesManager.getUserToken() ?: return@launch
+            try {
+                val response = userApi.deleteUserAddress("Bearer $token", address.id ?: return@launch)
+                if (response.isSuccessful) {
+                    // Обновляем список адресов после удаления
+                    loadUserData()
+                } else {
+                    // Логируем или показываем ошибку
+                }
+            } catch (e: Exception) {
+                // Логируем ошибку
+            }
+        }
+    }
+
+    fun addAddress(address: UserAddressDTO) {
+        viewModelScope.launch {
+            val token = preferencesManager.getUserToken() ?: return@launch
+            try {
+                val response = userApi.addUserAddress("Bearer $token", address)
+                if (response.isSuccessful) {
+                    loadUserData()
+                } else {
+                    // Ошибка
+                }
+            } catch (e: Exception) {
+                // Лог ошибки
+            }
+        }
+    }
+
+
 }

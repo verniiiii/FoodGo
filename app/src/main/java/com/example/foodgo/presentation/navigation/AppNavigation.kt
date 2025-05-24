@@ -16,7 +16,11 @@ import com.example.foodgo.presentation.screens.home.DishDetailsScreen
 import com.example.foodgo.presentation.screens.home.HomeDeliveryScreen
 import com.example.foodgo.presentation.screens.home.RestaurantDetailsScreen
 import com.example.foodgo.presentation.screens.OnboardingScreen
+import com.example.foodgo.presentation.screens.profile.FAQScreen
+import com.example.foodgo.presentation.screens.profile.FavoritesScreen
+import com.example.foodgo.presentation.screens.profile.PersonalInfoScreen
 import com.example.foodgo.presentation.screens.profile.ProfileScreen
+import com.example.foodgo.presentation.screens.profile.UserAddressesScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -108,7 +112,42 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.PROFILE) {
-            ProfileScreen()
+            ProfileScreen(
+                onNavigateToPersonalInfo = { navController.navigate(Destination.PERSONAL_INFO) },
+                onNavigateToAddresses = { navController.navigate(Destination.ADDRESSES) },
+                onNavigateToCart = { navController.navigate(Destination.CART) },
+                onNavigateToFavorites = { navController.navigate(Destination.FAVORITES) },
+                onNavigateToFaqs = { navController.navigate(Destination.FAQS) },
+                onNavigateToSettings = { navController.navigate(Destination.SETTINGS) },
+                onLogout = {
+                    preferencesManager.clearUserSession()
+                    navController.navigate(Destination.LOGIN) {
+                        popUpTo(0)
+                    }
+                }
+            )
         }
+
+
+        composable(Destination.PERSONAL_INFO) {
+            PersonalInfoScreen(onChangePasswordClick = {})
+        }
+
+        composable(Destination.ADDRESSES) {
+            UserAddressesScreen(onAddAddressClick = {}, onBackClick = {})
+        }
+
+        composable(Destination.FAVORITES) {
+            FavoritesScreen()
+        }
+
+        composable(Destination.FAQS) {
+            FAQScreen (onBackClick = {})
+        }
+
+        composable(Destination.SETTINGS) {
+            // TODO: реализуй настройки
+        }
+
     }
 }

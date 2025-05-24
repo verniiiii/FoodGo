@@ -76,7 +76,6 @@ class PreferencesManager(context: Context) {
         login: String?,
         description: String?,
         phone: String?,
-        notificationsEnabled: Boolean
     ) {
         sharedPreferences.edit {
             putInt(USER_ID, id)
@@ -84,7 +83,6 @@ class PreferencesManager(context: Context) {
             putString(LOGIN, login)
             putString(DESCRIPTION, description)
             putString(PHONE, phone)
-            putBoolean(NOTIFICATIONS, notificationsEnabled)
         }
     }
 
@@ -93,7 +91,6 @@ class PreferencesManager(context: Context) {
     fun getLogin(): String? = sharedPreferences.getString(LOGIN, null)
     fun getDescription(): String? = sharedPreferences.getString(DESCRIPTION, null)
     fun getPhone(): String? = sharedPreferences.getString(PHONE, null)
-    fun isNotificationsEnabled(): Boolean = sharedPreferences.getBoolean(NOTIFICATIONS, false)
 
 
     // Сохраняет историю поиска (максимум SEARCH_HISTORY_MAX_SIZE записей)

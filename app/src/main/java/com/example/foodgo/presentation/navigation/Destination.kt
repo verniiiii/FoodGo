@@ -10,4 +10,9 @@ object Destination {
     const val DISH_DETAILS = "dishDetails"
     const val CART = "cart"
     const val PROFILE = "profile"
+    const val PERSONAL_INFO = "personal_info"
+    const val ADDRESSES = "addresses"
+    const val FAVORITES = "favorites"
+    const val FAQS = "faqs"
+    const val SETTINGS = "settings"
 }
