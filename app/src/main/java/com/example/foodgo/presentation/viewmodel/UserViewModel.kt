@@ -82,4 +82,39 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
+    private fun loadUserAddresses() {
+        viewModelScope.launch {
+            val token = preferencesManager.getUserToken()
+            Log.d("BasketViewModel", "Получен токен: $token")
+
+            if (!token.isNullOrEmpty()) {
+                try {
+                    val response = userApi.getUserByToken("Bearer $token")
+                    Log.d("BasketViewModel", "Ответ от API: $response")
+
+                    if (response.isSuccessful) {
+                        val userWithAddresses = response.body()
+                        Log.d("BasketViewModel", "Полученные данные пользователя и адресов: $userWithAddresses")
+
+                        if (userWithAddresses != null) {
+                            // Сохраняем адреса
+                            _userAddresses.value = userWithAddresses.addresses
+                            Log.d("BasketViewModel", "Адреса сохранены")
+                        }
+                    } else {
+                        Log.e("BasketViewModel", "Ошибка ответа API: код ${response.code()}, сообщение: ${response.message()}")
+                        Log.e("BasketViewModel", "Ошибка тела ответа: ${response.errorBody()?.string()}")
+                        _userAddresses.value = emptyList()
+                    }
+                } catch (e: Exception) {
+                    Log.e("BasketViewModel", "Ошибка при вызове API: ${e.message}", e)
+                    _userAddresses.value = emptyList()
+                }
+            } else {
+                Log.w("BasketViewModel", "Токен отсутствует, устанавливаем пустой список адресов")
+                _userAddresses.value = emptyList()
+            }
+        }
+    }
 }

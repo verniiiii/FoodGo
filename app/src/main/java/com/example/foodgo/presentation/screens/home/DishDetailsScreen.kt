@@ -79,9 +79,11 @@ fun DishDetailsContent(
     dish: FullDishDTO,
     restaurantInfo: RestaurantInfoDTO,
     selectedSizeLabel: String?,
+    viewModel: DishDetailsViewModel = hiltViewModel(),
     onSizeSelected: (String) -> Unit
 ) {
-    val count = remember { mutableStateOf(1) }
+    var count = viewModel.count.collectAsState()
+    val isFavorite = viewModel.isFavorite.collectAsState()
 
     Box(
         modifier = Modifier
@@ -112,7 +114,7 @@ fun DishDetailsContent(
         }
 
         IconButton(
-            onClick = { /* Logic for favorite action */ },
+            onClick = { viewModel.toggleFavorite(dish.id) },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(end = 24.dp, top = 50.dp)
@@ -122,7 +124,7 @@ fun DishDetailsContent(
             Icon(
                 painter = painterResource(id = R.drawable.favorite),
                 contentDescription = "Favorite",
-                tint = LiteOrange,
+                tint = if (isFavorite.value) LiteOrange else GreyLight,  // цвет зависит от isFavorite
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -326,7 +328,7 @@ fun DishDetailsContent(
                             contentAlignment = Alignment.Center
                         ) {
                             IconButton(
-                                onClick = { if (count.value > 1) count.value-- },
+                                onClick = { viewModel.min() },
                                 modifier = Modifier.size(10.dp)
                             ) {
                                 Icon(
@@ -352,7 +354,7 @@ fun DishDetailsContent(
                             contentAlignment = Alignment.Center
                         ) {
                             IconButton(
-                                onClick = { count.value++ },
+                                onClick = { viewModel.pl() },
                                 modifier = Modifier.size(10.dp)
                             ) {
                                 Icon(
@@ -367,7 +369,7 @@ fun DishDetailsContent(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
-                    onClick = { /* Логика добавления в корзину */ },
+                    onClick = { viewModel.addToCart() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(62.dp),

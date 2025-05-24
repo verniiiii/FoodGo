@@ -104,7 +104,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.CART) {
-            CartScreen()
+            CartScreen(preferencesManager = preferencesManager)
         }
 
         composable(Destination.PROFILE) {

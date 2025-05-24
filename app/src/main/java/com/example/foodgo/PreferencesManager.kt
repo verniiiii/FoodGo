@@ -3,6 +3,8 @@ package com.example.foodgo
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class PreferencesManager(context: Context) {
     private val sharedPreferences: SharedPreferences =
@@ -21,6 +23,8 @@ class PreferencesManager(context: Context) {
         private const val NOTIFICATIONS = "notifications"
         private const val SEARCH_HISTORY = "search_history"
         private const val SEARCH_HISTORY_MAX_SIZE = 10
+        private const val CART_ITEMS = "cart_items"
+
     }
 
     fun isOnboardingCompleted(): Boolean {
@@ -85,6 +89,7 @@ class PreferencesManager(context: Context) {
     }
 
     fun getUsername(): String? = sharedPreferences.getString(USERNAME, null)
+    fun getUserId(): Int? = sharedPreferences.getInt(USER_ID, 1)
     fun getLogin(): String? = sharedPreferences.getString(LOGIN, null)
     fun getDescription(): String? = sharedPreferences.getString(DESCRIPTION, null)
     fun getPhone(): String? = sharedPreferences.getString(PHONE, null)
@@ -125,5 +130,36 @@ class PreferencesManager(context: Context) {
         sharedPreferences.edit {
             remove(SEARCH_HISTORY)
         }
+    }
+
+    fun saveCartItems(cart: Map<String, Int>) {
+        val json = Gson().toJson(cart)
+        sharedPreferences.edit { putString(CART_ITEMS, json) }
+    }
+
+
+    fun getCartItems(): Map<String, Int> {
+        val json = sharedPreferences.getString(CART_ITEMS, null)
+        return if (json != null) {
+            val type = object : TypeToken<Map<String, Int>>() {}.type
+            Gson().fromJson(json, type)
+        } else {
+            emptyMap()
+        }
+    }
+
+
+    fun addToCart(dishId: Int, size: String?, quantity: Int) {
+        val currentCart = getCartItems().toMutableMap()
+        val key = if (size != null) "$dishId|$size" else "$dishId"
+        currentCart[key] = (currentCart[key] ?: 0) + quantity
+        saveCartItems(currentCart)
+    }
+
+
+
+
+    fun clearCart() {
+        sharedPreferences.edit { remove(CART_ITEMS) }
     }
 }

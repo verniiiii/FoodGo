@@ -2,6 +2,8 @@ package com.example.foodgo.di
 
 import com.example.foodgo.data.remote.api.AuthApi
 import com.example.foodgo.data.remote.api.DishApi
+import com.example.foodgo.data.remote.api.FavoriteApi
+import com.example.foodgo.data.remote.api.OrderApi
 import com.example.foodgo.data.remote.api.RestaurantApi
 import com.example.foodgo.data.remote.api.UserApi
 import com.example.foodgo.data.remote.client.ApiClient
@@ -32,5 +34,15 @@ object NetworkModule {
     @Provides
     fun provideDishApi(): DishApi{
         return ApiClient.dishApi
+    }
+
+    @Provides
+    fun provideOrderApi(): OrderApi{
+        return ApiClient.orderApi
+    }
+
+    @Provides
+    fun provideFavoriteApi(): FavoriteApi{
+        return ApiClient.favoriteApi
     }
 }
