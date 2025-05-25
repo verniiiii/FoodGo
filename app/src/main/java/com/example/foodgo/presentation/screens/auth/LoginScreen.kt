@@ -187,14 +187,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
                         modifier = Modifier.clickable { rememberMe = !rememberMe }
                     )
 
-                    Spacer(modifier = Modifier.weight(1f))
 
-                    Text(
-                        text = "Забыли пароль",
-                        fontSize = 14.sp,
-                        color = Orange,
-                        modifier = Modifier.clickable { /* Handle forgot password click */ }
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(31.dp))

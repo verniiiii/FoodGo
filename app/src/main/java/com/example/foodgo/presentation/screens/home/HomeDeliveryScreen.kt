@@ -33,6 +33,7 @@ import com.example.foodgo.presentation.components.home.HeaderSection
 import com.example.foodgo.presentation.components.home.LoadingIndicator
 import com.example.foodgo.presentation.components.home.RestaurantsSection
 import com.example.foodgo.presentation.components.home.SearchSection
+import com.example.foodgo.presentation.viewmodel.BasketViewModel
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 import com.example.foodgo.presentation.viewmodel.home.HomeViewModel
 import com.example.foodgo.ui.theme.White
@@ -42,15 +43,21 @@ fun HomeDeliveryScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
+    basketViewModel: BasketViewModel = hiltViewModel(),
     preferencesManager: PreferencesManager
 ) {
     val selectedCategory = remember { mutableStateOf("Всё") }
-    val notificationCount = 2
     val restaurantList = homeViewModel.restaurants.collectAsState()
     val isLoading = homeViewModel.isLoading.collectAsState()
     val searchQuery = remember { mutableStateOf("") }
     val isSearchActive = remember { mutableStateOf(false) }
     val searchHistory = remember { mutableStateListOf<String>() }
+
+    LaunchedEffect(Unit) {
+        val cartMap = preferencesManager.getCartItems()
+        basketViewModel.updateCartItemCount(cartMap.size)
+    }
+
 
     LaunchedEffect(Unit) {
         val history = preferencesManager.getSearchHistory()
@@ -122,7 +129,6 @@ fun HomeDeliveryScreen(
     ) {
         HeaderSection(
             navController = navController,
-            notificationCount = notificationCount,
             selectedAddress = selectedAddress,
             expanded = expanded,
             addresses = addresses.value

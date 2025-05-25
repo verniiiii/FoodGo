@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -72,6 +73,7 @@ fun CartScreen(
         dishes.value = viewModel.getCartDishes()
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -121,23 +123,28 @@ fun CartScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         // Cart items
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .fillMaxHeight() // занимает всю высоту
+                .padding(bottom = 300.dp) // оставляет снизу 300.dp,
+
         ) {
             if (dishes.value.isEmpty()) {
-                Text(
-                    text = "Корзина пуста",
-                    color = White,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 32.dp),
-                    textAlign = TextAlign.Center
-                )
+                item {
+                    Text(
+                        text = "Корзина пуста",
+                        color = White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
             } else {
-                dishes.value.forEach { dish ->
-                    val key = "${dish.id}|${dish.size}"
+                items(dishes.value.size) { i ->
+                    val dish = dishes.value[i]
+                    val key = if (dish.size != null) "${dish.id}|${dish.size}" else "${dish.id}"
                     val quantity = cartItems.value[key] ?: 0
                     if (quantity > 0) {
                         CartItem(
@@ -161,17 +168,18 @@ fun CartScreen(
                                 cartItems.value = updatedCart
                             }
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
         }
+
     }
 
     // Calculate total price
     val totalPrice = remember(cartItems.value, dishes.value) {
         dishes.value.sumOf { dish ->
-            val key = "${dish.id}|${dish.size}"
+            val key = if(dish.size != null) "${dish.id}|${dish.size}" else "${dish.id}"
             (cartItems.value[key] ?: 0) * dish.sizePrice
         }
     }
@@ -444,6 +452,6 @@ data class CartDishDTO(
     val id: Int,
     val name: String,
     val photoUrl: String,
-    val size: String,
+    val size: String? = null,
     val sizePrice: Double            // Цена для этого размера
 )

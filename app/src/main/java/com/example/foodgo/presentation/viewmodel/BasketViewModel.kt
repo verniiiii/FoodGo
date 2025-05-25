@@ -15,8 +15,12 @@ import com.example.foodgo.presentation.screens.home.FullDishDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -28,24 +32,51 @@ class BasketViewModel @Inject constructor(
     private val orderApi: OrderApi,
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
+
+    private val _cartItemCount = MutableStateFlow(0)
+    val cartItemCount: StateFlow<Int> = _cartItemCount
+
+    fun updateCartItemCount(count: Int) {
+        _cartItemCount.value = count
+        println("тут ${_cartItemCount.value}")
+    }
     suspend fun getCartDishes(): List<CartDishDTO> {
         val cartItems = preferencesManager.getCartItems()
+        for (d in cartItems) println(d.toString())
         val dishes = mutableListOf<CartDishDTO>()
 
         for ((key, quantity) in cartItems) {
             val parts = key.split("|")
-            if (parts.size != 2) continue
 
-            val dishId = parts[0].toIntOrNull() ?: continue
-            val size = parts[1]
+            val dishId: Int
+            val size: String
 
-            val response = dishApi.getDishWithSize(dishId, size)
+            val response: Response<CartDishDTO>?
+
+            if (parts.size == 2) {
+                // Обычное поведение
+                dishId = parts[0].toIntOrNull() ?: continue
+                size = parts[1]
+                response = dishApi.getDishWithSize(dishId, size)
+            } else if (parts.size == 1) {
+                // Блюдо без конкретного размера
+                dishId = parts[0].toIntOrNull() ?: continue
+                response = dishApi.getDishWithoutSize(dishId)
+                println(response.body())
+
+            } else {
+                continue
+            }
+
+
             if (response.isSuccessful) {
                 response.body()?.let { dish ->
                     dishes.add(dish)
                 }
             }
         }
+
+        for (d in dishes) println(d.toString())
 
         return dishes
     }
@@ -68,7 +99,7 @@ class BasketViewModel @Inject constructor(
 
                     OrderItemDTO(
                         dishId = dish.id,
-                        size = dish.size,
+                        size = dish.size ?: "",
                         quantity = quantity,
                         pricePerItem = dish.sizePrice
                     )

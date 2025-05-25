@@ -5,8 +5,7 @@ data class UserDTO(
     val login: String,
     val username: String,
     val profileDescription: String?,
-    val phoneNumber: String?,
-    val notificationsEnabled: Boolean
+    val phoneNumber: String?
 )
 
 data class UserWithAddressesDTO(

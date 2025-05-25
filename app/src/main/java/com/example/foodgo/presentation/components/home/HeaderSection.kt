@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,9 +28,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.UserAddressDTO
+import com.example.foodgo.presentation.viewmodel.BasketViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.Orange
 import com.example.foodgo.ui.theme.PlaceholderGrey
@@ -38,11 +41,12 @@ import com.example.foodgo.ui.theme.White
 @Composable
 fun HeaderSection(
     navController: NavHostController,
-    notificationCount: Int,
     selectedAddress: MutableState<String>,
     expanded: MutableState<Boolean>,
-    addresses: List<UserAddressDTO>
+    addresses: List<UserAddressDTO>,
+    basketViewModel: BasketViewModel = hiltViewModel()
 ) {
+    var notificationCount = basketViewModel.cartItemCount.collectAsState()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.height(49.dp)
@@ -123,8 +127,11 @@ fun HeaderSection(
                 contentDescription = "Cart",
                 modifier = Modifier.size(24.dp)
             )
+            println("зашли")
+            println(notificationCount.value)
 
-            if (notificationCount > 0) {
+            if (notificationCount.value > 0) {
+                println("тут")
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -134,7 +141,7 @@ fun HeaderSection(
                         .background(Orange, shape = CircleShape)
                 ) {
                     Text(
-                        text = notificationCount.toString(),
+                        text = notificationCount.value.toString(),
                         color = White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

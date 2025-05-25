@@ -38,15 +38,17 @@ class SignUpViewModel @Inject constructor(
                 val response: Response<AuthResponse> = withContext(Dispatchers.IO) {
                     authApi.register(registerRequest)
                 }
+
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        _registrationResult.value = Result.success(it)
-                    } ?: run {
+                    val body = response.body()
+                    if (body != null) {
+                        _registrationResult.value = Result.success(body)
+                    } else {
                         _registrationResult.value = Result.failure(Exception("Пустой ответ от сервера"))
                     }
                 } else {
-                    val errorBody = response.errorBody()?.string() ?: "Неизвестная ошибка"
-                    _registrationResult.value = Result.failure(Exception("Ошибка: ${response.code()} $errorBody"))
+                    val errorBody = response.errorBody()?.string()?.takeIf { it.isNotBlank() } ?: "Неизвестная ошибка"
+                    _registrationResult.value = Result.failure(Exception("Ошибка ${response.code()}: $errorBody"))
                 }
             } catch (e: Exception) {
                 _registrationResult.value = Result.failure(e)

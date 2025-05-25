@@ -19,4 +19,9 @@ interface DishApi {
         @Path("id") dishId: Int,
         @Path("size") size: String
     ): Response<CartDishDTO>
+
+    @GET("dishess/{id}")
+    suspend fun getDishWithoutSize(
+        @Path("id") dishId: Int,
+    ): Response<CartDishDTO>
 }
