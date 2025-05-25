@@ -47,6 +47,17 @@ fun PersonalInfoScreen(
     onChangePasswordClick: () -> Unit
 ) {
     val state = viewModel.profileState.collectAsState()
+    val isSaving = viewModel.isSaving.collectAsState()
+    val saveSuccess = viewModel.saveSuccess.collectAsState()
+    val error = viewModel.errorMessage.collectAsState()
+
+    val showPasswordDialog = viewModel.showPasswordDialog.collectAsState()
+    val oldPassword = viewModel.oldPassword.collectAsState()
+    val newPassword = viewModel.newPassword.collectAsState()
+    val confirmPassword = viewModel.confirmPassword.collectAsState()
+    val passwordError = viewModel.passwordChangeError.collectAsState()
+
+
 
     Column(
         modifier = Modifier
@@ -115,7 +126,7 @@ fun PersonalInfoScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Сменить пароль
-        TextButton(onClick = onChangePasswordClick) {
+        TextButton(onClick = { viewModel.onChangePasswordClick() }) {
             Text("Сменить пароль")
         }
 
@@ -123,11 +134,63 @@ fun PersonalInfoScreen(
 
         // Сохранить
         Button(
-            onClick = { viewModel.onSave() },
+            onClick = { viewModel.updateProfile() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Сохранить изменения")
         }
+
+        if (isSaving.value) {
+            Text("Сохранение...", color = Color.Gray)
+        }
+
+        saveSuccess.value?.let {
+            if (it) {
+                Text("Изменения сохранены", color = Color.Green)
+            } else {
+                Text("Ошибка сохранения: ${error.value ?: "неизвестная"}", color = Color.Red)
+            }
+        }
+
     }
+    if (showPasswordDialog.value) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { viewModel.onPasswordDialogDismiss() },
+            title = { Text("Сменить пароль") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = oldPassword.value,
+                        onValueChange = { viewModel.oldPassword.value = it },
+                        label = { Text("Старый пароль") }
+                    )
+                    OutlinedTextField(
+                        value = newPassword.value,
+                        onValueChange = { viewModel.newPassword.value = it },
+                        label = { Text("Новый пароль") }
+                    )
+                    OutlinedTextField(
+                        value = confirmPassword.value,
+                        onValueChange = { viewModel.confirmPassword.value = it },
+                        label = { Text("Повторите новый пароль") }
+                    )
+                    passwordError.value?.let {
+                        Text(it, color = Color.Red, fontSize = 12.sp)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.changePassword() }) {
+                    Text("Сменить")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.onPasswordDialogDismiss() }) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
+
 
 }

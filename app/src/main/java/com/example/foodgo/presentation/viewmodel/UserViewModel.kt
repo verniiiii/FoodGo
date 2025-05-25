@@ -52,8 +52,7 @@ class UserViewModel @Inject constructor(
                                 id = user.id!!,
                                 username = user.username,
                                 login = user.login,
-                                description = user.profileDescription,
-                                phone = user.phoneNumber,
+                                description = user.profileDescription
                             )
                             _userName.value = user.username
 

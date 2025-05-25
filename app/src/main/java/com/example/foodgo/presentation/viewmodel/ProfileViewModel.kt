@@ -3,6 +3,9 @@ package com.example.foodgo.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
+import com.example.foodgo.data.remote.client.ApiClient.userApi
+import com.example.foodgo.data.remote.dto.ChangePasswordRequest
+import com.example.foodgo.data.remote.dto.UserUpdateDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +18,11 @@ class ProfileViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
+    val isSaving = MutableStateFlow(false)
+    val saveSuccess = MutableStateFlow<Boolean?>(null)
+    val errorMessage = MutableStateFlow<String?>(null)
+
+
     // Состояние профиля пользователя
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState: StateFlow<ProfileState> = _profileState
@@ -23,17 +31,75 @@ class ProfileViewModel @Inject constructor(
         loadUserProfile()
     }
 
+    // Состояния смены пароля
+    val showPasswordDialog = MutableStateFlow(false)
+    val oldPassword = MutableStateFlow("")
+    val newPassword = MutableStateFlow("")
+    val confirmPassword = MutableStateFlow("")
+    val passwordChangeSuccess = MutableStateFlow<Boolean?>(null)
+    val passwordChangeError = MutableStateFlow<String?>(null)
+
+    fun onChangePasswordClick() {
+        showPasswordDialog.value = true
+    }
+
+    fun onPasswordDialogDismiss() {
+        showPasswordDialog.value = false
+        oldPassword.value = ""
+        newPassword.value = ""
+        confirmPassword.value = ""
+        passwordChangeSuccess.value = null
+        passwordChangeError.value = null
+    }
+
+    fun changePassword() {
+        viewModelScope.launch {
+            val token = preferencesManager.getUserToken() ?: return@launch
+
+            if (newPassword.value != confirmPassword.value) {
+                passwordChangeError.value = "Новые пароли не совпадают"
+                return@launch
+            }
+
+            try {
+                val response = userApi.changePassword(
+                    token = "Bearer $token",
+                    ChangePasswordRequest(
+                        oldPassword = oldPassword.value,
+                        newPassword = newPassword.value
+                    )
+                )
+
+                if (response.isSuccessful) {
+                    passwordChangeSuccess.value = true
+                    passwordChangeError.value = null
+                    onPasswordDialogDismiss()
+
+                } else {
+                    println(response.code().toString())
+                    val errorMsg = response.errorBody()?.string() ?: "Ошибка при смене пароля"
+                    passwordChangeError.value = errorMsg
+                    passwordChangeSuccess.value = false
+                }
+            } catch (e: Exception) {
+                passwordChangeError.value = "Ошибка сети: ${e.localizedMessage}"
+                passwordChangeSuccess.value = false
+            }
+        }
+    }
+
+
     private fun loadUserProfile() {
         viewModelScope.launch {
             // Загружаем данные пользователя из PreferencesManager
             val username = preferencesManager.getUsername() ?: "Гость"
             val description = preferencesManager.getDescription() ?: ""
-            val phone = preferencesManager.getPhone() ?: ""
+            val email = preferencesManager.getLogin() ?: ""
 
             _profileState.value = _profileState.value.copy(
                 username = username,
                 description = description,
-                phone = phone,
+                email = email
             )
         }
     }
@@ -46,19 +112,44 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateProfile(username: String, description: String) {
+    fun updateProfile() {
         viewModelScope.launch {
-            preferencesManager.saveUserData(
-                id = 0, // ID должен быть получен из реальных данных пользователя
-                username = username,
-                login = "", // Логин должен быть получен из реальных данных
-                description = description,
-                phone = _profileState.value.phone,
+            isSaving.value = true
+            saveSuccess.value = null
+            errorMessage.value = null
 
+            val token = preferencesManager.getUserToken() ?: return@launch
+
+            val updated = UserUpdateDTO(
+                username = _profileState.value.username,
+                profileDescription = _profileState.value.description
             )
-            loadUserProfile() // Обновляем состояние после сохранения
+
+            try {
+                val response = userApi.updateUser("Bearer $token", updated)
+
+                if (response.isSuccessful) {
+                    preferencesManager.saveUserData(
+                        id = 0,
+                        username = _profileState.value.username,
+                        login = "",
+                        description = _profileState.value.description
+                    )
+                    loadUserProfile()
+                    saveSuccess.value = true
+                } else {
+                    errorMessage.value = "Ошибка при сохранении"
+                    saveSuccess.value = false
+                }
+            } catch (e: Exception) {
+                errorMessage.value = "Ошибка сети"
+                saveSuccess.value = false
+            } finally {
+                isSaving.value = false
+            }
         }
     }
+
 
 
 
@@ -70,21 +161,9 @@ class ProfileViewModel @Inject constructor(
         _profileState.update { it.copy(description = newDescription) }
     }
 
-    fun onChangePhotoUrl(newUrl: String) {
-        _profileState.update { it.copy(photoUrl = newUrl) }
-    }
 
-    fun onSave() {
-        viewModelScope.launch {
-            val updated = UserProfile(
-                name = _profileState.value.username,
-                description = _profileState.value.description,
-                email = _profileState.value.email,
-                photoUrl = _profileState.value.photoUrl
-            )
-            //profileRepository.updateProfile(updated)
-        }
-    }
+
+
 
     fun onChangePhotoClick() {
         // Вызов UI-события, например: открыть галерею
@@ -95,16 +174,13 @@ class ProfileViewModel @Inject constructor(
     data class ProfileState(
         val username: String = "",
         val description: String = "",
-        val email: String = "",
-        val phone: String = "",
-        val photoUrl: String = ""
+        val email: String = ""
     )
 
     data class UserProfile(
         val name: String,
         val description: String,
         val email: String,
-        val photoUrl: String
     )
 
 

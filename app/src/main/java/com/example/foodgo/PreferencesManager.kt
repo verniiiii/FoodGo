@@ -75,14 +75,12 @@ class PreferencesManager(context: Context) {
         username: String?,
         login: String?,
         description: String?,
-        phone: String?,
     ) {
         sharedPreferences.edit {
             putInt(USER_ID, id)
             putString(USERNAME, username)
             putString(LOGIN, login)
             putString(DESCRIPTION, description)
-            putString(PHONE, phone)
         }
     }
 

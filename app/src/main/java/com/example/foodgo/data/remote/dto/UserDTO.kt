@@ -4,8 +4,7 @@ data class UserDTO(
     val id: Int? = null,
     val login: String,
     val username: String,
-    val profileDescription: String?,
-    val phoneNumber: String?
+    val profileDescription: String?
 )
 
 data class UserWithAddressesDTO(
