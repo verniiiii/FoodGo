@@ -83,33 +83,6 @@ fun PersonalInfoScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Фото
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .background(Color.Gray)
-                .clickable { viewModel.onChangePhotoClick() },
-            contentAlignment = Alignment.Center
-        ) {
-            if (state.value.photoUrl.isNotBlank()) {
-                AsyncImage(
-                    model = state.value.photoUrl,
-                    contentDescription = "Profile Photo",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Add photo",
-                    tint = Color.White
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Имя
         OutlinedTextField(
             value = state.value.username,

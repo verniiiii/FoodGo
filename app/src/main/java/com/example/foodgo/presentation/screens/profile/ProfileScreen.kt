@@ -96,7 +96,7 @@ fun ProfileScreen(
         ) {
             // Добавляем AsyncImage для загрузки аватарки по URL
             AsyncImage(
-                model = R.drawable.ic_launcher_background, // URL или дефолтная картинка
+                model = "https://yandex-images.clstorage.net/9PgjM5449/a1039b9is/0f8sdfHQrKf_Z8Mx4tN5fy3LY3pcpdsQVHk07gU_mRAXK7Y0AxjjpKzV8Y_8U4xHSvESKX9kk-xRXga23k-o8MTieDDA_bj6rhLDRLLzdWslvhZ2GNSzASAQPZ45cv04My-i3O-VOkkJCTRmIaJUO17RE3EOVYbsoMJD20-2-YiJw7D1TTBtR9s7ljVmM9nbgeJzcmCshyEI8WlKtXPNXYZ62uCXRR7ZsQWgUpG2YAdWQSPRw3UabFgfHxOznq1AlTOACTXQzb-v58qBsuv5pxG6y3potKOhCGGZqil3VckSOkbAiy0yBVl9bPZx7nhn4iEvATd9ZpToo3dTUyI9ABXvIAFl1DkHz-uKRe4ziVcpks9OcDhL4WjhcbKZi7npCnoOyF_JkmFVleDekcZoO979w4EH1Z7owNtH38PejRS1IxyJuaSFK_uXah1mm8l_DTKTAkBc1z0QWUE2ZW_1VWomdmSb-QIdwXksVunu4Bf2pSN5wylybJyzj-tfyrF0RXustS1IIXuXf6Jhpm9RhwGuF1ZQWCd9PI11BsHjRRlWvjLsB4026XmV6FIBWigTCkHT4dMJHuTAWycvy16hlL0rJLmp0DmvG0dWFT4TfaNdZgeiAMBT0Xi9QUpRP6ml8s6GjB-hJnExbaTyFRYsD2b9Gzm3RW4YxB8Pk09WMYSBmxRpXdjtd6NTFklCB9GzYTofatw40-k0mQUWzb9FBQbGogwHBSYVnbE87okqQNdmVbfhQ_1iBJAna5fDUrk8tYeUTWWkid_HLyIlDh-VDzFmS374zE_9hJUBWuWDQZ3mIiqsTz16CXGZGEa10rzPQrGX6S9JAtzEl887X959AO2DFDVxJMX3Y-O-NWaLjespPpsm8FhPjaT1fcJVcwWJrgLG6MPBio1F0RhqiVaMHwqBY3W7fcKgSOdjbyPOfYhJx-RFcURt_4e3Qp3Ow8X_qbYbBuzwYw0YwfVKmXtM", // URL или дефолтная картинка
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(100.dp)
@@ -191,21 +191,12 @@ fun ProfileScreen(
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column {
-                        ProfileMenuItem(
-                            icon = R.drawable.faqs,
-                            title = "FAQs",
-                            backgroundColor = Faqs,
-                            onClick = onNavigateToFaqs
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        ProfileMenuItem(
-                            icon = R.drawable.settings,
-                            title = "Настройки",
-                            backgroundColor = Settings,
-                            onClick = onNavigateToSettings
-                        )
-                    }
+                    ProfileMenuItem(
+                        icon = R.drawable.faqs,
+                        title = "FAQs",
+                        backgroundColor = Faqs,
+                        onClick = onNavigateToFaqs
+                    )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
 

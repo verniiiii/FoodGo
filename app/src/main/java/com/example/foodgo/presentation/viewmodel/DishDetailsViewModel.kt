@@ -1,6 +1,7 @@
 package com.example.foodgo.presentation.viewmodel
 
 import android.annotation.SuppressLint
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import com.example.foodgo.presentation.screens.home.FullDishDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +51,12 @@ class DishDetailsViewModel @Inject constructor(
 
     fun onSizeSelected(sizeLabel: String) {
         _selectedSizeLabel.value = sizeLabel
+    }
+
+    suspend fun isDishInCart(dishId: Int): Boolean {
+        loadDish(dishId) // допустим, эта функция suspend или вызывает suspend
+        val dish = dishState.first { it != null }  // дождёмся, пока dishState станет не null
+        return preferencesManager.isDishInCart(dish!!.id, selectedSizeLabel.value)
     }
 
 
@@ -119,6 +127,9 @@ class DishDetailsViewModel @Inject constructor(
             _count.value--
         }
     }
+
+
+
 
     @SuppressLint("ImplicitSamInstance")
     fun toggleFavorite(dishId: Int) {

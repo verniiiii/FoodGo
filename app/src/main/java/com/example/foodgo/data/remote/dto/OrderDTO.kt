@@ -5,6 +5,5 @@ data class OrderDTO(
     val userId: Int,
     val totalPrice: Double,
     val address: String,
-    val orderDate: String,
-    val status: String
+    val orderDate: String
 )

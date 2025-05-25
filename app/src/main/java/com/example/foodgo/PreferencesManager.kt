@@ -20,7 +20,6 @@ class PreferencesManager(context: Context) {
         private const val LOGIN = "login"
         private const val DESCRIPTION = "description"
         private const val PHONE = "phone"
-        private const val NOTIFICATIONS = "notifications"
         private const val SEARCH_HISTORY = "search_history"
         private const val SEARCH_HISTORY_MAX_SIZE = 10
         private const val CART_ITEMS = "cart_items"
@@ -65,7 +64,8 @@ class PreferencesManager(context: Context) {
             remove(LOGIN)
             remove(DESCRIPTION)
             remove(PHONE)
-            remove(NOTIFICATIONS)
+            remove(USER_TOKEN)
+            setUserLoggedIn(false)
         }
     }
 
@@ -159,4 +159,10 @@ class PreferencesManager(context: Context) {
     fun clearCart() {
         sharedPreferences.edit { remove(CART_ITEMS) }
     }
+
+    fun isDishInCart(dishId: Int, size: String? = null): Boolean {
+        val key = if (size != null) "$dishId|$size" else "$dishId"
+        return getCartItems().containsKey(key)
+    }
+
 }

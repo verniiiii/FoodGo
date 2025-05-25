@@ -112,8 +112,7 @@ class BasketViewModel @Inject constructor(
                     userId = userId,
                     totalPrice = totalPrice,
                     address = address,
-                    orderDate = getCurrentDate(),
-                    status = "Создан"
+                    orderDate = getCurrentDate()
                 )
 
                 val orderRequest = OrderRequestDTO(order = orderDTO, items = orderItems)
@@ -140,9 +139,3 @@ fun getCurrentDate(): String {
     return current.format(formatter)
 }
 
-data class OrderItemDto(
-    val dishId: Int,
-    val size: String,
-    val quantity: Int,
-    val pricePerItem: Double
-)

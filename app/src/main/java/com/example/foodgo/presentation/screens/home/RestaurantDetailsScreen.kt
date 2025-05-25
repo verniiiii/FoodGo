@@ -51,6 +51,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.components.restaurants.CategoryButton
 import com.example.foodgo.presentation.components.restaurants.DishCard
+import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel
 import com.example.foodgo.presentation.viewmodel.restaurants.RestaurantDetailsViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
@@ -66,7 +67,8 @@ import com.google.accompanist.pager.rememberPagerState
 fun RestaurantDetailsScreen(
     navController: NavHostController,
     restaurant: RestaurantWithPhotosDTO,
-    viewModel: RestaurantDetailsViewModel = hiltViewModel()
+    viewModel: RestaurantDetailsViewModel = hiltViewModel(),
+    dishDetailsViewModel: DishDetailsViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
         viewModel.loadRestaurantData(restaurant)
@@ -258,6 +260,7 @@ fun RestaurantDetailsScreen(
             items(dishesToShow.size) { i ->
                 val dish = dishesToShow[i]
                 DishCard(
+                    id = dish.id,
                     name = dish.name,
                     price = "$${dish.basePrice}", // форматируем цену
                     icon = dish.photoUrl ?: "https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw",
