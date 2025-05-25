@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val preferencesManager: PreferencesManager,
+    val preferencesManager: PreferencesManager,
     private val userApi: UserApi
 ) : ViewModel() {
 

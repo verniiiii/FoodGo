@@ -16,6 +16,7 @@ import com.example.foodgo.presentation.screens.home.DishDetailsScreen
 import com.example.foodgo.presentation.screens.home.HomeDeliveryScreen
 import com.example.foodgo.presentation.screens.home.RestaurantDetailsScreen
 import com.example.foodgo.presentation.screens.OnboardingScreen
+import com.example.foodgo.presentation.screens.profile.AddAddressScreen
 import com.example.foodgo.presentation.screens.profile.FAQScreen
 import com.example.foodgo.presentation.screens.profile.FavoritesScreen
 import com.example.foodgo.presentation.screens.profile.PersonalInfoScreen
@@ -134,7 +135,9 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.ADDRESSES) {
-            UserAddressesScreen(onAddAddressClick = {}, onBackClick = {})
+            UserAddressesScreen(
+                onAddAddressClick = { navController.navigate("add_address") }
+                , onBackClick = {})
         }
 
         composable(Destination.FAVORITES) {
@@ -145,9 +148,10 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             FAQScreen (onBackClick = {})
         }
 
-        composable(Destination.SETTINGS) {
-            // TODO: реализуй настройки
+        composable("add_address") {
+            AddAddressScreen(onBack = { navController.popBackStack() })
         }
+
 
     }
 }
