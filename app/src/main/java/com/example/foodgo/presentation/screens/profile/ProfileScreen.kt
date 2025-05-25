@@ -49,7 +49,6 @@ fun ProfileScreen(
     onNavigateToCart: () -> Unit = {},
     onNavigateToFavorites: () -> Unit = {},
     onNavigateToFaqs: () -> Unit = {},
-    onNavigateToSettings: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
     val profileState = viewModel.profileState.collectAsState()

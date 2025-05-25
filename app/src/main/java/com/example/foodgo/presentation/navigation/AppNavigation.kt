@@ -119,7 +119,6 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
                 onNavigateToCart = { navController.navigate(Destination.CART) },
                 onNavigateToFavorites = { navController.navigate(Destination.FAVORITES) },
                 onNavigateToFaqs = { navController.navigate(Destination.FAQS) },
-                onNavigateToSettings = { navController.navigate(Destination.SETTINGS) },
                 onLogout = {
                     preferencesManager.clearUserSession()
                     navController.navigate(Destination.LOGIN) {
@@ -141,7 +140,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.FAVORITES) {
-            FavoritesScreen()
+            FavoritesScreen(navController)
         }
 
         composable(Destination.FAQS) {

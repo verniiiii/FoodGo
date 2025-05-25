@@ -20,10 +20,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.presentation.viewmodel.FavoritesViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.example.foodgo.presentation.viewmodel.FavoriteDishInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    navController: NavController,
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val favoritesState = viewModel.favorites.collectAsState()
@@ -71,35 +79,75 @@ fun FavoritesScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                items(favoritesState.value) { dishId ->
-                    FavoriteItem(
-                        dishId = dishId,
-                        onRemoveClick = { viewModel.removeFavorite(dishId) }
+                items(favoritesState.value) { dish ->
+                    FavoriteItemCard(
+                        dish = dish,
+                        onRemoveClick = { viewModel.removeFavorite(dish.dishId) },
+                        onClick = {navController.navigate("dishDetails/${dish.dishId}")}
                     )
                 }
+
             }
         }
     }
 }
 
+
+
 @Composable
-fun FavoriteItem(dishId: Int, onRemoveClick: () -> Unit) {
+fun FavoriteItemCard(
+    dish: FavoriteDishInfo,
+    onRemoveClick: () -> Unit,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
+            .clickable{onClick()}
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 8.dp)
+            .border(1.dp, GreyLight, shape = RoundedCornerShape(12.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Блюдо №$dishId", fontSize = 16.sp, color = Color.Black)
+        Image(
+            painter = rememberAsyncImagePainter(dish.imageUrl),
+            contentDescription = dish.name,
+            modifier = Modifier
+                .size(64.dp)
+                .background(GreyLight, shape = RoundedCornerShape(8.dp))
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = dish.name,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+            Text(
+                text = dish.restaurantName,
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+            Text(
+                text = "${dish.price} ₽",
+                fontSize = 14.sp,
+                color = Color.Black
+            )
+        }
 
         Icon(
             imageVector = Icons.Default.Close,
-            contentDescription = "Удалить из избранного",
-            tint = Color.Red,
+            contentDescription = "Удалить",
+            tint = IconGrey3,
             modifier = Modifier
-                .size(24.dp)
+                .size(20.dp)
                 .clickable { onRemoveClick() }
         )
     }
 }
+

@@ -3,8 +3,10 @@ package com.example.foodgo.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
+import com.example.foodgo.data.remote.api.DishApi
 import com.example.foodgo.data.remote.api.FavoriteApi
 import com.example.foodgo.data.remote.api.FavoriteRequestDTO
+import com.example.foodgo.data.remote.api.RestaurantApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,11 +16,13 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
-    private val favoriteApi: FavoriteApi
+    private val favoriteApi: FavoriteApi,
+    private val dishApi: DishApi,
+    private val restaurantApi: RestaurantApi
 ) : ViewModel() {
 
-    private val _favorites = MutableStateFlow<List<Int>>(emptyList())
-    val favorites: StateFlow<List<Int>> = _favorites
+    private val _favorites = MutableStateFlow<List<FavoriteDishInfo>>(emptyList())
+    val favorites: StateFlow<List<FavoriteDishInfo>> = _favorites
 
     init {
         loadFavorites()
@@ -27,12 +31,29 @@ class FavoritesViewModel @Inject constructor(
     fun loadFavorites() {
         viewModelScope.launch {
             val userId = preferencesManager.getUserId() ?: return@launch
-            val response = favoriteApi.getFavorites(userId)
-            if (response.isSuccessful) {
-                _favorites.value = response.body() ?: emptyList()
-            } else {
-                _favorites.value = emptyList()
+
+            val favoriteIdsResponse = favoriteApi.getFavorites(userId)
+            if (!favoriteIdsResponse.isSuccessful) return@launch
+            val favoriteIds = favoriteIdsResponse.body() ?: emptyList()
+
+            val favoriteDishes = favoriteIds.mapNotNull { dishId ->
+                val dishResponse = dishApi.getDishById(dishId)
+                if (!dishResponse.isSuccessful) return@mapNotNull null
+                val dish = dishResponse.body() ?: return@mapNotNull null
+
+                val restaurantResponse = restaurantApi.getRestaurantInfoById(dish.restaurantId)
+                val restaurantName = restaurantResponse.body()?.name ?: "Неизвестный ресторан"
+
+                FavoriteDishInfo(
+                    dishId = dish.id,
+                    name = dish.name,
+                    price = dish.basePrice,
+                    imageUrl = dish.photoUrl,
+                    restaurantName = restaurantName
+                )
             }
+
+            _favorites.value = favoriteDishes
         }
     }
 
@@ -41,9 +62,17 @@ class FavoritesViewModel @Inject constructor(
             val userId = preferencesManager.getUserId() ?: return@launch
             val response = favoriteApi.removeFavorite(FavoriteRequestDTO(userId, dishId))
             if (response.isSuccessful) {
-                // Обновим список после удаления
-                _favorites.value = _favorites.value.filter { it != dishId }
+                _favorites.value = _favorites.value.filter { it.dishId != dishId }
             }
         }
     }
 }
+
+data class FavoriteDishInfo(
+    val dishId: Int,
+    val name: String,
+    val price: Double,
+    val imageUrl: String,
+    val restaurantName: String
+)
+
