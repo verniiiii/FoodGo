@@ -9,12 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.api.RestaurantApi
 import com.example.foodgo.data.remote.dto.CategoryDTO
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalTime
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -163,14 +164,23 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun isRestaurantOpen(openingTime: String, closingTime: String): Boolean {
-        val currentTime = LocalTime.now()
+        val zoneId = ZoneId.of("Europe/Moscow") // Или любой другой нужный
+        val currentTime = LocalTime.now(zoneId)
+        println(currentTime)
         val openTime = LocalTime.parse(openingTime)
         val closeTime = LocalTime.parse(closingTime)
 
-        //return !currentTime.isBefore(openTime) && !currentTime.isAfter(closeTime)
         return true
+
+        return if (openTime < closeTime) {
+            // Обычное время (например: 08:00 - 22:00)
+            currentTime >= openTime && currentTime <= closeTime
+        } else {
+            // Время через полночь (например: 22:00 - 06:00)
+            currentTime >= openTime || currentTime <= closeTime
+        }
     }
+
 
 }

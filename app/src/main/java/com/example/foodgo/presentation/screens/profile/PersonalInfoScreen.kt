@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodgo.R
+import com.example.foodgo.presentation.components.ScreenHeader
 import com.example.foodgo.presentation.navigation.Destination
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
@@ -45,6 +46,7 @@ import com.example.foodgo.ui.theme.IconGrey3
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalInfoScreen(
+    onBack: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state = viewModel.profileState.collectAsState()
@@ -58,46 +60,7 @@ fun PersonalInfoScreen(
     val confirmPassword = viewModel.confirmPassword.collectAsState()
     val passwordError = viewModel.passwordChangeError.collectAsState()
 
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(top = 50.dp, bottom = 29.dp, start = 24.dp, end = 24.dp)
-    ) {
-        // Header
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(GreyLight, shape = CircleShape)
-                    .clickable{
-
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
-                    tint = IconGrey3,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Личная информация",
-                color = Color.Black,
-                fontSize = 17.sp,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
+    ScreenHeader("Личная информация", onBackClick = onBack) {
         // Имя
         OutlinedTextField(
             value = state.value.username,
@@ -155,7 +118,6 @@ fun PersonalInfoScreen(
                 Text("Ошибка сохранения: ${error.value ?: "неизвестная"}", color = Color.Red)
             }
         }
-
     }
     if (showPasswordDialog.value) {
         androidx.compose.material3.AlertDialog(

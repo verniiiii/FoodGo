@@ -29,8 +29,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.api.DishApi
+import com.example.foodgo.data.remote.dto.dish.FullDishDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantInfoDTO
 import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel
-import com.example.foodgo.presentation.viewmodel.RestaurantInfoDTO
 import com.example.foodgo.ui.theme.DarkBlack
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey6
@@ -46,6 +47,7 @@ import com.google.accompanist.pager.rememberPagerState
 @Composable
 fun DishDetailsScreen(
     dishId: Int,
+    onBack: () -> Unit,
     dishDetailsViewModel: DishDetailsViewModel = hiltViewModel()
 ) {
     val dish = dishDetailsViewModel.dishState.collectAsState()
@@ -68,7 +70,7 @@ fun DishDetailsScreen(
     } else if (dish.value != null && restaurantInfo.value != null) {
         DishDetailsContent(dish = dish.value!!, restaurantInfo.value!!,
             selectedSizeLabel = selectedSizeLabel.value,
-            onSizeSelected = dishDetailsViewModel::onSizeSelected)
+            onSizeSelected = dishDetailsViewModel::onSizeSelected, onBack = onBack)
     }else {
         Text(text = "Нет доступных данных", color = Color.Black)
     }
@@ -80,6 +82,7 @@ fun DishDetailsContent(
     restaurantInfo: RestaurantInfoDTO,
     selectedSizeLabel: String?,
     viewModel: DishDetailsViewModel = hiltViewModel(),
+    onBack: () -> Unit,
     onSizeSelected: (String) -> Unit
 ) {
     var count = viewModel.count.collectAsState()
@@ -100,6 +103,7 @@ fun DishDetailsContent(
         IconButton(
             onClick = { /* Logic for returning to the previous screen */ },
             modifier = Modifier
+                .clickable{onBack()}
                 .align(Alignment.TopStart)
                 .padding(start = 24.dp, top = 50.dp)
                 .size(45.dp)
@@ -387,27 +391,4 @@ fun DishDetailsContent(
         }
     }
 }
-
-
-
-data class FullDishDTO(
-    val id: Int,
-    val restaurantId: Int,
-    val name: String,
-    val basePrice: Double,
-    val description: String,
-    val rating: Double,
-    val category: String?,
-    val photoUrl: String,
-    val sizes: List<DishSizeDTO>,
-    val ingredients: List<String>
-)
-
-data class DishSizeDTO(
-    val sizeLabel: String,
-    val price: Double
-)
-
-
-
 

@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.foodgo.R
+import com.example.foodgo.presentation.components.ScreenHeader
+import com.example.foodgo.presentation.components.profile.ProfileMenuItem
 import com.example.foodgo.presentation.viewmodel.ProfileViewModel
 import com.example.foodgo.ui.theme.Cart
 import com.example.foodgo.ui.theme.Faqs
@@ -55,45 +57,7 @@ fun ProfileScreen(
 ) {
     val profileState = viewModel.profileState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(top = 50.dp, bottom = 29.dp, start = 24.dp, end = 24.dp)
-    ) {
-        // Header
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(GreyLight, shape = CircleShape)
-                    .clickable{
-                        onBack()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
-                    tint = IconGrey3,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Профиль",
-                color = Color.Black,
-                fontSize = 17.sp,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Profile Info
+    ScreenHeader("Профиль", onBackClick = onBack) { // Profile Info
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -236,45 +200,3 @@ fun ProfileScreen(
     }
 }
 
-@Composable
-fun ProfileMenuItem(
-    icon: Int,
-    title: String,
-    backgroundColor: Color,
-    onClick: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(White, shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = "Back",
-                tint = backgroundColor,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-        Spacer(modifier = Modifier.width(14.dp))
-        Text(
-            text = title,
-            color = ProfGrey,
-            fontSize = 16.sp
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            painter = painterResource(id = R.drawable.right),
-            contentDescription = "Back",
-            tint = PlaceholderGrey,
-            modifier = Modifier.size(10.dp)
-        )
-    }
-}

@@ -1,20 +1,16 @@
 package com.example.foodgo.presentation.viewmodel
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
+import com.example.foodgo.data.remote.api.DishApi
 import com.example.foodgo.data.remote.api.OrderApi
+import com.example.foodgo.data.remote.dto.dish.FullDishDTO
 import com.example.foodgo.data.remote.dto.order.OrderItemDTO
-import com.example.foodgo.data.remote.dto.order.OrderWithItemsDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 data class OrderDetailsUiState(
     val isLoading: Boolean = true,
@@ -25,6 +21,7 @@ data class OrderDetailsUiState(
 @HiltViewModel
 class OrderDetailsViewModel @Inject constructor(
     private val orderApi: OrderApi,
+    private val dishApi: DishApi,
     private val preferencesManager: PreferencesManager,
 ) : ViewModel() {
 
@@ -75,6 +72,19 @@ class OrderDetailsViewModel @Inject constructor(
                     it.copy(isLoading = false, error = e.localizedMessage)
                 }
             }
+        }
+    }
+
+    suspend fun getDishById(dishId: Int): FullDishDTO? {
+        return try {
+            val response = dishApi.getDishById(dishId)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 }

@@ -47,6 +47,7 @@ fun HeaderSection(
     basketViewModel: BasketViewModel = hiltViewModel()
 ) {
     var notificationCount = basketViewModel.cartItemCount.collectAsState()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.height(49.dp)

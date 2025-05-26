@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.user.UserAddressDTO
+import com.example.foodgo.presentation.components.ScreenHeader
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
@@ -31,52 +32,7 @@ fun UserAddressesScreen(
 ) {
     val addressesState = viewModel.userAddresses.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(top = 50.dp, bottom = 29.dp, start = 24.dp, end = 24.dp)
-    ) {
-        // Хедер (тот же, что и в PersonalInfoScreen)
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(GreyLight, shape = CircleShape)
-                    .clickable { onBackClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
-                    tint = IconGrey3,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Адреса",
-                color = Color.Black,
-                fontSize = 17.sp,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Кнопка "Добавить адрес"
-        Button(
-            onClick = onAddAddressClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Добавить адрес")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+    ScreenHeader("Адреса", onBackClick = onBackClick) {
         // Список адресов
         if (addressesState.value.isEmpty()) {
             Box(
@@ -96,6 +52,16 @@ fun UserAddressesScreen(
                     Divider()
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Кнопка "Добавить адрес"
+        Button(
+            onClick = onAddAddressClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Добавить адрес")
         }
     }
 }

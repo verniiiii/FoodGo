@@ -9,7 +9,4 @@ data class OrderDTO(
 )
 
 
-data class OrderWithItemsDTO(
-    val order: OrderDTO,
-    val items: List<OrderItemDTO>
-)
+

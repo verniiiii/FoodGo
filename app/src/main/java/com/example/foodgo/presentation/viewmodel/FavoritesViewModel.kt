@@ -7,11 +7,13 @@ import com.example.foodgo.data.remote.api.DishApi
 import com.example.foodgo.data.remote.api.FavoriteApi
 import com.example.foodgo.data.remote.api.FavoriteRequestDTO
 import com.example.foodgo.data.remote.api.RestaurantApi
+import com.example.foodgo.data.remote.dto.dish.FavoriteDishInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.filter
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
@@ -68,11 +70,5 @@ class FavoritesViewModel @Inject constructor(
     }
 }
 
-data class FavoriteDishInfo(
-    val dishId: Int,
-    val name: String,
-    val price: Double,
-    val imageUrl: String,
-    val restaurantName: String
-)
+
 

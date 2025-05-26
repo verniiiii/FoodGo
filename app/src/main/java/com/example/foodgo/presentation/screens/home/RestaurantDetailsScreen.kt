@@ -48,7 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.components.restaurants.CategoryButton
 import com.example.foodgo.presentation.components.restaurants.DishCard
 import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel

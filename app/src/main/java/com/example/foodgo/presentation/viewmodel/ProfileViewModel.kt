@@ -22,7 +22,6 @@ class ProfileViewModel @Inject constructor(
     val saveSuccess = MutableStateFlow<Boolean?>(null)
     val errorMessage = MutableStateFlow<String?>(null)
 
-
     // Состояние профиля пользователя
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState: StateFlow<ProfileState> = _profileState
@@ -161,27 +160,10 @@ class ProfileViewModel @Inject constructor(
         _profileState.update { it.copy(description = newDescription) }
     }
 
-
-
-
-
-    fun onChangePhotoClick() {
-        // Вызов UI-события, например: открыть галерею
-        // Это можно сделать через EventBus/Callback/State с флагом
-    }
-
     // Состояние профиля
     data class ProfileState(
         val username: String = "",
         val description: String = "",
         val email: String = ""
     )
-
-    data class UserProfile(
-        val name: String,
-        val description: String,
-        val email: String,
-    )
-
-
 }

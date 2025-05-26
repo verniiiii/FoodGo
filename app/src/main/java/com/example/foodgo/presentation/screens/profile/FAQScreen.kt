@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.R
+import com.example.foodgo.presentation.components.ScreenHeader
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
 
@@ -25,39 +26,7 @@ data class FAQItem(val question: String, val answer: String)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FAQScreen(onBack: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(top = 50.dp, bottom = 29.dp, start = 24.dp, end = 24.dp)
-    ) {
-        // Header
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(GreyLight, shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
-                    tint = IconGrey3,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Часто задаваемые вопросы",
-                color = Color.Black,
-                fontSize = 17.sp,
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+    ScreenHeader("Часто задаваемые вопросы", onBackClick = onBack) {
         val faqList = listOf(
             FAQItem(
                 question = "Как добавить блюдо в избранное?",

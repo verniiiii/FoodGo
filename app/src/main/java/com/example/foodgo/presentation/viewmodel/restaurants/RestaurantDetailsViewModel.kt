@@ -3,8 +3,8 @@ package com.example.foodgo.presentation.viewmodel.restaurants
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.data.remote.api.RestaurantApi
-import com.example.foodgo.data.remote.dto.DishDTO
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.data.remote.dto.dish.DishDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,16 +48,6 @@ class RestaurantDetailsViewModel @Inject constructor(
                     selectedCategory = uniqueCategories.firstOrNull()
                 )
             }
-        }
-    }
-
-
-    private suspend fun loadDishes(restaurantId: Int) {
-        val response = api.getDishesByRestaurant(restaurantId)
-        if (response.isSuccessful) {
-            _uiState.update { it.copy(dishes = response.body().orEmpty()) }
-        } else {
-            // обработать ошибку или оставить пустым
         }
     }
 

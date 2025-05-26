@@ -1,9 +1,9 @@
 package com.example.foodgo.data.remote.api
 
 import com.example.foodgo.data.remote.dto.CategoryDTO
-import com.example.foodgo.data.remote.dto.DishDTO
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
-import com.example.foodgo.presentation.viewmodel.RestaurantInfoDTO
+import com.example.foodgo.data.remote.dto.dish.DishDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantInfoDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

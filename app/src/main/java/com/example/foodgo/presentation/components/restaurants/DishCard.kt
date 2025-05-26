@@ -32,11 +32,7 @@ import com.example.foodgo.ui.theme.PlaceholderGrey
 import com.example.foodgo.ui.theme.White
 
 @Composable
-fun DishCard(name: String, price: String, icon: String,
-
-             onClick: () -> Unit) {
-
-
+fun DishCard(name: String, price: String, icon: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(153.dp)

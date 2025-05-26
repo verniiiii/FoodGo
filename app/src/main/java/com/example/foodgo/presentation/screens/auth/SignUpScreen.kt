@@ -44,20 +44,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.foodgo.R
 import com.example.foodgo.presentation.viewmodel.auth.SignUpViewModel
 import com.example.foodgo.ui.theme.Black
 import com.example.foodgo.ui.theme.DarkBlack
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey6
-import com.example.foodgo.ui.theme.PlaceholderGrey
 import com.example.foodgo.ui.theme.Orange
+import com.example.foodgo.ui.theme.PlaceholderGrey
 import com.example.foodgo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)

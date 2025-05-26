@@ -23,6 +23,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,7 +52,8 @@ fun SearchSection(
     keyboardActionHandler: () -> Unit,
     isDialogOpen: MutableState<Boolean>
 ) {
-    var textFieldWidth by remember { mutableStateOf(0) }
+    var textFieldWidth by remember { mutableIntStateOf(0) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()

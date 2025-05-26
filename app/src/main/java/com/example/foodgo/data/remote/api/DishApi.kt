@@ -1,7 +1,7 @@
 package com.example.foodgo.data.remote.api
 
-import com.example.foodgo.presentation.screens.CartDishDTO
-import com.example.foodgo.presentation.screens.home.FullDishDTO
+import com.example.foodgo.data.remote.dto.dish.FullDishDTO
+import com.example.foodgo.data.remote.dto.order.CartDishDTO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

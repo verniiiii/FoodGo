@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -12,12 +13,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.data.remote.dto.order.OrderWithItemsDTO
 import com.example.foodgo.PreferencesManager
+import com.example.foodgo.presentation.components.OrderItemCard
+import com.example.foodgo.presentation.components.ScreenHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrdersScreen(
     preferencesManager: PreferencesManager,
     onOrderClick: (OrderWithItemsDTO) -> Unit,
+    onBack: () -> Unit,
     viewModel: OrdersViewModel = hiltViewModel()
 ) {
     val userId = preferencesManager.getUserId()
@@ -29,12 +33,8 @@ fun OrdersScreen(
         viewModel.loadOrders(userId)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Мои заказы") })
-        }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+    ScreenHeader("Мои заказы", onBackClick = onBack) {
+        Box(modifier = Modifier.padding()) {
             when {
                 isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.padding(16.dp))
@@ -63,20 +63,3 @@ fun OrdersScreen(
     }
 }
 
-@Composable
-fun OrderItemCard(orderWithItems: OrderWithItemsDTO, onClick: () -> Unit) {
-    val order = orderWithItems.order
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("ID заказа: ${order.orderId}", style = MaterialTheme.typography.titleMedium)
-            Text("Дата: ${order.orderDate}", style = MaterialTheme.typography.bodyMedium)
-            Text("Сумма: ${order.totalPrice}₽", style = MaterialTheme.typography.bodyMedium)
-            Text("Адрес: ${order.address}", style = MaterialTheme.typography.bodySmall)
-        }
-    }
-}

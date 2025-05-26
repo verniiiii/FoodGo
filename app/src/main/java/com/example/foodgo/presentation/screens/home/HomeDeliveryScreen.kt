@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.data.remote.dto.CategoryDTO
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.components.filter.FilterDialog
 import com.example.foodgo.presentation.components.home.CategoriesSection
 import com.example.foodgo.presentation.components.home.ErrorMessage

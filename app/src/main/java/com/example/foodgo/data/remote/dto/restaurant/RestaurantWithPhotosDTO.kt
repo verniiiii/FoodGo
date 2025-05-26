@@ -1,4 +1,4 @@
-package com.example.foodgo.data.remote.dto
+package com.example.foodgo.data.remote.dto.restaurant
 
 data class RestaurantWithPhotosDTO(
     val id: Int,

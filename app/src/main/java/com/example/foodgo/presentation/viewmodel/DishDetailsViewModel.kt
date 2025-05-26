@@ -1,9 +1,6 @@
 package com.example.foodgo.presentation.viewmodel
 
 import android.annotation.SuppressLint
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
@@ -11,7 +8,8 @@ import com.example.foodgo.data.remote.api.DishApi
 import com.example.foodgo.data.remote.api.FavoriteApi
 import com.example.foodgo.data.remote.api.FavoriteRequestDTO
 import com.example.foodgo.data.remote.api.RestaurantApi
-import com.example.foodgo.presentation.screens.home.FullDishDTO
+import com.example.foodgo.data.remote.dto.dish.FullDishDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantInfoDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -171,8 +169,4 @@ class DishDetailsViewModel @Inject constructor(
 
 
 
-data class RestaurantInfoDTO(
-    val name: String,
-    val deliveryTimeMinutes: Int
-)
 

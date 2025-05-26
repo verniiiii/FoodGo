@@ -1,25 +1,19 @@
 package com.example.foodgo.presentation.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.api.DishApi
 import com.example.foodgo.data.remote.api.OrderApi
 import com.example.foodgo.data.remote.api.UserApi
+import com.example.foodgo.data.remote.dto.order.CartDishDTO
 import com.example.foodgo.data.remote.dto.order.OrderDTO
 import com.example.foodgo.data.remote.dto.order.OrderItemDTO
-import com.example.foodgo.data.remote.dto.order.OrderRequestDTO
-import com.example.foodgo.presentation.screens.CartDishDTO
-import com.example.foodgo.presentation.screens.home.FullDishDTO
+import com.example.foodgo.data.remote.dto.order.OrderWithItemsDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -122,7 +116,7 @@ class BasketViewModel @Inject constructor(
                     orderDate = getCurrentDate()
                 )
 
-                val orderRequest = OrderRequestDTO(order = orderDTO, items = orderItems)
+                val orderRequest = OrderWithItemsDTO(order = orderDTO, items = orderItems)
 
                 val response = orderApi.addOrder(orderRequest)
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.foodgo.R
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.navigation.Destination
 import com.example.foodgo.ui.theme.ProfGrey
 import com.google.gson.Gson

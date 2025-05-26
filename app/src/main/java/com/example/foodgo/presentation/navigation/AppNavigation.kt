@@ -2,17 +2,15 @@ package com.example.foodgo.presentation.navigation
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.foodgo.PreferencesManager
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
+import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.screens.*
 import com.example.foodgo.presentation.screens.auth.*
 import com.example.foodgo.presentation.screens.home.*
 import com.example.foodgo.presentation.screens.profile.*
-import com.example.foodgo.presentation.viewmodel.OrderDetailsViewModel
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -106,7 +104,12 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
                 onDishDetail = {dishId ->
                     navController.navigate("dishDetails/${dishId}")
                 },
-                onBack = {navController.popBackStack()})
+                onBack = {
+                    navController.navigate(Destination.HOME_DELIVERY) {
+                        popUpTo(Destination.HOME_DELIVERY) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable(
@@ -114,7 +117,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             arguments = listOf(navArgument("dishId") { type = NavType.IntType })
         ) { backStackEntry ->
             val dishId = backStackEntry.arguments?.getInt("dishId") ?: 1
-            DishDetailsScreen(dishId)
+            DishDetailsScreen(dishId, onBack = { navController.popBackStack() })
         }
 
         composable(Destination.CART) {
@@ -149,7 +152,13 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.PERSONAL_INFO) {
-            PersonalInfoScreen()
+            PersonalInfoScreen(
+                onBack = {
+                    navController.navigate(Destination.PROFILE) {
+                        popUpTo(Destination.PROFILE) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable(Destination.ADDRESSES) {
@@ -170,7 +179,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         composable(Destination.FAVORITES) {
             FavoritesScreen(onDish = {dishId ->
                 navController.navigate("dishDetails/$dishId")
-            })
+            }, onBack = { navController.popBackStack() })
         }
 
         composable(Destination.FAQS) {
@@ -184,7 +193,8 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
                 preferencesManager = preferencesManager,
                 onOrderClick = { order ->
                     navController.navigate("orderDetails/${order.order.orderId}")
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -194,10 +204,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         ) { backStackEntry ->
             val orderId = backStackEntry.arguments?.getLong("orderId") ?: -1L
 
-            // Или, если ViewModel без Hilt:
-            // val viewModel = remember { OrderDetailsViewModel(orderId = orderId, ...) }
-
-            OrderDetailsScreen(orderId)
+            OrderDetailsScreen(orderId, onBack = { navController.popBackStack() })
         }
 
     }
