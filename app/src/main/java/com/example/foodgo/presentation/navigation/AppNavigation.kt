@@ -116,8 +116,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.CART) {
-            CartScreen(preferencesManager = preferencesManager)
-            TODO("убрать preferencesManager из параметров")
+            CartScreen()
         }
 
         // ----------------------

@@ -51,7 +51,6 @@ import javax.inject.Inject
 fun CartScreen(
     viewModel: BasketViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
-    preferencesManager: PreferencesManager
 ) {
     val name = remember { mutableStateOf("") }
     val isEditing = remember { mutableStateOf(false) }
@@ -69,7 +68,7 @@ fun CartScreen(
     }
 
     LaunchedEffect(Unit) {
-        cartItems.value = preferencesManager.getCartItems()
+        cartItems.value = viewModel.getCartItems()
         dishes.value = viewModel.getCartDishes()
     }
 
@@ -158,13 +157,13 @@ fun CartScreen(
                                 } else {
                                     updatedCart.remove(key)
                                 }
-                                preferencesManager.saveCartItems(updatedCart)
+                                viewModel.saveCartItems(updatedCart)
                                 cartItems.value = updatedCart
                             },
                             onRemove = {
                                 val updatedCart = cartItems.value.toMutableMap()
                                 updatedCart.remove(key)
-                                preferencesManager.saveCartItems(updatedCart)
+                                viewModel.saveCartItems(updatedCart)
                                 cartItems.value = updatedCart
                             }
                         )

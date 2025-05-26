@@ -80,6 +80,13 @@ class BasketViewModel @Inject constructor(
 
         return dishes
     }
+    fun getCartItems(): Map<String, Int>{
+        return preferencesManager.getCartItems()
+    }
+    fun saveCartItems(updatedCart: MutableMap<String, Int>){
+        preferencesManager.saveCartItems(updatedCart)
+    }
+
 
     fun createOrder(dishes: List<CartDishDTO>, quantities: Map<String, Int>, address: String) {
         viewModelScope.launch {

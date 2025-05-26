@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.foodgo.R
 import com.example.foodgo.presentation.viewmodel.auth.LoginViewModel
 import com.example.foodgo.ui.theme.* // Импортируем цвета из темы

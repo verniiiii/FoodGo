@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -22,11 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.dto.CategoryDTO
 import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
-import com.example.foodgo.presentation.components.FilterDialog
+import com.example.foodgo.presentation.components.filter.FilterDialog
 import com.example.foodgo.presentation.components.home.CategoriesSection
 import com.example.foodgo.presentation.components.home.ErrorMessage
 import com.example.foodgo.presentation.components.home.GreetingSection

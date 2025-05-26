@@ -29,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.viewmodel.BasketViewModel
