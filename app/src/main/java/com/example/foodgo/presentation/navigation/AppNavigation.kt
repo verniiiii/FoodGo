@@ -2,6 +2,7 @@ package com.example.foodgo.presentation.navigation
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
@@ -11,6 +12,7 @@ import com.example.foodgo.presentation.screens.*
 import com.example.foodgo.presentation.screens.auth.*
 import com.example.foodgo.presentation.screens.home.*
 import com.example.foodgo.presentation.screens.profile.*
+import com.example.foodgo.presentation.viewmodel.OrderDetailsViewModel
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -135,6 +137,9 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
                         popUpTo(0)
                     }
                 },
+                onNavigateToOrders = {
+                    navController.navigate(Destination.ORDERS)
+                },
                 onBack = {
                     navController.navigate(Destination.HOME_DELIVERY) {
                         popUpTo(Destination.HOME_DELIVERY) { inclusive = true }
@@ -173,5 +178,27 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable(Destination.ORDERS) {
+            OrdersScreen(
+                preferencesManager = preferencesManager,
+                onOrderClick = { order ->
+                    navController.navigate("orderDetails/${order.order.orderId}")
+                }
+            )
+        }
+
+        composable(
+            route = "${Destination.ORDER_DETAILS}/{orderId}",
+            arguments = listOf(navArgument("orderId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getLong("orderId") ?: -1L
+
+            // Или, если ViewModel без Hilt:
+            // val viewModel = remember { OrderDetailsViewModel(orderId = orderId, ...) }
+
+            OrderDetailsScreen(orderId)
+        }
+
     }
 }

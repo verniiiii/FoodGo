@@ -50,6 +50,7 @@ fun ProfileScreen(
     onNavigateToFavorites: () -> Unit = {},
     onNavigateToFaqs: () -> Unit = {},
     onLogout: () -> Unit = {},
+    onNavigateToOrders: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
     val profileState = viewModel.profileState.collectAsState()
@@ -181,6 +182,13 @@ fun ProfileScreen(
                             title = "Избранное",
                             backgroundColor = FavProfile,
                             onClick = onNavigateToFavorites
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        ProfileMenuItem(
+                            icon = R.drawable.delivery,
+                            title = "Мои заказы",
+                            backgroundColor = Notifications,
+                            onClick = onNavigateToOrders
                         )
                     }
                 }

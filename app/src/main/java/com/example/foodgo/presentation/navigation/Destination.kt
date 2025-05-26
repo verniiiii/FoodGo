@@ -15,4 +15,6 @@ object Destination {
     const val FAVORITES = "favorites"
     const val FAQS = "faqs"
     const val ADD_ADDRESS = "add_address"
+    const val ORDERS = "orders"
+    const val ORDER_DETAILS = "orderDetails"
 }

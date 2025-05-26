@@ -7,3 +7,9 @@ data class OrderDTO(
     val address: String,
     val orderDate: String
 )
+
+
+data class OrderWithItemsDTO(
+    val order: OrderDTO,
+    val items: List<OrderItemDTO>
+)
