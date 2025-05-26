@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.client.ApiClient.userApi
-import com.example.foodgo.data.remote.dto.ChangePasswordRequest
-import com.example.foodgo.data.remote.dto.UserUpdateDTO
+import com.example.foodgo.data.remote.dto.user.ChangePasswordRequest
+import com.example.foodgo.data.remote.dto.user.UserUpdateDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

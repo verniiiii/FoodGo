@@ -1,4 +1,4 @@
-package com.example.foodgo.domain.model
+package com.example.foodgo.data.remote.dto.user
 
 data class LoginRequest(
     val login: String,

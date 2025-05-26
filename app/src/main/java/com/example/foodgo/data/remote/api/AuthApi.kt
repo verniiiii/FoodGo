@@ -1,9 +1,8 @@
 package com.example.foodgo.data.remote.api
 
-import com.example.foodgo.domain.model.AuthResponse
-import com.example.foodgo.domain.model.LoginRequest
-import com.example.foodgo.domain.model.RegisterRequest
-import retrofit2.Call
+import com.example.foodgo.data.remote.dto.user.AuthResponse
+import com.example.foodgo.data.remote.dto.user.LoginRequest
+import com.example.foodgo.data.remote.dto.user.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -15,4 +14,3 @@ interface AuthApi {
     @POST("register")
     suspend fun register(@Body request: RegisterRequest): Response<AuthResponse>
 }
-

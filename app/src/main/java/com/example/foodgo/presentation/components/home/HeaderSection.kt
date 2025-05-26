@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.foodgo.R
-import com.example.foodgo.data.remote.dto.UserAddressDTO
+import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.viewmodel.BasketViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.Orange
@@ -40,7 +40,8 @@ import com.example.foodgo.ui.theme.White
 
 @Composable
 fun HeaderSection(
-    navController: NavHostController,
+    onProfile: () -> Unit,
+    onCart: () -> Unit,
     selectedAddress: MutableState<String>,
     expanded: MutableState<Boolean>,
     addresses: List<UserAddressDTO>,
@@ -56,7 +57,7 @@ fun HeaderSection(
             modifier = Modifier
                 .size(45.dp)
                 .background(GreyLight, shape = CircleShape)
-                .clickable { navController.navigate("profile") }
+                .clickable { onProfile() }
         ) {
             Icon(
                 painter = painterResource(R.drawable.menu_icon),
@@ -119,7 +120,7 @@ fun HeaderSection(
             modifier = Modifier
                 .size(45.dp)
                 .background(Color(0xFF181C2E), shape = CircleShape)
-                .clickable { navController.navigate("cart") }
+                .clickable { onCart() }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.basket_icon),
@@ -127,11 +128,8 @@ fun HeaderSection(
                 contentDescription = "Cart",
                 modifier = Modifier.size(24.dp)
             )
-            println("зашли")
-            println(notificationCount.value)
 
             if (notificationCount.value > 0) {
-                println("тут")
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier

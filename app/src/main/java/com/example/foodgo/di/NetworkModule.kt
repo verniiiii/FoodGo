@@ -18,7 +18,7 @@ object NetworkModule {
 
     @Provides
     fun provideAuthApi(): AuthApi{
-        return ApiClient.authApi // Испольуем клиент для предоставления экземпляра AuthApi
+        return ApiClient.authApi
     }
 
     @Provides

@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.foodgo.data.remote.dto.UserAddressDTO
+import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 
 @Composable

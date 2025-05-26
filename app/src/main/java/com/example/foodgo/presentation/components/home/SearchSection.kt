@@ -47,7 +47,7 @@ import com.example.foodgo.ui.theme.White
 fun SearchSection(
     searchQuery: MutableState<String>,
     isSearchActive: MutableState<Boolean>,
-    searchHistory: SnapshotStateList<String>,
+    searchHistory: List<String>,
     interactionSource: MutableInteractionSource,
     focusManager: FocusManager,
     keyboardActionHandler: () -> Unit,

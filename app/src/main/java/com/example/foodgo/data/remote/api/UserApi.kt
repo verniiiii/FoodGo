@@ -1,10 +1,9 @@
 package com.example.foodgo.data.remote.api
 
-import com.example.foodgo.data.remote.dto.ChangePasswordRequest
-import com.example.foodgo.data.remote.dto.UserAddressDTO
-import com.example.foodgo.data.remote.dto.UserDTO
-import com.example.foodgo.data.remote.dto.UserUpdateDTO
-import com.example.foodgo.data.remote.dto.UserWithAddressesDTO
+import com.example.foodgo.data.remote.dto.user.ChangePasswordRequest
+import com.example.foodgo.data.remote.dto.user.UserAddressDTO
+import com.example.foodgo.data.remote.dto.user.UserUpdateDTO
+import com.example.foodgo.data.remote.dto.user.UserWithAddressesDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -15,7 +14,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserApi {
-    suspend fun getUserNameByToken(token: String): Response<String?>
 
     @GET("user/info")
     suspend fun getUserByToken(@Header("Authorization") token: String): Response<UserWithAddressesDTO>

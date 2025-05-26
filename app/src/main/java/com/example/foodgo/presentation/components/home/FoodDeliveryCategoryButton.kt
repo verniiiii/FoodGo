@@ -29,7 +29,6 @@ import com.example.foodgo.ui.theme.ProfGrey
 import com.example.foodgo.ui.theme.White
 import com.example.foodgo.ui.theme.Yeylow
 
-
 @Composable
 fun FoodDeliveryCategoryButton(
     text: String,

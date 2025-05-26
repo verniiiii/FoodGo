@@ -1,27 +1,16 @@
 package com.example.foodgo.presentation.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
-import com.example.foodgo.presentation.screens.CartScreen
-import com.example.foodgo.presentation.screens.SplashScreen
-import com.example.foodgo.presentation.screens.auth.LoginScreen
-import com.example.foodgo.presentation.screens.auth.SignUpScreen
-import com.example.foodgo.presentation.screens.home.DishDetailsScreen
-import com.example.foodgo.presentation.screens.home.HomeDeliveryScreen
-import com.example.foodgo.presentation.screens.home.RestaurantDetailsScreen
-import com.example.foodgo.presentation.screens.OnboardingScreen
-import com.example.foodgo.presentation.screens.profile.AddAddressScreen
-import com.example.foodgo.presentation.screens.profile.FAQScreen
-import com.example.foodgo.presentation.screens.profile.FavoritesScreen
-import com.example.foodgo.presentation.screens.profile.PersonalInfoScreen
-import com.example.foodgo.presentation.screens.profile.ProfileScreen
-import com.example.foodgo.presentation.screens.profile.UserAddressesScreen
+import com.example.foodgo.presentation.screens.*
+import com.example.foodgo.presentation.screens.auth.*
+import com.example.foodgo.presentation.screens.home.*
+import com.example.foodgo.presentation.screens.profile.*
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -33,6 +22,10 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         navController = navController,
         startDestination = Destination.SPLASH
     ) {
+
+        // ----------------------
+        // Splash & Onboarding
+        // ----------------------
         composable(Destination.SPLASH) {
             SplashScreen(
                 onSplashComplete = {
@@ -60,6 +53,9 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             )
         }
 
+        // ----------------------
+        // Auth Screens
+        // ----------------------
         composable(Destination.LOGIN) {
             LoginScreen(
                 onLoginSuccess = {
@@ -82,15 +78,23 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             )
         }
 
+        // ----------------------
+        // Home + Restaurant
+        // ----------------------
         composable(Destination.HOME_DELIVERY) {
-            HomeDeliveryScreen(navController, preferencesManager = preferencesManager)
+            HomeDeliveryScreen(
+                onProfile = {navController.navigate(Destination.PROFILE)},
+                onCart = {navController.navigate(Destination.CART)},
+                onRestaurant = {restaurant ->
+                    val restaurantJson = Uri.encode(Gson().toJson(restaurant))
+                    navController.navigate("${Destination.RESTAURANT_DETAILS}/$restaurantJson")
+                }
+            )
         }
 
         composable(
             route = "${Destination.RESTAURANT_DETAILS}/{restaurantJson}",
-            arguments = listOf(
-                navArgument("restaurantJson") { type = NavType.StringType }
-            )
+            arguments = listOf(navArgument("restaurantJson") { type = NavType.StringType })
         ) { backStackEntry ->
             val encodedJson = backStackEntry.arguments?.getString("restaurantJson") ?: ""
             val decodedJson = URLDecoder.decode(encodedJson, "UTF-8")
@@ -100,10 +104,8 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
 
         composable(
             route = "${Destination.DISH_DETAILS}/{dishId}",
-            arguments = listOf(
-                navArgument("dishId") {type = NavType.IntType}
-            )
-        ) {backStackEntry ->
+            arguments = listOf(navArgument("dishId") { type = NavType.IntType })
+        ) { backStackEntry ->
             val dishId = backStackEntry.arguments?.getInt("dishId") ?: 1
             DishDetailsScreen(dishId)
         }
@@ -112,6 +114,9 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             CartScreen(preferencesManager = preferencesManager)
         }
 
+        // ----------------------
+        // Profile
+        // ----------------------
         composable(Destination.PROFILE) {
             ProfileScreen(
                 onNavigateToPersonalInfo = { navController.navigate(Destination.PERSONAL_INFO) },
@@ -128,15 +133,23 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             )
         }
 
-
         composable(Destination.PERSONAL_INFO) {
-            PersonalInfoScreen(onChangePasswordClick = {})
+            PersonalInfoScreen(
+                onChangePasswordClick = {}
+            )
         }
 
         composable(Destination.ADDRESSES) {
             UserAddressesScreen(
-                onAddAddressClick = { navController.navigate("add_address") }
-                , onBackClick = {})
+                onAddAddressClick = { navController.navigate(Destination.ADD_ADDRESS) },
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(Destination.ADD_ADDRESS) {
+            AddAddressScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(Destination.FAVORITES) {
@@ -144,13 +157,9 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.FAQS) {
-            FAQScreen (onBackClick = {})
+            FAQScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
-
-        composable("add_address") {
-            AddAddressScreen(onBack = { navController.popBackStack() })
-        }
-
-
     }
 }

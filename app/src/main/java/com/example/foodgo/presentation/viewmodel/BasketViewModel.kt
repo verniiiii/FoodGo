@@ -7,9 +7,9 @@ import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.api.DishApi
 import com.example.foodgo.data.remote.api.OrderApi
 import com.example.foodgo.data.remote.api.UserApi
-import com.example.foodgo.data.remote.dto.OrderDTO
-import com.example.foodgo.data.remote.dto.OrderItemDTO
-import com.example.foodgo.data.remote.dto.OrderRequestDTO
+import com.example.foodgo.data.remote.dto.order.OrderDTO
+import com.example.foodgo.data.remote.dto.order.OrderItemDTO
+import com.example.foodgo.data.remote.dto.order.OrderRequestDTO
 import com.example.foodgo.presentation.screens.CartDishDTO
 import com.example.foodgo.presentation.screens.home.FullDishDTO
 import dagger.hilt.android.lifecycle.HiltViewModel

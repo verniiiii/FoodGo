@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.api.RestaurantApi
 import com.example.foodgo.data.remote.dto.CategoryDTO
 import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val restaurantApi: RestaurantApi
+    private val restaurantApi: RestaurantApi,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private val _restaurants = MutableStateFlow<List<RestaurantWithPhotosDTO>>(emptyList())
@@ -50,6 +52,38 @@ class HomeViewModel @Inject constructor(
         fetchRestaurants()
         fetchCategories()
     }
+
+    // Search history
+    private val _searchHistory = MutableStateFlow<List<String>>(emptyList())
+    val searchHistory: StateFlow<List<String>> = _searchHistory
+
+
+    fun loadSearchHistory() {
+        viewModelScope.launch {
+            _searchHistory.value = preferencesManager.getSearchHistory()
+        }
+    }
+
+    fun saveSearchQuery(query: String) {
+        viewModelScope.launch {
+            val current = _searchHistory.value.toMutableList()
+            current.remove(query)
+            current.add(0, query)
+            _searchHistory.value = current.take(10)
+            preferencesManager.saveSearchHistory(_searchHistory.value)
+        }
+    }
+
+    private val _cartItemCount = MutableStateFlow(0)
+    val cartItemCount: StateFlow<Int> = _cartItemCount
+
+    fun loadCartItemCount() {
+        viewModelScope.launch {
+            val cartMap = preferencesManager.getCartItems()
+            _cartItemCount.value = cartMap.size
+        }
+    }
+
 
     private fun fetchRestaurants() {
         viewModelScope.launch {

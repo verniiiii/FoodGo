@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class PreferencesManager(context: Context) {
+
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("FoodGoPrefs", Context.MODE_PRIVATE)
 
@@ -23,36 +24,30 @@ class PreferencesManager(context: Context) {
         private const val SEARCH_HISTORY = "search_history"
         private const val SEARCH_HISTORY_MAX_SIZE = 10
         private const val CART_ITEMS = "cart_items"
-
     }
 
-    fun isOnboardingCompleted(): Boolean {
-        return sharedPreferences.getBoolean(ONBOARDING_COMPLETED, false)
-    }
+    // --- Onboarding ---
+    fun isOnboardingCompleted(): Boolean =
+        sharedPreferences.getBoolean(ONBOARDING_COMPLETED, false)
 
     fun setOnboardingCompleted(isCompleted: Boolean) {
         sharedPreferences.edit { putBoolean(ONBOARDING_COMPLETED, isCompleted) }
     }
 
-    fun isUserLoggedIn(): Boolean {
-        return sharedPreferences.getBoolean(IS_USER_LOGGED_IN, false)
-    }
-
+    // --- Authentication ---
     fun setUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreferences.edit { putBoolean(IS_USER_LOGGED_IN, isLoggedIn) }
     }
 
-    fun isRememberMeEnabled(): Boolean {
-        return sharedPreferences.getBoolean(REMEMBER_ME, false)
-    }
+    fun isRememberMeEnabled(): Boolean =
+        sharedPreferences.getBoolean(REMEMBER_ME, false)
 
     fun setRememberMeEnabled(isEnabled: Boolean) {
         sharedPreferences.edit { putBoolean(REMEMBER_ME, isEnabled) }
     }
 
-    fun getUserToken(): String? {
-        return sharedPreferences.getString(USER_TOKEN, null)
-    }
+    fun getUserToken(): String? =
+        sharedPreferences.getString(USER_TOKEN, null)
 
     fun setUserToken(token: String) {
         sharedPreferences.edit { putString(USER_TOKEN, token) }
@@ -69,13 +64,8 @@ class PreferencesManager(context: Context) {
         }
     }
 
-
-    fun saveUserData(
-        id: Int,
-        username: String?,
-        login: String?,
-        description: String?,
-    ) {
+    // --- User Data ---
+    fun saveUserData(id: Int, username: String?, login: String?, description: String?) {
         sharedPreferences.edit {
             putInt(USER_ID, id)
             putString(USERNAME, username)
@@ -85,13 +75,12 @@ class PreferencesManager(context: Context) {
     }
 
     fun getUsername(): String? = sharedPreferences.getString(USERNAME, null)
-    fun getUserId(): Int? = sharedPreferences.getInt(USER_ID, 1)
+    fun getUserId(): Int = sharedPreferences.getInt(USER_ID, 1)
     fun getLogin(): String? = sharedPreferences.getString(LOGIN, null)
     fun getDescription(): String? = sharedPreferences.getString(DESCRIPTION, null)
     fun getPhone(): String? = sharedPreferences.getString(PHONE, null)
 
-
-    // Сохраняет историю поиска (максимум SEARCH_HISTORY_MAX_SIZE записей)
+    // --- Search History ---
     fun saveSearchHistory(history: List<String>) {
         val limitedHistory = history.take(SEARCH_HISTORY_MAX_SIZE)
         sharedPreferences.edit {
@@ -99,39 +88,14 @@ class PreferencesManager(context: Context) {
         }
     }
 
-    // Получает историю поиска
-    fun getSearchHistory(): List<String> {
-        return sharedPreferences.getStringSet(SEARCH_HISTORY, emptySet())?.toList() ?: emptyList()
-    }
+    fun getSearchHistory(): List<String> =
+        sharedPreferences.getStringSet(SEARCH_HISTORY, emptySet())?.toList() ?: emptyList()
 
-    // Добавляет новый запрос в историю поиска
-    fun addToSearchHistory(query: String) {
-        if (query.isBlank()) return
-
-        val currentHistory = getSearchHistory().toMutableList()
-
-        // Удаляем дубликаты
-        currentHistory.removeAll { it.equals(query, ignoreCase = true) }
-
-        // Добавляем в начало
-        currentHistory.add(0, query)
-
-        // Сохраняем только последние SEARCH_HISTORY_MAX_SIZE запросов
-        saveSearchHistory(currentHistory.take(SEARCH_HISTORY_MAX_SIZE))
-    }
-
-    // Очищает историю поиска
-    fun clearSearchHistory() {
-        sharedPreferences.edit {
-            remove(SEARCH_HISTORY)
-        }
-    }
-
+    // --- Cart ---
     fun saveCartItems(cart: Map<String, Int>) {
         val json = Gson().toJson(cart)
         sharedPreferences.edit { putString(CART_ITEMS, json) }
     }
-
 
     fun getCartItems(): Map<String, Int> {
         val json = sharedPreferences.getString(CART_ITEMS, null)
@@ -143,16 +107,12 @@ class PreferencesManager(context: Context) {
         }
     }
 
-
     fun addToCart(dishId: Int, size: String?, quantity: Int) {
         val currentCart = getCartItems().toMutableMap()
         val key = if (size != null) "$dishId|$size" else "$dishId"
         currentCart[key] = (currentCart[key] ?: 0) + quantity
         saveCartItems(currentCart)
     }
-
-
-
 
     fun clearCart() {
         sharedPreferences.edit { remove(CART_ITEMS) }
@@ -162,5 +122,4 @@ class PreferencesManager(context: Context) {
         val key = if (size != null) "$dishId|$size" else "$dishId"
         return getCartItems().containsKey(key)
     }
-
 }

@@ -30,7 +30,7 @@ import com.google.gson.Gson
 @Composable
 fun RestaurantsSection(
     filteredRestaurants: List<RestaurantWithPhotosDTO>,
-    navController: NavHostController
+    onRestaurant: (rest: RestaurantWithPhotosDTO) -> Unit
 ) {
     Text(
         text = stringResource(R.string.restaurant_section),
@@ -75,8 +75,7 @@ fun RestaurantsSection(
                 deliveryFee = "Бесплатно",
                 restaurantImageUrl = if(restaurant.photos.isNotEmpty()) restaurant.photos[0] else "https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw",
                 onClick = {
-                    val restaurantJson = Uri.encode(Gson().toJson(restaurant))
-                    navController.navigate("${Destination.RESTAURANT_DETAILS}/$restaurantJson")
+                    onRestaurant(restaurant)
                 }
             )
         }

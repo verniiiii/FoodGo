@@ -6,10 +6,8 @@ import com.example.foodgo.data.remote.api.FavoriteApi
 import com.example.foodgo.data.remote.api.OrderApi
 import com.example.foodgo.data.remote.api.RestaurantApi
 import com.example.foodgo.data.remote.api.UserApi
-import com.example.foodgo.data.remote.dto.DishDTO
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.io.path.OnErrorResult
 
 object ApiClient {
     private const val BASE_URL = "http://10.0.2.2:8080/"

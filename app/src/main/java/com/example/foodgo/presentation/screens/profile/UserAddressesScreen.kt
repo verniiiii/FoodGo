@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
-import com.example.foodgo.data.remote.dto.UserAddressDTO
+import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3

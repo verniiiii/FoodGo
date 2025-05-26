@@ -37,8 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.foodgo.PreferencesManager
 import com.example.foodgo.R
-import com.example.foodgo.di.PreferencesEntryPoint
-import com.example.foodgo.di.hiltEntryPoint
+
 import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.LiteOrange

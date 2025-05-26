@@ -1,8 +1,5 @@
 package com.example.foodgo.data.remote.api
 
-import com.example.foodgo.data.remote.dto.CategoryDTO
-import com.example.foodgo.data.remote.dto.DishDTO
-import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.screens.CartDishDTO
 import com.example.foodgo.presentation.screens.home.FullDishDTO
 import retrofit2.Response

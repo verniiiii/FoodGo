@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.foodgo.PreferencesManager
 import com.example.foodgo.data.remote.dto.CategoryDTO
+import com.example.foodgo.data.remote.dto.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.components.FilterDialog
 import com.example.foodgo.presentation.components.home.CategoriesSection
 import com.example.foodgo.presentation.components.home.ErrorMessage
@@ -40,29 +41,32 @@ import com.example.foodgo.ui.theme.White
 
 @Composable
 fun HomeDeliveryScreen(
-    navController: NavHostController,
+    onProfile: () -> Unit,
+    onCart: () -> Unit,
+    onRestaurant: (rest: RestaurantWithPhotosDTO) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
-    basketViewModel: BasketViewModel = hiltViewModel(),
-    preferencesManager: PreferencesManager
+    basketViewModel: BasketViewModel = hiltViewModel()
 ) {
+
     val selectedCategory = remember { mutableStateOf("Всё") }
     val restaurantList = homeViewModel.restaurants.collectAsState()
     val isLoading = homeViewModel.isLoading.collectAsState()
     val searchQuery = remember { mutableStateOf("") }
     val isSearchActive = remember { mutableStateOf(false) }
-    val searchHistory = remember { mutableStateListOf<String>() }
+    val searchHistory by homeViewModel.searchHistory.collectAsState()
+
+
+
+    val cartItemCount by homeViewModel.cartItemCount.collectAsState()
 
     LaunchedEffect(Unit) {
-        val cartMap = preferencesManager.getCartItems()
-        basketViewModel.updateCartItemCount(cartMap.size)
+        homeViewModel.loadSearchHistory()
+        homeViewModel.loadCartItemCount()
+        basketViewModel.updateCartItemCount(cartItemCount)
     }
 
 
-    LaunchedEffect(Unit) {
-        val history = preferencesManager.getSearchHistory()
-        searchHistory.addAll(history)
-    }
 
     val categoryState = homeViewModel.categories.collectAsState()
     val categories = listOf(
@@ -92,12 +96,11 @@ fun HomeDeliveryScreen(
     val keyboardActionHandler = {
         val query = searchQuery.value.trim()
         if (query.isNotEmpty()) {
-            searchHistory.remove(query)
-            searchHistory.add(0, query)
-            preferencesManager.saveSearchHistory(searchHistory.take(10))
+            homeViewModel.saveSearchQuery(query)
         }
         focusManager.clearFocus()
     }
+
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -128,7 +131,8 @@ fun HomeDeliveryScreen(
         horizontalAlignment = Alignment.Start
     ) {
         HeaderSection(
-            navController = navController,
+            onProfile = onProfile,
+            onCart = onCart,
             selectedAddress = selectedAddress,
             expanded = expanded,
             addresses = addresses.value
@@ -200,7 +204,7 @@ fun HomeDeliveryScreen(
 
         RestaurantsSection(
             filteredRestaurants = filteredRestaurants,
-            navController = navController
+            onRestaurant = onRestaurant
         )
     }
 }

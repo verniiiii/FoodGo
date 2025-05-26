@@ -14,5 +14,5 @@ object Destination {
     const val ADDRESSES = "addresses"
     const val FAVORITES = "favorites"
     const val FAQS = "faqs"
-    const val SETTINGS = "settings"
+    const val ADD_ADDRESS = "add_address"
 }

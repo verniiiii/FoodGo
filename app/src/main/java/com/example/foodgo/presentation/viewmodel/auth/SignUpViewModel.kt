@@ -3,8 +3,8 @@ package com.example.foodgo.presentation.viewmodel.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.data.remote.api.AuthApi
-import com.example.foodgo.domain.model.AuthResponse
-import com.example.foodgo.domain.model.RegisterRequest
+import com.example.foodgo.data.remote.dto.user.AuthResponse
+import com.example.foodgo.data.remote.dto.user.RegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
