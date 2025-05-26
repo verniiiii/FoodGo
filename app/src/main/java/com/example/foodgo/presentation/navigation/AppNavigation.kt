@@ -99,7 +99,12 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
             val encodedJson = backStackEntry.arguments?.getString("restaurantJson") ?: ""
             val decodedJson = URLDecoder.decode(encodedJson, "UTF-8")
             val restaurant = Gson().fromJson(decodedJson, RestaurantWithPhotosDTO::class.java)
-            RestaurantDetailsScreen(navController, restaurant)
+            RestaurantDetailsScreen(
+                restaurant,
+                onDishDetail = {dishId ->
+                    navController.navigate("dishDetails/${dishId}")
+                },
+                onBack = {navController.popBackStack()})
         }
 
         composable(
@@ -112,6 +117,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
 
         composable(Destination.CART) {
             CartScreen(preferencesManager = preferencesManager)
+            TODO("убрать preferencesManager из параметров")
         }
 
         // ----------------------
@@ -134,9 +140,7 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.PERSONAL_INFO) {
-            PersonalInfoScreen(
-                onChangePasswordClick = {}
-            )
+            PersonalInfoScreen()
         }
 
         composable(Destination.ADDRESSES) {
@@ -153,12 +157,14 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
         }
 
         composable(Destination.FAVORITES) {
-            FavoritesScreen(navController)
+            FavoritesScreen(onDish = {dishId ->
+                navController.navigate("dishDetails/$dishId")
+            })
         }
 
         composable(Destination.FAQS) {
             FAQScreen(
-                onBackClick = { navController.popBackStack() }
+                onBack = { navController.popBackStack() }
             )
         }
     }

@@ -44,7 +44,6 @@ import com.example.foodgo.ui.theme.IconGrey3
 @Composable
 fun PersonalInfoScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
-    onChangePasswordClick: () -> Unit
 ) {
     val state = viewModel.profileState.collectAsState()
     val isSaving = viewModel.isSaving.collectAsState()

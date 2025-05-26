@@ -24,7 +24,7 @@ data class FAQItem(val question: String, val answer: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FAQScreen(onBackClick: () -> Unit) {
+fun FAQScreen(onBack: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()

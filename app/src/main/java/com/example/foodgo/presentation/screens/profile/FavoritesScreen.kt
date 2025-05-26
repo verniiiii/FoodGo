@@ -31,7 +31,7 @@ import com.example.foodgo.presentation.viewmodel.FavoriteDishInfo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    navController: NavController,
+    onDish: (dishId: Int) -> Unit,
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val favoritesState = viewModel.favorites.collectAsState()
@@ -83,7 +83,7 @@ fun FavoritesScreen(
                     FavoriteItemCard(
                         dish = dish,
                         onRemoveClick = { viewModel.removeFavorite(dish.dishId) },
-                        onClick = {navController.navigate("dishDetails/${dish.dishId}")}
+                        onClick = {onDish(dish.dishId)}
                     )
                 }
 
