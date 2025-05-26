@@ -260,7 +260,6 @@ fun RestaurantDetailsScreen(
             items(dishesToShow.size) { i ->
                 val dish = dishesToShow[i]
                 DishCard(
-                    id = dish.id,
                     name = dish.name,
                     price = "$${dish.basePrice}", // форматируем цену
                     icon = dish.photoUrl ?: "https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw",

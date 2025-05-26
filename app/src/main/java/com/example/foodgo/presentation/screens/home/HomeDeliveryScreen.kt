@@ -54,13 +54,18 @@ fun HomeDeliveryScreen(
 
 
 
-    val cartItemCount by homeViewModel.cartItemCount.collectAsState()
+    val cartItemCount = homeViewModel.cartItemCount.collectAsState()
 
     LaunchedEffect(Unit) {
         homeViewModel.loadSearchHistory()
         homeViewModel.loadCartItemCount()
-        basketViewModel.updateCartItemCount(cartItemCount)
+        basketViewModel.updateCartItemCount(cartItemCount.value)
+        homeViewModel.cartItemCount.collect { count ->
+            basketViewModel.updateCartItemCount(count)
+        }
     }
+
+    println(cartItemCount.value)
 
 
 
@@ -131,7 +136,7 @@ fun HomeDeliveryScreen(
             onCart = onCart,
             selectedAddress = selectedAddress,
             expanded = expanded,
-            addresses = addresses.value
+            addresses = addresses
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -145,7 +150,6 @@ fun HomeDeliveryScreen(
             isSearchActive = isSearchActive,
             searchHistory = searchHistory,
             interactionSource = interactionSource,
-            focusManager = focusManager,
             keyboardActionHandler = keyboardActionHandler,
             isDialogOpen = isDialogOpen
         )

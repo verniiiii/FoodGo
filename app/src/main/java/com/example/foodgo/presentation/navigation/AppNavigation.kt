@@ -134,6 +134,11 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
                     navController.navigate(Destination.LOGIN) {
                         popUpTo(0)
                     }
+                },
+                onBack = {
+                    navController.navigate(Destination.HOME_DELIVERY) {
+                        popUpTo(Destination.HOME_DELIVERY) { inclusive = true }
+                    }
                 }
             )
         }
@@ -151,7 +156,9 @@ fun AppNavigation(preferencesManager: PreferencesManager) {
 
         composable(Destination.ADD_ADDRESS) {
             AddAddressScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.navigate(Destination.ADDRESSES) {
+                    popUpTo(Destination.ADDRESSES) { inclusive = true }
+                } }
             )
         }
 

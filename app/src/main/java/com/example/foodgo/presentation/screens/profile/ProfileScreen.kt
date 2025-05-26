@@ -49,7 +49,8 @@ fun ProfileScreen(
     onNavigateToCart: () -> Unit = {},
     onNavigateToFavorites: () -> Unit = {},
     onNavigateToFaqs: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     val profileState = viewModel.profileState.collectAsState()
 
@@ -67,7 +68,10 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .size(45.dp)
-                    .background(GreyLight, shape = CircleShape),
+                    .background(GreyLight, shape = CircleShape)
+                    .clickable{
+                        onBack()
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

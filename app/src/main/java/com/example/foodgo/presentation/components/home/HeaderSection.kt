@@ -43,7 +43,7 @@ fun HeaderSection(
     onCart: () -> Unit,
     selectedAddress: MutableState<String>,
     expanded: MutableState<Boolean>,
-    addresses: List<UserAddressDTO>,
+    addresses: androidx.compose.runtime.State<List<UserAddressDTO>>,
     basketViewModel: BasketViewModel = hiltViewModel()
 ) {
     var notificationCount = basketViewModel.cartItemCount.collectAsState()
@@ -99,7 +99,7 @@ fun HeaderSection(
                         expanded = expanded.value,
                         onDismissRequest = { expanded.value = false }
                     ) {
-                        addresses.forEach { addressDTO ->
+                        addresses.value.forEach { addressDTO ->
                             DropdownMenuItem(
                                 text = { Text(addressDTO.addressLine) },
                                 onClick = {

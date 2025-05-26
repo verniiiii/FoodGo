@@ -36,7 +36,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.foodgo.R
+import com.example.foodgo.presentation.navigation.Destination
 import com.example.foodgo.ui.theme.GreyLight
 import com.example.foodgo.ui.theme.IconGrey3
 
@@ -72,7 +74,10 @@ fun PersonalInfoScreen(
             Box(
                 modifier = Modifier
                     .size(45.dp)
-                    .background(GreyLight, shape = CircleShape),
+                    .background(GreyLight, shape = CircleShape)
+                    .clickable{
+
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

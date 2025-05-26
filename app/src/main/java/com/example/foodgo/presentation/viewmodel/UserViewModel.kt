@@ -121,7 +121,7 @@ class UserViewModel @Inject constructor(
                 val response = userApi.deleteUserAddress("Bearer $token", address.id ?: return@launch)
                 if (response.isSuccessful) {
                     // Обновляем список адресов после удаления
-                    loadUserData()
+                    loadUserAddresses()
                 } else {
                     // Логируем или показываем ошибку
                 }
@@ -137,7 +137,9 @@ class UserViewModel @Inject constructor(
             try {
                 val response = userApi.addUserAddress("Bearer $token", address)
                 if (response.isSuccessful) {
-                    loadUserData()
+                    loadUserAddresses()
+                    _userAddresses.value = _userAddresses.value + address
+
                 } else {
                     // Ошибка
                 }

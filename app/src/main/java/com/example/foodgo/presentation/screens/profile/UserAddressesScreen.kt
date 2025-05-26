@@ -110,9 +110,9 @@ fun AddressItem(address: UserAddressDTO, onDelete: (UserAddressDTO) -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = address.addressLine)
+            Text(text = address.addressLine, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(2.dp))
-            Text(text = address.city, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(text = address.city, fontSize = 14.sp, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             address.comment?.let {
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(text = it, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -120,6 +120,7 @@ fun AddressItem(address: UserAddressDTO, onDelete: (UserAddressDTO) -> Unit) {
         }
         IconButton(onClick = { onDelete(address) }) {
             Icon(
+                modifier = Modifier.size(16.dp),
                 painter = painterResource(id = R.drawable.krest), // Добавь иконку удаления в ресурсы
                 contentDescription = "Удалить адрес",
                 tint = Color.Red
