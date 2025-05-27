@@ -15,17 +15,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.R
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
 
 @Composable
 fun ScreenHeader(
@@ -36,7 +35,7 @@ fun ScreenHeader(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.onPrimary)
             .padding(top = 50.dp, bottom = 29.dp, start = 24.dp, end = 24.dp)
     ) {
         Row(
@@ -46,14 +45,14 @@ fun ScreenHeader(
             Box(
                 modifier = Modifier
                     .size(45.dp)
-                    .background(GreyLight, shape = CircleShape)
+                    .background(MaterialTheme.colorScheme.background, shape = CircleShape)
                     .clickable { onBackClick() },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
-                    tint = IconGrey3,
+                    contentDescription = stringResource(R.string.back),
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -61,7 +60,7 @@ fun ScreenHeader(
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = title,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 17.sp,
             )
         }

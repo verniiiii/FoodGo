@@ -1,13 +1,9 @@
 package com.example.foodgo.presentation.screens.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,12 +18,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,33 +28,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.foodgo.R
-
-import androidx.compose.ui.graphics.Color // Убедитесь, что используете правильный импорт
-import androidx.compose.ui.layout.ContentScale
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.components.restaurants.CategoryButton
 import com.example.foodgo.presentation.components.restaurants.DishCard
-import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel
 import com.example.foodgo.presentation.viewmodel.restaurants.RestaurantDetailsViewModel
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
-import com.example.foodgo.ui.theme.LiteOrange
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-
 
 @Composable
 fun RestaurantDetailsScreen(
@@ -70,22 +51,18 @@ fun RestaurantDetailsScreen(
     onBack: () -> Unit,
     viewModel: RestaurantDetailsViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.loadRestaurantData(restaurant)
-    }
-
     val pagerState = rememberPagerState()
     val uiState = viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.value.selectedCategory) {
-        println("Selected category changed to: ${uiState.value.selectedCategory}")
+    LaunchedEffect(Unit) {
+        viewModel.loadRestaurantData(restaurant)
     }
-
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(321.dp)
+            .background(MaterialTheme.colorScheme.background)
             .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
     ) {
         HorizontalPager(
@@ -95,7 +72,7 @@ fun RestaurantDetailsScreen(
         ) { page ->
             AsyncImage(
                 model = uiState.value.imageUrls[page],
-                contentDescription = "Restaurant Image",
+                contentDescription = stringResource(R.string.restaurant_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -115,7 +92,7 @@ fun RestaurantDetailsScreen(
                             .padding(horizontal = 7.dp)
                             .size(10.dp)
                             .clip(CircleShape)
-                            .background(if (index == pagerState.currentPage) White else PlaceholderGrey)
+                            .background(if (index == pagerState.currentPage) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface)
                     )
                 }
             }
@@ -127,12 +104,12 @@ fun RestaurantDetailsScreen(
                 .align(Alignment.TopStart)
                 .padding(start = 24.dp, top = 50.dp)
                 .size(45.dp)
-                .background(White, shape = CircleShape)
+                .background(MaterialTheme.colorScheme.onPrimary, shape = CircleShape)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = "Back",
-                tint = IconGrey3,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -141,7 +118,11 @@ fun RestaurantDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 321.dp, start = 24.dp, end = 24.dp)
+
+            .padding(top = 321.dp)
+            .background(MaterialTheme.colorScheme.onPrimary)
+            .padding(start = 24.dp, end = 24.dp)
+
     ) {
         Spacer(modifier = Modifier.height(25.dp))
 
@@ -152,44 +133,44 @@ fun RestaurantDetailsScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.star1),
-                    contentDescription = "Rating",
+                    contentDescription = stringResource(R.string.rating),
                     modifier = Modifier.size(20.dp),
-                    tint = Orange
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = restaurant.rating.toString(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = IconGrey3
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.delivery),
-                    contentDescription = "delivery",
+                    contentDescription = stringResource(R.string.rating),
                     modifier = Modifier.size(20.dp),
-                    tint = Orange
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(9.dp))
                 Text(
-                    text = "Бесплатно",
+                    text = stringResource(R.string.free),
                     fontSize = 14.sp,
-                    color = IconGrey3
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "delivery time",
+                    contentDescription = stringResource(R.string.time_delivery),
                     modifier = Modifier.size(20.dp),
-                    tint = Orange
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(9.dp))
                 Text(
-                    text = "${restaurant.deliveryTimeMinutes} мин",
+                    text = stringResource(R.string.delivery_time_min, restaurant.deliveryTimeMinutes),
                     fontSize = 14.sp,
-                    color = IconGrey3
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -200,7 +181,7 @@ fun RestaurantDetailsScreen(
             text = restaurant.name,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = IconGrey3
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -209,7 +190,7 @@ fun RestaurantDetailsScreen(
             text = restaurant.description,
             fontSize = 14.sp,
             lineHeight = 24.sp,
-            color = PlaceholderGrey
+            color = MaterialTheme.colorScheme.surface
         )
 
         Spacer(modifier = Modifier.height(29.dp))
@@ -222,7 +203,6 @@ fun RestaurantDetailsScreen(
                         isSelected = uiState.value.selectedCategory == category,
                         onClick = {
                             viewModel.selectCategory(category)
-                            println("нажали")
                         }
                     )
                 }
@@ -231,15 +211,15 @@ fun RestaurantDetailsScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = uiState.value.selectedCategory ?: "Категория не указана",
+                text = uiState.value.selectedCategory ?: stringResource(R.string.categoty_no),
                 fontSize = 20.sp,
             )
         } else {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Категории отсутствуют",
+                text = stringResource(R.string.category_no2),
                 fontSize = 16.sp,
-                color = PlaceholderGrey
+                color = MaterialTheme.colorScheme.surface
             )
         }
 
@@ -251,19 +231,18 @@ fun RestaurantDetailsScreen(
             verticalArrangement = Arrangement.spacedBy(21.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Фильтруем блюда по выбранной категории, если она выбрана
+
             val dishesToShow = uiState.value.selectedCategory?.let { category ->
                 uiState.value.dishes.filter { it.category == category }
             } ?: uiState.value.dishes
-
 
             items(dishesToShow.size) { i ->
                 val dish = dishesToShow[i]
                 DishCard(
                     name = dish.name,
-                    price = "$${dish.basePrice}", // форматируем цену
-                    icon = dish.photoUrl ?: "https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw",
-                    onClick = { onDishDetail(dish.id) } // передаем id блюда в навигацию
+                    price = "$${dish.basePrice}",
+                    icon = dish.photoUrl ?: stringResource(R.string.dish_url_no),
+                    onClick = { onDishDetail(dish.id) }
                 )
             }
         }

@@ -1,6 +1,5 @@
 package com.example.foodgo.presentation.components.restaurants
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,35 +13,36 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.foodgo.R
-import com.example.foodgo.presentation.viewmodel.DishDetailsViewModel
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 
 @Composable
-fun DishCard(name: String, price: String, icon: String, onClick: () -> Unit) {
+fun DishCard(
+    name: String,
+    price: String,
+    icon: String,
+    onClick: () -> Unit
+) {
     Card(
+
+        shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .width(153.dp)
-            //.height(174.dp)
             .wrapContentHeight()
-            .background(GreyLight)
             .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(1.dp),
-        colors = CardDefaults.cardColors(containerColor = White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
     ) {
         Column(
             horizontalAlignment = Alignment.Start,
@@ -50,7 +50,7 @@ fun DishCard(name: String, price: String, icon: String, onClick: () -> Unit) {
         ) {
             AsyncImage(
                 model = icon,
-                contentDescription = "Dish Image",
+                contentDescription = stringResource(R.string.dish_image),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 9.dp, end = 8.dp)
@@ -75,7 +75,7 @@ fun DishCard(name: String, price: String, icon: String, onClick: () -> Unit) {
                 Text(
                     text = price,
                     fontSize = 16.sp,
-                    color = PlaceholderGrey,
+                    color = MaterialTheme.colorScheme.surface,
                     fontWeight = FontWeight.Bold
                 )
             }

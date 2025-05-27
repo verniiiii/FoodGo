@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.foodgo.R
 
 @Composable
 fun LoadingIndicator() {
@@ -29,12 +31,8 @@ fun LoadingIndicator() {
 
 @Composable
 fun ErrorMessage(
-    errorMessage: String,
     onRetry: () -> Unit
 ) {
-    // Логируем техническую ошибку
-    Log.e("HomeDeliveryScreen", "Error: $errorMessage")
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -43,14 +41,14 @@ fun ErrorMessage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Произошла ошибка при загрузке данных. Попробуйте снова.",
+                text = stringResource(R.string.error),
                 color = MaterialTheme.colorScheme.error,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = onRetry) {
-                Text(text = "Обновить")
+                Text(text = stringResource(R.string.update))
             }
         }
     }

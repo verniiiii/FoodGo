@@ -27,6 +27,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -44,30 +45,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
 import com.example.foodgo.presentation.viewmodel.auth.LoginViewModel
-import com.example.foodgo.ui.theme.DarkBlack
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess: () -> Unit, onNavigateToSignUp: () -> Unit) {
+fun LoginScreen(
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    onLoginSuccess: () -> Unit,
+    onNavigateToSignUp: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
 
-    // Обработка состояния из ViewModel
     val loginState by loginViewModel.loginState.collectAsState()
     val context = LocalContext.current
 
@@ -76,11 +77,11 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
             is LoginViewModel.LoginResult.Success -> {
                 Toast.makeText(
                     context,
-                    "Успешный вход",
+                    context.getString(R.string.success_logIn),
                     Toast.LENGTH_SHORT
                 ).show()
-                onLoginSuccess() // Переход на следующий экран
-                loginViewModel.resetLoginState() // Дополнительная страховка
+                onLoginSuccess()
+                loginViewModel.resetLoginState()
             }
             is LoginViewModel.LoginResult.Error -> {
                 Toast.makeText(
@@ -94,11 +95,12 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(DarkBlack)) {
-        // Добавление изображения на фон
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.onTertiary)) {
         Image(
             painter = painterResource(id = R.drawable.bg_asset_login),
-            contentDescription = "Background Image",
+            contentDescription = stringResource(R.string.image_back),
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = (-50).dp)
@@ -108,19 +110,19 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
 
         // Заголовок
         Text(
-            text = "Войти",
+            text = stringResource(R.string.logIn),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            color = White,
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 118.dp)
         )
 
         Text(
-            text = "Войдите в существующий аккаунт",
+            text = stringResource(R.string.lodIn_in_accaunt),
             fontSize = 16.sp,
-            color = White,
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .padding(bottom = 32.dp)
                 .align(Alignment.TopCenter)
@@ -128,14 +130,13 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
                 .alpha(0.85f)
         )
 
-        // Карточка с логином
         Card(
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 233.dp)
                 .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
-            colors = CardDefaults.cardColors(containerColor = White) // Белый фон внутри карточки
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
         ) {
             Column(
                 modifier = Modifier
@@ -144,48 +145,52 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "ПОЧТА",
+                    text = stringResource(R.string.email),
                     fontSize = 13.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.align(Alignment.Start),
                 )
 
-                // Поле ввода Email
                 TextField(
                     value = email,
                     onValueChange = { email = it },
-                    placeholder = { Text("example@gmail.com", fontSize = 14.sp, color = PlaceholderGrey) },
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    placeholder = { Text(stringResource(R.string.email_example), fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        containerColor = GreyLight
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
 
                 Text(
-                    text = "ПАРОЛЬ",
+                    text = stringResource(R.string.password),
                     fontSize = 13.sp,
-                    color = Color.Black,
-                    modifier = Modifier.padding(top = 24.dp).align(Alignment.Start),
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .align(Alignment.Start),
                 )
 
-                // Поле ввода пароля
                 TextField(
                     value = password,
                     onValueChange = { password = it },
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(modifier = Modifier.size(19.dp, 14.dp), onClick = { passwordVisible = !passwordVisible }) {
                             Icon(
-                                tint = PlaceholderGrey,
+                                tint = MaterialTheme.colorScheme.surface,
                                 modifier = Modifier.size(19.dp, 14.dp),
                                 painter = if (passwordVisible) painterResource(id = R.drawable.eye) else painterResource(id = R.drawable.eye2),
-                                contentDescription = "Toggle password visibility"
+                                contentDescription = stringResource(R.string.toggle_password_visibility)
                             )
                         }
                     },
@@ -194,39 +199,36 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        containerColor = GreyLight
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
 
                 Spacer(modifier = Modifier.height(25.dp))
 
-                // Ссылка "Forgot Password?"
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         modifier = Modifier.size(20.dp),
                         checked = rememberMe,
                         onCheckedChange = { rememberMe = it },
-                        colors = CheckboxDefaults.colors(checkedColor = Orange, uncheckedColor = Color(0xFFE3EBF2))
+                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary, uncheckedColor = Color(0xFFE3EBF2))
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Запомнить меня",
+                        text = stringResource(R.string.remember_me),
                         fontSize = 14.sp,
-                        color = PlaceholderGrey,
+                        color = MaterialTheme.colorScheme.surface,
                         modifier = Modifier.clickable { rememberMe = !rememberMe }
                     )
-
-
                 }
 
                 Spacer(modifier = Modifier.height(31.dp))
 
-                // Кнопка "Log In"
                 Button(
                     onClick = {
                         if (email.isBlank() || password.isBlank()) {
-                            Toast.makeText(context, "Заполните все поля", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context.getString(R.string.fill_fields), Toast.LENGTH_SHORT).show()
                         } else {
                             loginViewModel.onLoginClick(email, password, rememberMe)
                         }
@@ -234,10 +236,12 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Orange),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(text = "ВОЙТИ", color = White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.logIn).uppercase(),
+                        color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(modifier = Modifier.height(38.dp))
@@ -248,17 +252,17 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Ещё нет аккаунта?",
+                        text = stringResource(R.string.no_account),
                         fontSize = 16.sp,
-                        color = PlaceholderGrey
+                        color = MaterialTheme.colorScheme.surface
                     )
                     Spacer(modifier = Modifier.weight(1f))
 
                     Text(
-                        text = "СОЗДАТЬ",
+                        text = stringResource(R.string.create_account),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
-                        color = Orange,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable { onNavigateToSignUp() }
                     )
                 }
@@ -271,7 +275,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = hiltViewModel(), onLoginSuccess
             Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
         }
         is LoginViewModel.LoginResult.Success -> {
-            Toast.makeText(context, "Успешный вход!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, stringResource(R.string.success_logIn), Toast.LENGTH_SHORT).show()
             loginViewModel.resetLoginState()
             onLoginSuccess()
         }

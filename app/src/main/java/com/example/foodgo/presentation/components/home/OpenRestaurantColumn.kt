@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,16 +22,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.foodgo.R
-import com.example.foodgo.ui.theme.Black
-import com.example.foodgo.ui.theme.IconGrey3
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 
 @Composable
 fun OpenRestaurantColumn(
@@ -46,12 +43,12 @@ fun OpenRestaurantColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 28.dp)
-            .background(White)
+            .background(MaterialTheme.colorScheme.onPrimary)
             .clickable { onClick() }
     ) {
         AsyncImage(
             model = restaurantImageUrl,
-            contentDescription = "Restaurant Image",
+            contentDescription = stringResource(R.string.restaurant_image),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp)
@@ -66,13 +63,13 @@ fun OpenRestaurantColumn(
         Text(
             text = name,
             fontSize = 20.sp,
-            color = Black
+            color = MaterialTheme.colorScheme.onSecondary
         )
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = categories,
             fontSize = 14.sp,
-            color = PlaceholderGrey
+            color = MaterialTheme.colorScheme.surface
         )
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -83,9 +80,9 @@ fun OpenRestaurantColumn(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.star1),
-                    contentDescription = "Rating",
+                    contentDescription = stringResource(R.string.rating),
                     modifier = Modifier.size(20.dp),
-                    tint = Orange
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(4.dp))
 
@@ -93,38 +90,38 @@ fun OpenRestaurantColumn(
                     text = "$rating",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = IconGrey3
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.delivery),
-                    contentDescription = "delivery",
+                    contentDescription = stringResource(R.string.delivery),
                     modifier = Modifier.size(20.dp),
-                    tint = Orange
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(9.dp))
 
                 Text(
                     text = deliveryFee,
                     fontSize = 14.sp,
-                    color = IconGrey3
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "delivery",
+                    contentDescription = stringResource(R.string.clock),
                     modifier = Modifier.size(20.dp),
-                    tint = Orange
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(9.dp))
 
                 Text(
                     text = deliveryTime,
                     fontSize = 14.sp,
-                    color = IconGrey3
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

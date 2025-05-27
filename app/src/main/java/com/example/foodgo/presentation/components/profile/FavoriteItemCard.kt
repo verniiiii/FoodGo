@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,14 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.dish.FavoriteDishInfo
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
 
 @Composable
 fun FavoriteItemCard(
@@ -42,7 +43,7 @@ fun FavoriteItemCard(
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 8.dp)
-            .border(1.dp, GreyLight, shape = RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.background, shape = RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -65,7 +66,7 @@ fun FavoriteItemCard(
                 text = dish.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSecondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -82,14 +83,14 @@ fun FavoriteItemCard(
                 text = "${dish.price} ₽",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSecondary
             )
         }
 
         Icon(
             imageVector = Icons.Default.Close,
-            contentDescription = "Удалить",
-            tint = IconGrey3,
+            contentDescription = stringResource(R.string.delete),
+            tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .size(20.dp)
                 .clickable { onRemoveClick() }

@@ -11,18 +11,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.R
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.ProfGrey
-import com.example.foodgo.ui.theme.White
 
 @Composable
 fun ProfileMenuItem(
@@ -41,12 +40,12 @@ fun ProfileMenuItem(
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(White, shape = CircleShape),
+                .background(MaterialTheme.colorScheme.onPrimary, shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 painter = painterResource(id = icon),
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = backgroundColor,
                 modifier = Modifier.size(18.dp)
             )
@@ -54,14 +53,14 @@ fun ProfileMenuItem(
         Spacer(modifier = Modifier.width(14.dp))
         Text(
             text = title,
-            color = ProfGrey,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.weight(1f))
         Icon(
             painter = painterResource(id = R.drawable.right),
-            contentDescription = "Back",
-            tint = PlaceholderGrey,
+            contentDescription = stringResource(R.string.back),
+            tint = MaterialTheme.colorScheme.surface,
             modifier = Modifier.size(10.dp)
         )
     }

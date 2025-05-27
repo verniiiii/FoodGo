@@ -47,9 +47,20 @@ class DishDetailsViewModel @Inject constructor(
     private val _count = MutableStateFlow(1)
     val count: StateFlow<Int> = _count
 
-    fun onSizeSelected(sizeLabel: String) {
-        _selectedSizeLabel.value = sizeLabel
-    }
+    private val _price = MutableStateFlow<Double?>(null)
+    val price: StateFlow<Double?> = _price
+
+    private val _pricesMap = MutableStateFlow<Map<String, Double>>(emptyMap())
+    val pricesMap: StateFlow<Map<String, Double>> = _pricesMap
+
+    private val _currentPrice = MutableStateFlow<Double?>(null)
+    val currentPrice: StateFlow<Double?> = _currentPrice
+
+    // Добавляем состояние для тоста
+    private val _showOrderSuccessToast = MutableStateFlow(false)
+    val showOrderSuccessToast: StateFlow<Boolean> = _showOrderSuccessToast
+
+
 
     suspend fun isDishInCart(dishId: Int): Boolean {
         loadDish(dishId) // допустим, эта функция suspend или вызывает suspend
@@ -76,9 +87,18 @@ class DishDetailsViewModel @Inject constructor(
                         _error.value = "Failed to load restaurant: ${restaurantResponse.message()}"
                     }
 
+                    // Создаем мапу цен
+                    val prices = dish.sizes.associate { it.sizeLabel to it.price }
+                    _pricesMap.value = prices
+
                     if (dish.sizes.isNotEmpty()) {
-                        _selectedSizeLabel.value = dish.sizes.first().sizeLabel
+                        val firstSize = dish.sizes.first()
+                        _selectedSizeLabel.value = firstSize.sizeLabel
+                        _currentPrice.value = firstSize.price
+                    }else{
+                        _currentPrice.value = dish.basePrice
                     }
+
 
                     // Получаем список избранных блюд и проверяем, есть ли это блюдо
                     val userId = preferencesManager.getUserId()
@@ -114,6 +134,8 @@ class DishDetailsViewModel @Inject constructor(
         val size = selectedSizeLabel.value
 
         preferencesManager.addToCart(dish.id, size, quantity)
+        _showOrderSuccessToast.value = true // Показываем тост
+
     }
 
     fun pl(){
@@ -124,6 +146,13 @@ class DishDetailsViewModel @Inject constructor(
         if (_count.value > 1){
             _count.value--
         }
+    }
+
+    fun onSizeSelected(sizeLabel: String) {
+        _selectedSizeLabel.value = sizeLabel
+        // Получаем цену из мапы цен
+        _currentPrice.value = _pricesMap.value[sizeLabel]
+
     }
 
 

@@ -1,6 +1,5 @@
 package com.example.foodgo.presentation.components.home
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,12 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
-import com.example.foodgo.presentation.navigation.Destination
-import com.example.foodgo.ui.theme.ProfGrey
-import com.google.gson.Gson
 
 @Composable
 fun RestaurantsSection(
@@ -34,7 +30,7 @@ fun RestaurantsSection(
 ) {
     Text(
         text = stringResource(R.string.restaurant_section),
-        color = ProfGrey,
+        color = MaterialTheme.colorScheme.onBackground,
         fontSize = 20.sp
     )
 
@@ -50,13 +46,13 @@ fun RestaurantsSection(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = painterResource(id = R.drawable.img),
-                    contentDescription = "Нет ресторанов",
+                    contentDescription = stringResource(R.string.no_restaurants),
                     modifier = Modifier.size(200.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "Нет доступных ресторанов",
-                    color = ProfGrey,
+                    text = stringResource(R.string.no_restaurants),
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center
                 )
@@ -72,8 +68,10 @@ fun RestaurantsSection(
                 categories = restaurant.categories.joinToString(" - "),
                 rating = restaurant.rating,
                 deliveryTime = restaurant.deliveryTimeMinutes.toString() + " мин",
-                deliveryFee = "Бесплатно",
-                restaurantImageUrl = if(restaurant.photos.isNotEmpty()) restaurant.photos[0] else "https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw",
+                deliveryFee = stringResource(R.string.free),
+                restaurantImageUrl =
+                    if(restaurant.photos.isNotEmpty()) restaurant.photos[0]
+                    else stringResource(R.string.url_no_open_rest),
                 onClick = {
                     onRestaurant(restaurant)
                 }

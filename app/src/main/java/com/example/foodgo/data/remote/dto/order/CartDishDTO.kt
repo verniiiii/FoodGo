@@ -5,5 +5,5 @@ data class CartDishDTO(
     val name: String,
     val photoUrl: String,
     val size: String? = null,
-    val sizePrice: Double            // Цена для этого размера
+    val sizePrice: Double
 )

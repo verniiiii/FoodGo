@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors
@@ -40,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -49,13 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
 import com.example.foodgo.presentation.viewmodel.auth.SignUpViewModel
-import com.example.foodgo.ui.theme.Black
-import com.example.foodgo.ui.theme.DarkBlack
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey6
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +67,6 @@ fun SignUpScreen(
 
     val context = LocalContext.current
 
-    // Обработка результатов регистрации
     val registrationResult by viewModel.registrationResult.collectAsState()
 
     LaunchedEffect(registrationResult) {
@@ -80,7 +74,7 @@ fun SignUpScreen(
             onSuccess = { authResponse ->
                 Toast.makeText(
                     context,
-                    "Успешная регистрация: ${authResponse.token}",
+                    context.getString(R.string.successful_registration, authResponse.token),
                     Toast.LENGTH_LONG
                 ).show()
                 onBackClick()
@@ -88,7 +82,7 @@ fun SignUpScreen(
             onFailure = { error ->
                 Toast.makeText(
                     context,
-                    "Ошибка регистрации: ${error.localizedMessage}",
+                    context.getString(R.string.error_registration, error.localizedMessage),
                     Toast.LENGTH_LONG
                 ).show()
                 viewModel.resetRegistrationResult()
@@ -96,11 +90,12 @@ fun SignUpScreen(
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(DarkBlack)) {
-        // Фоновое изображение
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.onTertiary)) {
         Image(
             painter = painterResource(id = R.drawable.bg_asset_login),
-            contentDescription = "Background Image",
+            contentDescription = stringResource(R.string.image_back),
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = (-50).dp)
@@ -108,51 +103,48 @@ fun SignUpScreen(
                 .height(449.dp)
         )
 
-        // Кнопка возврата
         IconButton(
             onClick = { onBackClick() },
             modifier = Modifier
                 .padding(start = 24.dp, top = 50.dp)
                 .align(Alignment.TopStart)
                 .size(45.dp)
-                .background(White, shape = CircleShape)
+                .background(MaterialTheme.colorScheme.onPrimary, shape = CircleShape)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.back),
-                contentDescription = "Back",
-                tint = IconGrey6,
+                contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.size(18.dp)
             )
         }
 
-        // Заголовки
         Text(
-            text = "Зарегистрироваться",
+            text = stringResource(R.string.sigUp),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            color = White,
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 119.dp)
         )
         Text(
-            text = "Зарегистрируйтесь, чтобы начать",
+            text = stringResource(R.string.sigUp_go),
             fontSize = 16.sp,
-            color = White,
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 157.dp)
                 .alpha(0.85f)
         )
 
-        // Основная карточка с формой
         Card(
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 233.dp)
                 .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
-            colors = CardDefaults.cardColors(containerColor = White)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
         ) {
             Column(
                 modifier = Modifier
@@ -160,17 +152,16 @@ fun SignUpScreen(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Поле ввода имени
                 Text(
-                    text = "ИМЯ",
+                    text = stringResource(R.string.name),
                     fontSize = 13.sp,
-                    color = Black,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.align(Alignment.Start)
                 )
                 TextField(
                     value = name,
                     onValueChange = { name = it },
-                    placeholder = { Text("Шестопалова Вероника", fontSize = 14.sp, color = PlaceholderGrey) },
+                    placeholder = { Text(stringResource(R.string.name_example), fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
@@ -179,23 +170,22 @@ fun SignUpScreen(
                     colors = outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        containerColor = GreyLight
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Поле ввода email
                 Text(
-                    text = "ПОЧТА",
+                    text = stringResource(R.string.email),
                     fontSize = 13.sp,
-                    color = Black,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.align(Alignment.Start)
                 )
                 TextField(
                     value = email,
                     onValueChange = { email = it },
-                    placeholder = { Text("example@gmail.com", fontSize = 14.sp, color = PlaceholderGrey) },
+                    placeholder = { Text(stringResource(R.string.email_example), fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
@@ -205,23 +195,22 @@ fun SignUpScreen(
                     colors = outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        containerColor = GreyLight
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Поле ввода пароля
                 Text(
-                    text = "ПАРОЛЬ",
+                    text = stringResource(R.string.password),
                     fontSize = 13.sp,
-                    color = Black,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.align(Alignment.Start)
                 )
                 TextField(
                     value = password,
                     onValueChange = { password = it },
-                    placeholder = { Text("* * * * * * * *", fontSize = 14.sp, color = PlaceholderGrey) },
+                    placeholder = { Text(stringResource(R.string.password_example), fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
@@ -233,10 +222,10 @@ fun SignUpScreen(
                             onClick = { passwordVisible = !passwordVisible }
                         ) {
                             Icon(
-                                tint = PlaceholderGrey,
+                                tint = MaterialTheme.colorScheme.surface,
                                 modifier = Modifier.size(19.dp, 14.dp),
                                 painter = if (passwordVisible) painterResource(id = R.drawable.eye) else painterResource(id = R.drawable.eye2),
-                                contentDescription = "Toggle password visibility"
+                                contentDescription = stringResource(R.string.toggle_password_visibility)
                             )
                         }
                     },
@@ -245,23 +234,22 @@ fun SignUpScreen(
                     colors = outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        containerColor = GreyLight
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Поле повторного ввода пароля
                 Text(
-                    text = "ПОВТОРИТЕ ПАРОЛЬ",
+                    text = stringResource(R.string.repeat_password),
                     fontSize = 13.sp,
-                    color = Black,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.align(Alignment.Start)
                 )
                 TextField(
                     value = reTypePassword,
                     onValueChange = { reTypePassword = it },
-                    placeholder = { Text("* * * * * * * *", fontSize = 14.sp, color = PlaceholderGrey) },
+                    placeholder = { Text(stringResource(R.string.password_example), fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
@@ -273,10 +261,10 @@ fun SignUpScreen(
                             onClick = { reTypePasswordVisible = !reTypePasswordVisible }
                         ) {
                             Icon(
-                                tint = PlaceholderGrey,
+                                tint = MaterialTheme.colorScheme.surface,
                                 modifier = Modifier.size(19.dp, 14.dp),
                                 painter = if (reTypePasswordVisible) painterResource(id = R.drawable.eye) else painterResource(id = R.drawable.eye2),
-                                contentDescription = "Toggle password visibility"
+                                contentDescription = stringResource(R.string.toggle_password_visibility)
                             )
                         }
                     },
@@ -285,20 +273,19 @@ fun SignUpScreen(
                     colors = outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        containerColor = GreyLight
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Кнопка регистрации
                 Button(
                     onClick = {
                         if (password != reTypePassword) {
                             Toast.makeText(
                                 context,
-                                "Пароли не совпадают",
+                                context.getString(R.string.passwords_noMatch),
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
@@ -309,14 +296,14 @@ fun SignUpScreen(
                         .fillMaxWidth()
                         .height(62.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Orange,
-                        disabledContainerColor = Orange.copy(alpha = 0.5f)
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "ЗАРЕГИСТРИРОВАТЬСЯ",
-                        color = White,
+                        text = stringResource(R.string.sigUp).uppercase(),
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )

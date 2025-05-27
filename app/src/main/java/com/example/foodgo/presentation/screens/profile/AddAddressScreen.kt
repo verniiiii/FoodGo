@@ -17,9 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 
@@ -39,14 +41,14 @@ fun AddAddressScreen(
             .fillMaxSize()
             .padding(16.dp),
     ) {
-        Text(text = "Добавить адрес", fontSize = 20.sp)
+        Text(text = stringResource(R.string.add_address), fontSize = 20.sp)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = city,
             onValueChange = { city = it },
-            label = { Text("Город") },
+            label = { Text(stringResource(R.string.town)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -55,7 +57,7 @@ fun AddAddressScreen(
         OutlinedTextField(
             value = addressLine,
             onValueChange = { addressLine = it },
-            label = { Text("Адрес") },
+            label = { Text(stringResource(R.string.address)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -64,7 +66,7 @@ fun AddAddressScreen(
         OutlinedTextField(
             value = comment,
             onValueChange = { comment = it },
-            label = { Text("Комментарий (необязательно)") },
+            label = { Text(stringResource(R.string.comment)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -83,12 +85,12 @@ fun AddAddressScreen(
                     viewModel.addAddress(dto)
                     onBack()
                 } else {
-                    Toast.makeText(context, "Пожалуйста, заполните обязательные поля", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.toast1), Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить")
+            Text(stringResource(R.string.save))
         }
     }
 }

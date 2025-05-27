@@ -11,8 +11,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.animation.fadeIn
+import androidx.compose.material3.MaterialTheme
 import com.example.foodgo.R
-import com.example.foodgo.ui.theme.White
 import kotlinx.coroutines.delay
 
 @Composable
@@ -32,7 +32,7 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(White), // Используем белый цвет из темы
+            .background(MaterialTheme.colorScheme.onPrimary), // Используем белый цвет из темы
         contentAlignment = Alignment.Center
     ) {
         // Анимированное появление логотипа (сначала)

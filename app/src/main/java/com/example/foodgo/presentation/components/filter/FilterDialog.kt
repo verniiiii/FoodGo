@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,17 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.foodgo.R
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey6
-import com.example.foodgo.ui.theme.LiteOrange
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.White
 
 @Composable
 fun FilterDialog(
@@ -54,21 +49,20 @@ fun FilterDialog(
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(16.dp),
-                color = Color.White
+                color = MaterialTheme.colorScheme.onPrimary
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    // Заголовок и кнопка закрытия - без изменений
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = "Фильтр", fontSize = 17.sp)
+                        Text(text = stringResource(R.string.filter), fontSize = 17.sp)
                         IconButton(onClick = { isDialogOpen.value = false }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.krest),
-                                contentDescription = "Close",
-                                tint = IconGrey6,
+                                contentDescription = stringResource(R.string.close),
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier.size(15.dp)
                             )
                         }
@@ -76,14 +70,17 @@ fun FilterDialog(
 
                     Spacer(modifier = Modifier.height(19.dp))
 
-                    // Delivery Time Section
-                    Text(text = "ВРЕМЯ ДОСТАВКИ", fontSize = 13.sp)
+                    Text(text = stringResource(R.string.time_delivery), fontSize = 13.sp)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        listOf("10 мин", "20 мин", "30 мин").forEach { time ->
+                        listOf(
+                            stringResource(R.string._10),
+                            stringResource(R.string._20),
+                            stringResource(R.string._30)
+                        ).forEach { time ->
                             FilterOptionButton(
                                 text = time,
                                 isSelected = deliveryTime == time,
@@ -94,8 +91,7 @@ fun FilterDialog(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Rating Section
-                    Text(text = "RATING", fontSize = 13.sp)
+                    Text(text = stringResource(R.string.rating).uppercase(), fontSize = 13.sp)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -109,19 +105,19 @@ fun FilterDialog(
                                     .size(48.dp)
                                     .border(
                                         width = 2.dp,
-                                        color = GreyLight,
+                                        color = MaterialTheme.colorScheme.background,
                                         shape = CircleShape
                                     ),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = White,
-                                    contentColor = if (starIndex <= rating) GreyLight else IconGrey6
+                                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                                    contentColor = if (starIndex <= rating) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSecondaryContainer
                                 ),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.rating),
-                                    contentDescription = "$starIndex star",
-                                    tint = if (starIndex <= rating) Orange else GreyLight,
+                                    contentDescription = "$starIndex звезда",
+                                    tint = if (starIndex <= rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -138,10 +134,10 @@ fun FilterDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(62.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Orange),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text(text = "ПРИМЕНИТЬ", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(text = stringResource(R.string.apply), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -157,7 +153,7 @@ fun FilterDialog(
                         colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text(text = "ОТМЕНИТЬ ФИЛЬТРЫ", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                        Text(text = stringResource(R.string.cancel_filters), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondary)
                     }
                 }
             }

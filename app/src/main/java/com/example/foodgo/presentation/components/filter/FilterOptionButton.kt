@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,13 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey6
-import com.example.foodgo.ui.theme.LiteOrange
-import com.example.foodgo.ui.theme.White
 
 @Composable
-fun FilterOptionButton(text: String, isSelected: Boolean, onClick: () -> Unit, isCircular: Boolean = false) {
+fun FilterOptionButton(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    isCircular: Boolean = false
+) {
     Button(
         onClick = onClick,
         shape = if (isCircular) CircleShape else RoundedCornerShape(33.dp),
@@ -30,12 +32,12 @@ fun FilterOptionButton(text: String, isSelected: Boolean, onClick: () -> Unit, i
             .defaultMinSize(minWidth = if (isCircular) 46.dp else 90.dp)
             .border(
                 width = if (!isSelected) 2.dp else 0.dp,
-                color = if (!isSelected) GreyLight else Color.Transparent,
+                color = if (!isSelected) MaterialTheme.colorScheme.background else Color.Transparent,
                 shape = if (isCircular) CircleShape else RoundedCornerShape(33.dp)
             ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) LiteOrange else White,
-            contentColor = if (isSelected) GreyLight else IconGrey6
+            containerColor = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
+            contentColor = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSecondaryContainer
         ),
         contentPadding = PaddingValues(horizontal = if (isCircular) 0.dp else 12.dp)
     ) {

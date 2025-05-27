@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,8 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.CategoryDTO
 import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
 import com.example.foodgo.presentation.components.filter.FilterDialog
@@ -33,7 +36,6 @@ import com.example.foodgo.presentation.components.home.SearchSection
 import com.example.foodgo.presentation.viewmodel.BasketViewModel
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 import com.example.foodgo.presentation.viewmodel.home.HomeViewModel
-import com.example.foodgo.ui.theme.White
 
 @Composable
 fun HomeDeliveryScreen(
@@ -72,9 +74,9 @@ fun HomeDeliveryScreen(
     val categoryState = homeViewModel.categories.collectAsState()
     val categories = listOf(
         CategoryDTO(
-            name = "Всё",
-            photoUrl = "https://avatars.mds.yandex.net/i?id=8d9adcb506adc573ef87737fa2a372a5_l-8185177-images-thumbs&n=13",
-            isSelected = selectedCategory.value == "Всё"
+            name = stringResource(R.string.all),
+            photoUrl = stringResource(R.string.all_url),
+            isSelected = selectedCategory.value == stringResource(R.string.all)
         )
     ) + categoryState.value.map {
         it.copy(isSelected = it.name == selectedCategory.value)
@@ -127,7 +129,7 @@ fun HomeDeliveryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(White)
+            .background(MaterialTheme.colorScheme.onPrimary)
             .padding(top = 50.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.Start
     ) {
@@ -162,7 +164,7 @@ fun HomeDeliveryScreen(
         val errorMessage by homeViewModel.error.collectAsState()
 
         if (!errorMessage.isNullOrEmpty()) {
-            ErrorMessage(errorMessage = errorMessage!!) {
+            ErrorMessage() {
                 homeViewModel.refreshData()
                 userViewModel.loadUserData()
             }

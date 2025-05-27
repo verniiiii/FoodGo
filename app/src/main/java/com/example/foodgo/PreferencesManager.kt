@@ -3,13 +3,22 @@ package com.example.foodgo
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
-class PreferencesManager(context: Context) {
+class PreferencesManager(@ApplicationContext private val appContext: Context) {
 
     private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("FoodGoPrefs", Context.MODE_PRIVATE)
+        appContext.getSharedPreferences("FoodGoPrefs", Context.MODE_PRIVATE)
 
     companion object {
         private const val ONBOARDING_COMPLETED = "onboarding_completed"
@@ -24,6 +33,8 @@ class PreferencesManager(context: Context) {
         private const val SEARCH_HISTORY = "search_history"
         private const val SEARCH_HISTORY_MAX_SIZE = 10
         private const val CART_ITEMS = "cart_items"
+        private const val THEME = "theme"
+        val DARK_THEME = booleanPreferencesKey("dark_theme")
     }
 
     // --- Onboarding ---
@@ -121,5 +132,32 @@ class PreferencesManager(context: Context) {
     fun isDishInCart(dishId: Int, size: String? = null): Boolean {
         val key = if (size != null) "$dishId|$size" else "$dishId"
         return getCartItems().containsKey(key)
+    }
+
+    //private val _themeFlow = MutableStateFlow(getTheme())
+
+    //val isDarkTheme: StateFlow<Boolean> = _themeFlow.asStateFlow()
+
+//    fun getTheme(): Boolean  {
+//        //println(sharedPreferences.getBoolean(THEME, false))
+//        return sharedPreferences.getBoolean(THEME, false)
+//    }
+//
+//    fun setTheme(isDark: Boolean) {
+//        sharedPreferences.edit { putBoolean(THEME, isDark) }
+//    }
+    private val Context.dataStore by preferencesDataStore(name = "settings")
+
+
+
+    val themeFlow: Flow<Boolean> = appContext.dataStore.data
+        .map { preferences ->
+            preferences[DARK_THEME] ?: false
+        }
+
+    suspend fun setTheme(value: Boolean) {
+        appContext.dataStore.edit { preferences ->
+            preferences[DARK_THEME] = value
+        }
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -24,23 +25,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.R
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,14 +71,15 @@ fun SearchSection(
                 .fillMaxWidth()
                 .height(62.dp),
             placeholder = {
-                Text("Поиск ресторанов",
-                    color = PlaceholderGrey,
+                Text(
+                    stringResource(R.string.search_rest),
+                    color = MaterialTheme.colorScheme.surface,
                     fontSize = 14.sp)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                containerColor = GreyLight
+                containerColor = MaterialTheme.colorScheme.background
             ),
             singleLine = true,
             maxLines = 1,
@@ -93,7 +91,7 @@ fun SearchSection(
                         .size(20.dp)
                         .clickable { isDialogOpen.value = true },
                     painter = painterResource(R.drawable.search_icon),
-                    contentDescription = "Search",
+                    contentDescription = stringResource(R.string.search_rest),
                     tint = Color.Gray
                 )
             },
@@ -107,7 +105,7 @@ fun SearchSection(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.krest),
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.clear),
                             tint = Color.Gray,
                             modifier = Modifier.size(10.dp)
                         )
@@ -123,16 +121,16 @@ fun SearchSection(
                 onDismissRequest = { isSearchActive.value = false },
                 modifier = Modifier
                     .width(with(LocalDensity.current) { textFieldWidth.toDp() })
-                    .background(White)
+                    .background(MaterialTheme.colorScheme.onPrimary)
             ) {
                 if (searchHistory.isEmpty()) {
                     DropdownMenuItem(
-                        text = { Text("История поиска пуста") },
+                        text = { Text(stringResource(R.string.searchHistory_empty)) },
                         onClick = {}
                     )
                 } else {
                     Text(
-                        text = "История поиска",
+                        text = stringResource(R.string.searchHistory),
                         modifier = Modifier.padding(16.dp),
                         fontWeight = FontWeight.Bold,
                         color = Color.Gray
@@ -148,7 +146,7 @@ fun SearchSection(
                             trailingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.rating),
-                                    contentDescription = "Search history"
+                                    contentDescription = stringResource(R.string.searchHistory)
                                 )
                             }
                         )

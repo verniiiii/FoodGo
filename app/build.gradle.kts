@@ -43,6 +43,8 @@ android {
 
 dependencies {
 
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
+
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     implementation("com.google.accompanist:accompanist-pager:0.36.0")

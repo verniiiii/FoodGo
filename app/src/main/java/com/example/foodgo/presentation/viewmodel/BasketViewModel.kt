@@ -30,6 +30,10 @@ class BasketViewModel @Inject constructor(
     private val _cartItemCount = MutableStateFlow(0)
     val cartItemCount: StateFlow<Int> = _cartItemCount
 
+    // Добавляем состояние для тоста
+    private val _showOrderSuccessToast = MutableStateFlow(false)
+    val showOrderSuccessToast: StateFlow<Boolean> = _showOrderSuccessToast
+
     fun updateCartItemCount(count: Int) {
         _cartItemCount.value = count
         println("тут ${_cartItemCount.value}")
@@ -123,6 +127,9 @@ class BasketViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     preferencesManager.clearCart()
                     println("Успех")
+                    _showOrderSuccessToast.value = true // Показываем тост
+
+
                 } else {
                     println("Ошибка при создании заказа: ${response.code()}")
                 }
@@ -131,6 +138,11 @@ class BasketViewModel @Inject constructor(
             }
         }
 
+    }
+
+    // Функция для сброса состояния тоста
+    fun resetToast() {
+        _showOrderSuccessToast.value = false
     }
 }
 

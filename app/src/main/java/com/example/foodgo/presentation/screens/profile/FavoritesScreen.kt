@@ -12,7 +12,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.foodgo.R
 import com.example.foodgo.presentation.components.ScreenHeader
 import com.example.foodgo.presentation.components.profile.FavoriteItemCard
 import com.example.foodgo.presentation.viewmodel.FavoritesViewModel
@@ -26,14 +28,13 @@ fun FavoritesScreen(
 ) {
     val favoritesState = viewModel.favorites.collectAsState()
 
-    ScreenHeader("Избранное", onBackClick = onBack) {
-        // Список избранного
+    ScreenHeader(stringResource(R.string.favorite), onBackClick = onBack) {
         if (favoritesState.value.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Список избранного пуст", color = Color.Gray)
+                Text(stringResource(R.string.list_favotrits_empty), color = Color.Gray)
             }
         } else {
             LazyColumn(

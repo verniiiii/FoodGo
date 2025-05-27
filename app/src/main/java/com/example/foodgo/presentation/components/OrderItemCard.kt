@@ -13,11 +13,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.order.OrderWithItemsDTO
 
 @Composable
-fun OrderItemCard(orderWithItems: OrderWithItemsDTO, onClick: () -> Unit) {
+fun OrderItemCard(
+    orderWithItems: OrderWithItemsDTO,
+    onClick: () -> Unit
+) {
     val order = orderWithItems.order
     Card(
         modifier = Modifier
@@ -31,7 +36,7 @@ fun OrderItemCard(orderWithItems: OrderWithItemsDTO, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Дата заказа: ${order.orderDate}",
+                text = stringResource(R.string.date_order, order.orderDate),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -39,7 +44,7 @@ fun OrderItemCard(orderWithItems: OrderWithItemsDTO, onClick: () -> Unit) {
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Сумма: ${order.totalPrice} ₽",
+                text = stringResource(R.string.sum, order.totalPrice),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -47,9 +52,9 @@ fun OrderItemCard(orderWithItems: OrderWithItemsDTO, onClick: () -> Unit) {
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Адрес доставки: ${order.address}",
+                text = stringResource(R.string.delivery_address, order.address),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

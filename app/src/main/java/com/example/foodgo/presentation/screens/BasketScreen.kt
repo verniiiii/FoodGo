@@ -1,5 +1,6 @@
 package com.example.foodgo.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,16 +51,11 @@ import com.example.foodgo.data.remote.dto.order.CartDishDTO
 import com.example.foodgo.presentation.components.CartItem
 import com.example.foodgo.presentation.viewmodel.BasketViewModel
 import com.example.foodgo.presentation.viewmodel.UserViewModel
-import com.example.foodgo.ui.theme.Green
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
-import com.example.foodgo.ui.theme.Orange
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
+    onBack: () -> Unit,
     viewModel: BasketViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
@@ -68,6 +65,17 @@ fun CartScreen(
     val dishes = remember { mutableStateOf<List<CartDishDTO>>(emptyList()) }
     val userAddresses = userViewModel.userAddresses.collectAsState()
     val expanded = remember { mutableStateOf(false) }
+
+    val showToast = viewModel.showOrderSuccessToast.collectAsState()
+
+    val context = LocalContext.current
+
+    // Обработка показа тоста
+    LaunchedEffect(showToast.value) {
+        if (showToast.value) {
+            Toast.makeText(context, "Заказ успешно создан!", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     LaunchedEffect(userAddresses.value) {
         if (userAddresses.value.isNotEmpty()) {
@@ -86,7 +94,7 @@ fun CartScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF121223))
+            .background(MaterialTheme.colorScheme.onTertiary)
             .padding(start = 24.dp, end = 24.dp, top = 50.dp)
     ) {
         // Top bar with "Cart" and edit button
@@ -99,26 +107,27 @@ fun CartScreen(
             Box(
                 modifier = Modifier
                     .size(45.dp)
-                    .background(IconGrey3, shape = CircleShape),
+                    .clickable{onBack()}
+                    .background(MaterialTheme.colorScheme.onSurface, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.back),
                     contentDescription = "Back",
-                    tint = White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(18.dp)
                 )
             }
             Spacer(modifier = Modifier.width(18.dp))
             Text(
                 text = "Корзина",
-                color = White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 17.sp,
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = if (isEditing.value) "ГОТОВО" else "РЕДАКТИРОВАТЬ",
-                color = if (isEditing.value) Green else Orange,
+                color = if (isEditing.value) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     textDecoration = TextDecoration.Underline
                 ),
@@ -143,7 +152,7 @@ fun CartScreen(
                 item {
                     Text(
                         text = "Корзина пуста",
-                        color = White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 32.dp),
@@ -204,7 +213,7 @@ fun CartScreen(
                 .fillMaxWidth()
                 .height(310.dp)
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
-                .background(White)
+                .background(MaterialTheme.colorScheme.onPrimary)
                 .padding(start = 24.dp, end = 24.dp, top = 20.dp)
         ) {
             Column(
@@ -214,13 +223,13 @@ fun CartScreen(
                 Row {
                     Text(
                         text = "АДРЕС ДОСТАВКИ",
-                        color = PlaceholderGrey,
+                        color = MaterialTheme.colorScheme.surface,
                         fontSize = 14.sp,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = "РЕДАКТИРОВАТЬ",
-                        color = Orange,
+                        color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             textDecoration = TextDecoration.Underline
                         ),
@@ -237,14 +246,14 @@ fun CartScreen(
                         value = name.value,
                         onValueChange = { },
                         readOnly = true,
-                        placeholder = { Text("Москва, пр-кт Вернадского 86", fontSize = 14.sp, color = PlaceholderGrey) },
+                        placeholder = { Text("Москва, пр-кт Вернадского 86", fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp).height(62.dp),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent,
-                            containerColor = GreyLight
+                            containerColor = MaterialTheme.colorScheme.background
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
@@ -252,7 +261,7 @@ fun CartScreen(
                     DropdownMenu(
                         expanded = expanded.value,
                         onDismissRequest = { expanded.value = false },
-                        modifier = Modifier.fillMaxWidth().background(White)
+                        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.onPrimary)
                     ) {
                         if (userAddresses.value.isNotEmpty()) {
                             userAddresses.value.forEach { address ->
@@ -283,13 +292,13 @@ fun CartScreen(
                     Text(
                         text = "ВСЕГО:",
                         fontSize = 14.sp,
-                        color = PlaceholderGrey
+                        color = MaterialTheme.colorScheme.surface
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = "$$totalPrice",
                         fontSize = 30.sp,
-                        color = Color(0xFF181C2E)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -308,12 +317,12 @@ fun CartScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(62.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Orange),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = "СОЗДАТЬ ЗАКАЗ",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )

@@ -1,47 +1,25 @@
 package com.example.foodgo.presentation.screens.profile
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import com.example.foodgo.presentation.viewmodel.ProfileViewModel
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
 import com.example.foodgo.presentation.components.ScreenHeader
-import com.example.foodgo.presentation.navigation.Destination
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
+import com.example.foodgo.presentation.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,85 +38,84 @@ fun PersonalInfoScreen(
     val confirmPassword = viewModel.confirmPassword.collectAsState()
     val passwordError = viewModel.passwordChangeError.collectAsState()
 
-    ScreenHeader("Личная информация", onBackClick = onBack) {
-        // Имя
+    ScreenHeader(stringResource(R.string.personal_info), onBackClick = onBack) {
         OutlinedTextField(
             value = state.value.username,
             onValueChange = { viewModel.onNameChanged(it) },
-            label = { Text("Имя") },
+            label = { Text(stringResource(R.string.name)) },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Описание
         OutlinedTextField(
             value = state.value.description,
             onValueChange = { viewModel.onDescriptionChanged(it) },
-            label = { Text("Описание профиля") },
+            label = { Text(stringResource(R.string.description_profile)) },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Почта
         OutlinedTextField(
             value = state.value.email,
             onValueChange = {},
-            label = { Text("Почта") },
+            label = { Text(stringResource(R.string.email)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = false
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Сменить пароль
         TextButton(onClick = { viewModel.onChangePasswordClick() }) {
-            Text("Сменить пароль")
+            Text(stringResource(R.string.change_password))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Сохранить
         Button(
             onClick = { viewModel.updateProfile() },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить изменения")
+            Text(stringResource(R.string.save))
         }
 
         if (isSaving.value) {
-            Text("Сохранение...", color = Color.Gray)
+            Text(stringResource(R.string.save_process), color = Color.Gray)
         }
 
         saveSuccess.value?.let {
             if (it) {
-                Text("Изменения сохранены", color = Color.Green)
+                Text(stringResource(R.string.changed_save), color = Color.Green)
             } else {
-                Text("Ошибка сохранения: ${error.value ?: "неизвестная"}", color = Color.Red)
+                Text(
+                    stringResource(
+                        R.string.error_save,
+                        error.value ?: stringResource(R.string.unknown_error)
+                    ), color = Color.Red)
             }
         }
     }
     if (showPasswordDialog.value) {
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { viewModel.onPasswordDialogDismiss() },
-            title = { Text("Сменить пароль") },
+            title = { Text(stringResource(R.string.change_password)) },
             text = {
                 Column {
                     OutlinedTextField(
                         value = oldPassword.value,
                         onValueChange = { viewModel.oldPassword.value = it },
-                        label = { Text("Старый пароль") }
+                        label = { Text(stringResource(R.string.old_password)) }
                     )
                     OutlinedTextField(
                         value = newPassword.value,
                         onValueChange = { viewModel.newPassword.value = it },
-                        label = { Text("Новый пароль") }
+                        label = { Text(stringResource(R.string.new_password)) }
                     )
                     OutlinedTextField(
                         value = confirmPassword.value,
                         onValueChange = { viewModel.confirmPassword.value = it },
-                        label = { Text("Повторите новый пароль") }
+                        label = { Text(stringResource(R.string.repeat_password2)) }
                     )
                     passwordError.value?.let {
                         Text(it, color = Color.Red, fontSize = 12.sp)
@@ -147,16 +124,14 @@ fun PersonalInfoScreen(
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.changePassword() }) {
-                    Text("Сменить")
+                    Text(stringResource(R.string.changed))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { viewModel.onPasswordDialogDismiss() }) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
     }
-
-
 }

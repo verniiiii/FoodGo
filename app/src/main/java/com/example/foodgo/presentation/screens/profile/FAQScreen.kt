@@ -1,48 +1,56 @@
 package com.example.foodgo.presentation.screens.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.R
 import com.example.foodgo.presentation.components.ScreenHeader
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
 
 data class FAQItem(val question: String, val answer: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FAQScreen(onBack: () -> Unit) {
-    ScreenHeader("Часто задаваемые вопросы", onBackClick = onBack) {
+    ScreenHeader(stringResource(R.string.FAQS), onBackClick = onBack) {
         val faqList = listOf(
             FAQItem(
-                question = "Как добавить блюдо в избранное?",
-                answer = "Нажмите на иконку сердечка рядом с блюдом, чтобы добавить его в избранное."
+                question = stringResource(R.string.question1),
+                answer = stringResource(R.string.answer1)
             ),
             FAQItem(
-                question = "Можно ли изменить заказ после оформления?",
-                answer = "Изменить заказ можно только до его подтверждения."
+                question = stringResource(R.string.question2),
+                answer = stringResource(R.string.answer2)
             ),
             FAQItem(
-                question = "Какие способы оплаты доступны?",
-                answer = "Мы принимаем оплату картами, через электронные кошельки и наличными курьеру."
+                question = stringResource(R.string.question3),
+                answer = stringResource(R.string.answer3)
             ),
             FAQItem(
-                question = "Как связаться с поддержкой?",
-                answer = "Вы можете написать в чат поддержки или позвонить по номеру 8-800-555-35-35."
+                question = stringResource(R.string.question4),
+                answer = stringResource(R.string.answer4)
             )
         )
 
@@ -64,7 +72,7 @@ fun FAQItemView(item: FAQItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, shape = MaterialTheme.shapes.medium)
+            .background(MaterialTheme.colorScheme.onPrimary, shape = MaterialTheme.shapes.medium)
             .padding(20.dp)
     ) {
         Row(
@@ -73,7 +81,7 @@ fun FAQItemView(item: FAQItem) {
         ) {
             Icon(
                 imageVector = Icons.Default.Call,
-                contentDescription = "Question icon",
+                contentDescription = stringResource(R.string.question_icon),
                 tint = Color(0xFF6200EE),
                 modifier = Modifier.size(20.dp)
             )

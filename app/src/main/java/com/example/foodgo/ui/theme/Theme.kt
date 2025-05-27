@@ -9,36 +9,47 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Orange,             // основной цвет кнопок и акцентов
+    onPrimary = Black,            // цвет текста на primary
+    secondary = LiteOrange,       // вторичный цвет (например, для иконок/тегов)
+    onSecondary = White,          // текст на secondary
+    tertiary = Yeylow,            // дополнительный акцент
+    onTertiary = IconGrey3,
+    onSurfaceVariant = Green,
+    background = IconGrey3,       // фон экрана
+    onBackground = PlaceholderGrey,
+    onSurface = GreyLight,
+    error = Red,                  // ошибки
+    surface = ProfGrey,
+    onSecondaryContainer = DarkBlack
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = Orange,             // основной цвет кнопок и акцентов
+    onPrimary = White,            // цвет текста на primary
+    secondary = LiteOrange,       // вторичный цвет (например, для иконок/тегов)
+    onSecondary = Black,          // текст на secondary
+    tertiary = Yeylow,            // дополнительный акцент
+    onTertiary = DarkBlack,
+    onSurfaceVariant = Green,
+    background = GreyLight,       // фон экрана
+    onBackground = ProfGrey,
+    onSurface = IconGrey3,
+    error = Red,                  // ошибки
+    surface = PlaceholderGrey,
+    onSecondaryContainer = IconGrey6,
+    inverseOnSurface = GreyLight
 )
+
 
 @Composable
 fun FoodGoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

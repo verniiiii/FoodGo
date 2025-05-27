@@ -20,8 +20,6 @@ import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.components.ScreenHeader
 import com.example.foodgo.presentation.viewmodel.UserViewModel
-import com.example.foodgo.ui.theme.GreyLight
-import com.example.foodgo.ui.theme.IconGrey3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,5 +90,7 @@ fun AddressItem(address: UserAddressDTO, onDelete: (UserAddressDTO) -> Unit) {
                 tint = Color.Red
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

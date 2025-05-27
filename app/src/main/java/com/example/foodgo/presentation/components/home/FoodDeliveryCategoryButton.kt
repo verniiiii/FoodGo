@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,9 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.foodgo.ui.theme.ProfGrey
-import com.example.foodgo.ui.theme.White
-import com.example.foodgo.ui.theme.Yeylow
 
 @Composable
 fun FoodDeliveryCategoryButton(
@@ -46,8 +44,8 @@ fun FoodDeliveryCategoryButton(
             .shadow(8.dp, RoundedCornerShape(39.dp))
             .clip(RoundedCornerShape(39.dp)),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Yeylow else White,
-            contentColor = ProfGrey
+            containerColor = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onPrimary,
+            contentColor = MaterialTheme.colorScheme.onBackground
         ),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
@@ -77,9 +75,8 @@ fun FoodDeliveryCategoryButton(
                 text = text,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = ProfGrey
+                color = MaterialTheme.colorScheme.onBackground
             )
-
             Spacer(modifier = Modifier.width(5.dp))
         }
     }

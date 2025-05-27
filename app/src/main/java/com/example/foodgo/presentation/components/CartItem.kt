@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,15 +27,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.order.CartDishDTO
-import com.example.foodgo.ui.theme.PlaceholderGrey
-import com.example.foodgo.ui.theme.ProfGrey
-import com.example.foodgo.ui.theme.Red
 
 @Composable
 fun CartItem(
@@ -50,14 +49,12 @@ fun CartItem(
             .wrapContentHeight()
             .padding(vertical = 8.dp),
     ) {
-        // Dish image
         Box(
             modifier = Modifier
                 .size(136.dp, 117.dp)
                 .clip(RoundedCornerShape(25.dp)),
             contentAlignment = Alignment.TopEnd
         ) {
-            // Load image using Coil or Glide
             AsyncImage(
                 model = dish.photoUrl,
                 contentDescription = null,
@@ -66,8 +63,6 @@ fun CartItem(
                     .clip(RoundedCornerShape(25.dp)),
                 contentScale = ContentScale.Crop
             )
-
-
         }
         Spacer(modifier = Modifier.width(20.dp))
         Column(
@@ -77,13 +72,13 @@ fun CartItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = dish.name, color = Color.White, fontSize = 18.sp)
+                Text(text = dish.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 18.sp)
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
                     modifier = Modifier
                         .size(27.dp)
                         .clip(CircleShape)
-                        .background(if (isEditing) Red else Color.Transparent)
+                        .background(if (isEditing) MaterialTheme.colorScheme.error else Color.Transparent)
                         .clickable(enabled = isEditing) { if (isEditing) onRemove() }
                         .then(if (isEditing) Modifier else Modifier.alpha(0f)),
                     contentAlignment = Alignment.Center,
@@ -91,21 +86,19 @@ fun CartItem(
                     Icon(
                         painter = painterResource(id = R.drawable.krest),
                         contentDescription = "Remove",
-                        tint = if (isEditing) Color.White else Color.Transparent,
+                        tint = if (isEditing) MaterialTheme.colorScheme.onPrimary else Color.Transparent,
                         modifier = Modifier.size(10.dp)
                     )
                 }
             }
 
-
-
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(text = "\$${dish.sizePrice}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(text = "\$${dish.sizePrice}", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.weight(1f))
 
             Row(modifier = Modifier.height(22.dp), verticalAlignment = Alignment.Bottom) {
-                Text(text = dish.size ?: "", color = PlaceholderGrey)
+                Text(text = dish.size ?: "", color = MaterialTheme.colorScheme.surface)
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
                     modifier = Modifier
@@ -116,11 +109,10 @@ fun CartItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    // Decrease button
                     Box(
                         modifier = Modifier
                             .size(24.dp)
-                            .background(ProfGrey, shape = CircleShape),
+                            .background(MaterialTheme.colorScheme.onBackground, shape = CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         IconButton(
@@ -129,26 +121,24 @@ fun CartItem(
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.minus),
-                                contentDescription = "Decrease",
-                                tint = Color.White,
+                                contentDescription = stringResource(R.string.minus),
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
                     }
 
-                    // Quantity
                     Text(
                         text = quantity.toString(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
 
-                    // Increase button
                     Box(
                         modifier = Modifier
                             .size(24.dp)
-                            .background(ProfGrey, shape = CircleShape),
+                            .background(MaterialTheme.colorScheme.onBackground, shape = CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         IconButton(
@@ -157,8 +147,8 @@ fun CartItem(
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.plus),
-                                contentDescription = "Increase",
-                                tint = Color.White,
+                                contentDescription = stringResource(R.string.plus),
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
