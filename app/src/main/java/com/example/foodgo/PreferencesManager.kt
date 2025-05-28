@@ -10,9 +10,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 
 class PreferencesManager(@ApplicationContext private val appContext: Context) {
@@ -33,7 +30,6 @@ class PreferencesManager(@ApplicationContext private val appContext: Context) {
         private const val SEARCH_HISTORY = "search_history"
         private const val SEARCH_HISTORY_MAX_SIZE = 10
         private const val CART_ITEMS = "cart_items"
-        private const val THEME = "theme"
         val DARK_THEME = booleanPreferencesKey("dark_theme")
     }
 
@@ -129,26 +125,7 @@ class PreferencesManager(@ApplicationContext private val appContext: Context) {
         sharedPreferences.edit { remove(CART_ITEMS) }
     }
 
-    fun isDishInCart(dishId: Int, size: String? = null): Boolean {
-        val key = if (size != null) "$dishId|$size" else "$dishId"
-        return getCartItems().containsKey(key)
-    }
-
-    //private val _themeFlow = MutableStateFlow(getTheme())
-
-    //val isDarkTheme: StateFlow<Boolean> = _themeFlow.asStateFlow()
-
-//    fun getTheme(): Boolean  {
-//        //println(sharedPreferences.getBoolean(THEME, false))
-//        return sharedPreferences.getBoolean(THEME, false)
-//    }
-//
-//    fun setTheme(isDark: Boolean) {
-//        sharedPreferences.edit { putBoolean(THEME, isDark) }
-//    }
     private val Context.dataStore by preferencesDataStore(name = "settings")
-
-
 
     val themeFlow: Flow<Boolean> = appContext.dataStore.data
         .map { preferences ->

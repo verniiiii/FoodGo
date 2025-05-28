@@ -1,9 +1,6 @@
 package com.example.foodgo.presentation.viewmodel.home
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
@@ -45,19 +42,16 @@ class HomeViewModel @Inject constructor(
     }
     data class FilterCriteria(
         val minRating: Int,
-        val maxDeliveryTime: Int // в минутах
+        val maxDeliveryTime: Int
     )
-
 
     init {
         fetchRestaurants()
         fetchCategories()
     }
 
-    // Search history
     private val _searchHistory = MutableStateFlow<List<String>>(emptyList())
     val searchHistory: StateFlow<List<String>> = _searchHistory
-
 
     fun loadSearchHistory() {
         viewModelScope.launch {
@@ -112,14 +106,11 @@ class HomeViewModel @Inject constructor(
                 val response = restaurantApi.getCategories()
                 if (response.isSuccessful) {
                     _categories.value = response.body().orEmpty()
-                    Log.d("HomeViewModel", "Полученные категории: ${_categories.value}")
                 } else {
                     _error.value = "Ошибка при получении категорий: ${response.code()}"
-                    Log.e("HomeViewModel", "Ошибка при получении категорий: ${response.code()}")
                 }
             } catch (e: Exception) {
                 _error.value = "Ошибка категорий: ${e.message}"
-                Log.e("HomeViewModel", "Ошибка категорий", e)
             }
         }
     }
@@ -165,22 +156,17 @@ class HomeViewModel @Inject constructor(
 
 
     private fun isRestaurantOpen(openingTime: String, closingTime: String): Boolean {
-        val zoneId = ZoneId.of("Europe/Moscow") // Или любой другой нужный
+        val zoneId = ZoneId.of("Europe/Moscow")
         val currentTime = LocalTime.now(zoneId)
-        println(currentTime)
         val openTime = LocalTime.parse(openingTime)
         val closeTime = LocalTime.parse(closingTime)
 
         return true
 
         return if (openTime < closeTime) {
-            // Обычное время (например: 08:00 - 22:00)
             currentTime >= openTime && currentTime <= closeTime
         } else {
-            // Время через полночь (например: 22:00 - 06:00)
             currentTime >= openTime || currentTime <= closeTime
         }
     }
-
-
 }

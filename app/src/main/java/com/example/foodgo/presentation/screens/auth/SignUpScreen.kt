@@ -289,7 +289,7 @@ fun SignUpScreen(
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
-                            viewModel.register(name, email, password)
+                            viewModel.register(name, email, password, context)
                         }
                     },
                     modifier = Modifier

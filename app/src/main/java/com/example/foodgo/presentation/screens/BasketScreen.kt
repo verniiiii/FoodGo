@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -70,10 +71,9 @@ fun CartScreen(
 
     val context = LocalContext.current
 
-    // Обработка показа тоста
     LaunchedEffect(showToast.value) {
         if (showToast.value) {
-            Toast.makeText(context, "Заказ успешно создан!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.toast_order), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -81,7 +81,7 @@ fun CartScreen(
         if (userAddresses.value.isNotEmpty()) {
             name.value = userAddresses.value.first().city + ", " + userAddresses.value.first().addressLine
         } else {
-            name.value = "Добавьте адрес для доставки в профиле"
+            name.value = context.getString(R.string.toast_add_address)
         }
     }
 
@@ -97,7 +97,6 @@ fun CartScreen(
             .background(MaterialTheme.colorScheme.onTertiary)
             .padding(start = 24.dp, end = 24.dp, top = 50.dp)
     ) {
-        // Top bar with "Cart" and edit button
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,26 +106,26 @@ fun CartScreen(
             Box(
                 modifier = Modifier
                     .size(45.dp)
-                    .clickable{onBack()}
+                    .clickable { onBack() }
                     .background(MaterialTheme.colorScheme.onSurface, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(18.dp)
                 )
             }
             Spacer(modifier = Modifier.width(18.dp))
             Text(
-                text = "Корзина",
+                text = stringResource(R.string.cart),
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 17.sp,
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = if (isEditing.value) "ГОТОВО" else "РЕДАКТИРОВАТЬ",
+                text = if (isEditing.value) stringResource(R.string.gotovo) else stringResource(R.string.changed1),
                 color = if (isEditing.value) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     textDecoration = TextDecoration.Underline
@@ -140,18 +139,17 @@ fun CartScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Cart items
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight() // занимает всю высоту
-                .padding(bottom = 300.dp) // оставляет снизу 300.dp,
+                .fillMaxHeight()
+                .padding(bottom = 300.dp)
 
         ) {
             if (dishes.value.isEmpty()) {
                 item {
                     Text(
-                        text = "Корзина пуста",
+                        text = stringResource(R.string.cart_empty),
                         color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -194,7 +192,6 @@ fun CartScreen(
 
     }
 
-    // Calculate total price
     val totalPrice = remember(cartItems.value, dishes.value) {
         dishes.value.sumOf { dish ->
             val key = if(dish.size != null) "${dish.id}|${dish.size}" else "${dish.id}"
@@ -206,7 +203,6 @@ fun CartScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Bottom panel with price and checkout button
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -222,13 +218,13 @@ fun CartScreen(
             ) {
                 Row {
                     Text(
-                        text = "АДРЕС ДОСТАВКИ",
+                        text = stringResource(R.string.address_delevery_text),
                         color = MaterialTheme.colorScheme.surface,
                         fontSize = 14.sp,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "РЕДАКТИРОВАТЬ",
+                        text = stringResource(R.string.changed),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             textDecoration = TextDecoration.Underline
@@ -246,8 +242,11 @@ fun CartScreen(
                         value = name.value,
                         onValueChange = { },
                         readOnly = true,
-                        placeholder = { Text("Москва, пр-кт Вернадского 86", fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp).height(62.dp),
+                        placeholder = { Text(stringResource(R.string.address_example), fontSize = 14.sp, color = MaterialTheme.colorScheme.surface) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                            .height(62.dp),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -261,7 +260,9 @@ fun CartScreen(
                     DropdownMenu(
                         expanded = expanded.value,
                         onDismissRequest = { expanded.value = false },
-                        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.onPrimary)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.onPrimary)
                     ) {
                         if (userAddresses.value.isNotEmpty()) {
                             userAddresses.value.forEach { address ->
@@ -275,7 +276,7 @@ fun CartScreen(
                             }
                         } else {
                             DropdownMenuItem(
-                                text = { Text("Пожалуйста, добавьте адрес для доставки в профиле") },
+                                text = { Text(stringResource(R.string.add_address_profile)) },
                                 onClick = {
                                     expanded.value = false
                                 }
@@ -290,7 +291,7 @@ fun CartScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
-                        text = "ВСЕГО:",
+                        text = stringResource(R.string.all_sum),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.surface
                     )
@@ -303,7 +304,6 @@ fun CartScreen(
                 }
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Checkout button
                 Button(
                     onClick = {
                         if(totalPrice != 0.0) {
@@ -321,7 +321,7 @@ fun CartScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "СОЗДАТЬ ЗАКАЗ",
+                        text = stringResource(R.string.add_order),
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold

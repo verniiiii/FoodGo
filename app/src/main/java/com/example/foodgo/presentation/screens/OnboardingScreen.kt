@@ -62,7 +62,7 @@ fun OnboardingScreen(
                 Image(
                     painter = painterResource(id = pages[page].imageRes),
                     contentDescription = "Onboarding Image",
-                    contentScale = ContentScale.Fit, // Подгоняет изображение в границы, сохраняя пропорции
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
 
@@ -71,7 +71,6 @@ fun OnboardingScreen(
 
         Spacer(modifier = Modifier.height(89.dp))
 
-        // Фиксируем текстовый блок, чтобы его высота не менялась
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,7 +98,6 @@ fun OnboardingScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Индикатор страниц (пейджер)
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -145,7 +143,6 @@ fun OnboardingScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Прячем кнопку Skip на последнем экране
         if (pagerState.currentPage < pages.lastIndex) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -158,7 +155,6 @@ fun OnboardingScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(bottom = 40.dp)
                     .clickable {
-                        // Переход на последний экран с анимацией
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(pages.lastIndex)
                         }
@@ -175,10 +171,6 @@ data class OnboardingPage(
     val title: String
 )
 
-@Preview(showBackground = true)
-@Composable
-fun OnboardingScreenPreview() {
-    OnboardingScreen()
-}
+
 
 

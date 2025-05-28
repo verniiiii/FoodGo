@@ -72,6 +72,10 @@ fun LoginScreen(
     val loginState by loginViewModel.loginState.collectAsState()
     val context = LocalContext.current
 
+    val fillFields = stringResource(R.string.fill_fields)
+    val errorLogin = stringResource(R.string.error_lodIn)
+    val errorNetwork = stringResource(R.string.error_network)
+
     LaunchedEffect(loginState) {
         when (loginState) {
             is LoginViewModel.LoginResult.Success -> {
@@ -230,7 +234,9 @@ fun LoginScreen(
                             Toast.makeText(context,
                                 context.getString(R.string.fill_fields), Toast.LENGTH_SHORT).show()
                         } else {
-                            loginViewModel.onLoginClick(email, password, rememberMe)
+
+
+                            loginViewModel.onLoginClick(email, password, rememberMe, fillFields, errorLogin, errorNetwork)
                         }
                     },
                     modifier = Modifier

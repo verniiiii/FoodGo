@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.animation.fadeIn
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
 import com.example.foodgo.R
 import kotlinx.coroutines.delay
 
@@ -21,34 +22,32 @@ fun SplashScreen(onSplashComplete: () -> Unit) {
     var bgVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(500)  // Логотип появляется через 0.5 сек
+        delay(500)
         logoVisible = true
-        delay(1500) // Фон появляется через 1.5 сек после логотипа
+        delay(1500)
         bgVisible = true
-        delay(2000) // Ещё 2 сек и переход дальше
+        delay(2000)
         onSplashComplete()
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onPrimary), // Используем белый цвет из темы
+            .background(MaterialTheme.colorScheme.onPrimary),
         contentAlignment = Alignment.Center
     ) {
-        // Анимированное появление логотипа (сначала)
         AnimatedVisibility(visible = logoVisible, enter = fadeIn(tween(1500))) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Food Logo",
+                contentDescription = stringResource(R.string.food_logo),
                 modifier = Modifier.size(120.dp)
             )
         }
 
-        // Анимированное появление фона (позже)
         AnimatedVisibility(visible = bgVisible, enter = fadeIn(tween(1500))) {
             Image(
                 painter = painterResource(id = R.drawable.bg_asset),
-                contentDescription = "Background Design",
+                contentDescription = stringResource(R.string.splash_back),
                 modifier = Modifier.fillMaxSize()
             )
         }

@@ -19,10 +19,10 @@ class UserViewModel @Inject constructor(
     private val userApi: UserApi
 ) : ViewModel() {
 
-    private val _userName = MutableStateFlow<String?>("") // имя пользователя
+    private val _userName = MutableStateFlow<String?>("")
     val userName: StateFlow<String?> = _userName
 
-    private val _userAddresses = MutableStateFlow<List<UserAddressDTO>>(emptyList()) // адреса
+    private val _userAddresses = MutableStateFlow<List<UserAddressDTO>>(emptyList())
     val userAddresses: StateFlow<List<UserAddressDTO>> = _userAddresses
 
     init {
@@ -32,19 +32,15 @@ class UserViewModel @Inject constructor(
     fun loadUserData() {
         viewModelScope.launch {
             val token = preferencesManager.getUserToken()
-            Log.d("UserViewModel", "Получен токен: $token")
 
             if (!token.isNullOrEmpty()) {
                 try {
                     val response = userApi.getUserByToken("Bearer $token")
-                    Log.d("UserViewModel", "Ответ от API: $response")
 
                     if (response.isSuccessful) {
                         val userWithAddresses = response.body()
-                        Log.d("UserViewModel", "Полученные данные пользователя и адресов: $userWithAddresses")
 
                         if (userWithAddresses != null) {
-                            // Сохраняем данные пользователя
                             val user = userWithAddresses.user
                             preferencesManager.saveUserData(
                                 id = user.id!!,
@@ -54,25 +50,17 @@ class UserViewModel @Inject constructor(
                             )
                             _userName.value = user.username
 
-                            // Сохраняем адреса
                             _userAddresses.value = userWithAddresses.addresses
-
-                            Log.d("UserViewModel", "Имя пользователя и адреса сохранены")
                         }
                     } else {
-                        Log.e("UserViewModel", "Ошибка ответа API: код ${response.code()}, сообщение: ${response.message()}")
-                        Log.e("UserViewModel", "Ошибка тела ответа: ${response.errorBody()?.string()}")
-
                         _userName.value = "Гость"
                         _userAddresses.value = emptyList()
                     }
                 } catch (e: Exception) {
-                    Log.e("UserViewModel", "Ошибка при вызове API: ${e.message}", e)
                     _userName.value = "Гость"
                     _userAddresses.value = emptyList()
                 }
             } else {
-                Log.w("UserViewModel", "Токен отсутствует, устанавливаем имя 'Гость'")
                 _userName.value = "Гость"
                 _userAddresses.value = emptyList()
             }
@@ -82,33 +70,25 @@ class UserViewModel @Inject constructor(
     private fun loadUserAddresses() {
         viewModelScope.launch {
             val token = preferencesManager.getUserToken()
-            Log.d("BasketViewModel", "Получен токен: $token")
 
             if (!token.isNullOrEmpty()) {
                 try {
                     val response = userApi.getUserByToken("Bearer $token")
-                    Log.d("BasketViewModel", "Ответ от API: $response")
 
                     if (response.isSuccessful) {
                         val userWithAddresses = response.body()
-                        Log.d("BasketViewModel", "Полученные данные пользователя и адресов: $userWithAddresses")
 
                         if (userWithAddresses != null) {
                             // Сохраняем адреса
                             _userAddresses.value = userWithAddresses.addresses
-                            Log.d("BasketViewModel", "Адреса сохранены")
                         }
                     } else {
-                        Log.e("BasketViewModel", "Ошибка ответа API: код ${response.code()}, сообщение: ${response.message()}")
-                        Log.e("BasketViewModel", "Ошибка тела ответа: ${response.errorBody()?.string()}")
                         _userAddresses.value = emptyList()
                     }
                 } catch (e: Exception) {
-                    Log.e("BasketViewModel", "Ошибка при вызове API: ${e.message}", e)
                     _userAddresses.value = emptyList()
                 }
             } else {
-                Log.w("BasketViewModel", "Токен отсутствует, устанавливаем пустой список адресов")
                 _userAddresses.value = emptyList()
             }
         }
@@ -120,13 +100,10 @@ class UserViewModel @Inject constructor(
             try {
                 val response = userApi.deleteUserAddress("Bearer $token", address.id ?: return@launch)
                 if (response.isSuccessful) {
-                    // Обновляем список адресов после удаления
                     loadUserAddresses()
-                } else {
-                    // Логируем или показываем ошибку
                 }
             } catch (e: Exception) {
-                // Логируем ошибку
+                println(e)
             }
         }
     }
@@ -140,14 +117,10 @@ class UserViewModel @Inject constructor(
                     loadUserAddresses()
                     _userAddresses.value = _userAddresses.value + address
 
-                } else {
-                    // Ошибка
                 }
             } catch (e: Exception) {
-                // Лог ошибки
+                println(e)
             }
         }
     }
-
-
 }

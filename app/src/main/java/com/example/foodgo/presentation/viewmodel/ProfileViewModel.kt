@@ -22,7 +22,6 @@ class ProfileViewModel @Inject constructor(
     val saveSuccess = MutableStateFlow<Boolean?>(null)
     val errorMessage = MutableStateFlow<String?>(null)
 
-    // Состояние профиля пользователя
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState: StateFlow<ProfileState> = _profileState
 
@@ -30,7 +29,6 @@ class ProfileViewModel @Inject constructor(
         loadUserProfile()
     }
 
-    // Состояния смены пароля
     val showPasswordDialog = MutableStateFlow(false)
     val oldPassword = MutableStateFlow("")
     val newPassword = MutableStateFlow("")
@@ -90,7 +88,6 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadUserProfile() {
         viewModelScope.launch {
-            // Загружаем данные пользователя из PreferencesManager
             val username = preferencesManager.getUsername() ?: "Гость"
             val description = preferencesManager.getDescription() ?: ""
             val email = preferencesManager.getLogin() ?: ""
@@ -107,7 +104,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             preferencesManager.clearUserSession()
             preferencesManager.setUserLoggedIn(false)
-            // Можно добавить навигацию на экран авторизации
         }
     }
 
@@ -149,9 +145,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-
-
-
     fun onNameChanged(newName: String) {
         _profileState.update { it.copy(username = newName) }
     }
@@ -160,7 +153,6 @@ class ProfileViewModel @Inject constructor(
         _profileState.update { it.copy(description = newDescription) }
     }
 
-    // Состояние профиля
     data class ProfileState(
         val username: String = "",
         val description: String = "",

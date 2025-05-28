@@ -30,20 +30,18 @@ class BasketViewModel @Inject constructor(
     private val _cartItemCount = MutableStateFlow(0)
     val cartItemCount: StateFlow<Int> = _cartItemCount
 
-    // Добавляем состояние для тоста
     private val _showOrderSuccessToast = MutableStateFlow(false)
     val showOrderSuccessToast: StateFlow<Boolean> = _showOrderSuccessToast
 
     fun updateCartItemCount(count: Int) {
         _cartItemCount.value = count
-        println("тут ${_cartItemCount.value}")
     }
     suspend fun getCartDishes(): List<CartDishDTO> {
         val cartItems = preferencesManager.getCartItems()
         for (d in cartItems) println(d.toString())
         val dishes = mutableListOf<CartDishDTO>()
 
-        for ((key, quantity) in cartItems) {
+        for ((key, _) in cartItems) {
             val parts = key.split("|")
 
             val dishId: Int
@@ -52,20 +50,16 @@ class BasketViewModel @Inject constructor(
             val response: Response<CartDishDTO>?
 
             if (parts.size == 2) {
-                // Обычное поведение
                 dishId = parts[0].toIntOrNull() ?: continue
                 size = parts[1]
                 response = dishApi.getDishWithSize(dishId, size)
             } else if (parts.size == 1) {
-                // Блюдо без конкретного размера
                 dishId = parts[0].toIntOrNull() ?: continue
                 response = dishApi.getDishWithoutSize(dishId)
-                println(response.body())
 
             } else {
                 continue
             }
-
 
             if (response.isSuccessful) {
                 response.body()?.let { dish ->
@@ -78,9 +72,11 @@ class BasketViewModel @Inject constructor(
 
         return dishes
     }
+
     fun getCartItems(): Map<String, Int>{
         return preferencesManager.getCartItems()
     }
+
     fun saveCartItems(updatedCart: MutableMap<String, Int>){
         preferencesManager.saveCartItems(updatedCart)
     }
@@ -94,7 +90,6 @@ class BasketViewModel @Inject constructor(
                 val userId = userResponse.body()?.user?.id
 
                 if (userId == null) {
-                    println("Ошибка получения пользователя")
                     return@launch
                 }
 
@@ -113,7 +108,7 @@ class BasketViewModel @Inject constructor(
                 val totalPrice = orderItems.sumOf { it.pricePerItem * it.quantity }
 
                 val orderDTO = OrderDTO(
-                    orderId = 0, // сгенерируется на сервере
+                    orderId = 0,
                     userId = userId,
                     totalPrice = totalPrice,
                     address = address,
@@ -126,23 +121,17 @@ class BasketViewModel @Inject constructor(
 
                 if (response.isSuccessful) {
                     preferencesManager.clearCart()
-                    println("Успех")
-                    _showOrderSuccessToast.value = true // Показываем тост
+                    _showOrderSuccessToast.value = true
 
 
                 } else {
-                    println("Ошибка при создании заказа: ${response.code()}")
+
                 }
             } catch (e: Exception) {
-                println("Сетевая ошибка: ${e.message}")
+
             }
         }
 
-    }
-
-    // Функция для сброса состояния тоста
-    fun resetToast() {
-        _showOrderSuccessToast.value = false
     }
 }
 

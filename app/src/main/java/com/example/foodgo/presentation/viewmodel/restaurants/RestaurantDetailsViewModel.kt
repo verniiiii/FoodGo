@@ -1,7 +1,9 @@
 package com.example.foodgo.presentation.viewmodel.restaurants
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.api.RestaurantApi
 import com.example.foodgo.data.remote.dto.dish.DishDTO
 import com.example.foodgo.data.remote.dto.restaurant.RestaurantWithPhotosDTO
@@ -16,7 +18,7 @@ data class RestaurantDetailsUiState(
     val imageUrls: List<String> = emptyList(),
     val selectedCategory: String? = null,
     val categories: List<String> = emptyList(),
-    val dishes: List<DishDTO> = emptyList()  // <-- добавляем список блюд
+    val dishes: List<DishDTO> = emptyList()
 )
 
 @HiltViewModel
@@ -27,10 +29,10 @@ class RestaurantDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RestaurantDetailsUiState())
     val uiState: StateFlow<RestaurantDetailsUiState> = _uiState
 
-    fun loadRestaurantData(restaurant: RestaurantWithPhotosDTO) {
+    fun loadRestaurantData(restaurant: RestaurantWithPhotosDTO, context: Context) {
         viewModelScope.launch {
             val imageUrls = if (restaurant.photos.isNullOrEmpty()) {
-                listOf("https://yastatic.net/naydex/yandex-search/b1sNx6865/ea576csEb/zpEWAUjQ0uvJh4njjmjZwqLAKiVOM57P3VdVY2NLN5HPCKpPBd-qkJdMAfG_IcLz-eUI2tK-rO34wARthPf1f8LZAkR5zdaesNKRgt5I1daqtV8pCkL23qk-XBIfDkrx4wi2qp1TNgE6sZQ0Z4g_9qXMWMf-06HoTCw")
+                listOf(context.getString(R.string.rest_no_url))
             } else {
                 restaurant.photos
             }
@@ -39,7 +41,7 @@ class RestaurantDetailsViewModel @Inject constructor(
 
             val response = api.getDishesByRestaurant(restaurant.id)
             val dishes = response.body().orEmpty()
-            val uniqueCategories = dishes.mapNotNull { it.category }.distinct() +  "Другое"
+            val uniqueCategories = dishes.mapNotNull { it.category }.distinct() + context.getString(R.string.other)
 
             _uiState.update {
                 it.copy(
@@ -56,7 +58,6 @@ class RestaurantDetailsViewModel @Inject constructor(
             if (it.selectedCategory == category) it
             else it.copy(selectedCategory = category)
         }
-        println("Selected category changed to: ${uiState.value.selectedCategory}")
     }
 
 }

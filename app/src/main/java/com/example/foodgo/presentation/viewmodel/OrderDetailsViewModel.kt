@@ -8,7 +8,10 @@ import com.example.foodgo.data.remote.api.OrderApi
 import com.example.foodgo.data.remote.dto.dish.FullDishDTO
 import com.example.foodgo.data.remote.dto.order.OrderItemDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +32,6 @@ class OrderDetailsViewModel @Inject constructor(
     val uiState: StateFlow<OrderDetailsUiState> = _uiState
 
     private val _orderId = MutableStateFlow<Long?>(null)
-    val orderId: StateFlow<Long?> = _orderId.asStateFlow()
 
     private val userId = preferencesManager.getUserId()
 

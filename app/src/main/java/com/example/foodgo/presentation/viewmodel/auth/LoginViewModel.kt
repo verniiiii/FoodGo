@@ -1,8 +1,10 @@
 package com.example.foodgo.presentation.viewmodel.auth
 
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodgo.PreferencesManager
+import com.example.foodgo.R
 import com.example.foodgo.data.remote.api.AuthApi
 import com.example.foodgo.data.remote.dto.user.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,9 +22,9 @@ class LoginViewModel @Inject constructor(
     private val _loginState = MutableStateFlow<LoginResult>(LoginResult.Idle)
     val loginState: StateFlow<LoginResult> = _loginState
 
-    fun onLoginClick(email: String, password: String, rememberMe: Boolean) {
+    fun onLoginClick(email: String, password: String, rememberMe: Boolean, fillFields: String, errorLodIn: String, errorNetwork: String) {
         if (email.isBlank() || password.isBlank()) {
-            _loginState.value = LoginResult.Error("Заполните все поля")
+            _loginState.value = LoginResult.Error(fillFields)
             return
         }
 
@@ -40,10 +42,14 @@ class LoginViewModel @Inject constructor(
                     preferencesManager.setUserToken(token)
                     _loginState.value = LoginResult.Success
                 } else {
-                    _loginState.value = LoginResult.Error("Ошибка входа: ${response.code()}")
+                    _loginState.value = LoginResult.Error(
+                        errorLodIn.format(response.code())
+                    )
                 }
             } catch (e: Exception) {
-                _loginState.value = LoginResult.Error("Ошибка сети: ${e.message}")
+                _loginState.value = LoginResult.Error(
+                    errorNetwork.format(e.message)
+                )
             }
         }
     }

@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,22 +60,21 @@ fun ProfileScreen(
 ) {
     val profileState = viewModel.profileState.collectAsState()
 
-    ScreenHeader("Профиль", onBackClick = onBack) { // Profile Info
+    ScreenHeader(stringResource(R.string.profile), onBackClick = onBack) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Добавляем AsyncImage для загрузки аватарки по URL
             AsyncImage(
-                model = "https://yandex-images.clstorage.net/9PgjM5449/a1039b9is/0f8sdfHQrKf_Z8Mx4tN5fy3LY3pcpdsQVHk07gU_mRAXK7Y0AxjjpKzV8Y_8U4xHSvESKX9kk-xRXga23k-o8MTieDDA_bj6rhLDRLLzdWslvhZ2GNSzASAQPZ45cv04My-i3O-VOkkJCTRmIaJUO17RE3EOVYbsoMJD20-2-YiJw7D1TTBtR9s7ljVmM9nbgeJzcmCshyEI8WlKtXPNXYZ62uCXRR7ZsQWgUpG2YAdWQSPRw3UabFgfHxOznq1AlTOACTXQzb-v58qBsuv5pxG6y3potKOhCGGZqil3VckSOkbAiy0yBVl9bPZx7nhn4iEvATd9ZpToo3dTUyI9ABXvIAFl1DkHz-uKRe4ziVcpks9OcDhL4WjhcbKZi7npCnoOyF_JkmFVleDekcZoO979w4EH1Z7owNtH38PejRS1IxyJuaSFK_uXah1mm8l_DTKTAkBc1z0QWUE2ZW_1VWomdmSb-QIdwXksVunu4Bf2pSN5wylybJyzj-tfyrF0RXustS1IIXuXf6Jhpm9RhwGuF1ZQWCd9PI11BsHjRRlWvjLsB4026XmV6FIBWigTCkHT4dMJHuTAWycvy16hlL0rJLmp0DmvG0dWFT4TfaNdZgeiAMBT0Xi9QUpRP6ml8s6GjB-hJnExbaTyFRYsD2b9Gzm3RW4YxB8Pk09WMYSBmxRpXdjtd6NTFklCB9GzYTofatw40-k0mQUWzb9FBQbGogwHBSYVnbE87okqQNdmVbfhQ_1iBJAna5fDUrk8tYeUTWWkid_HLyIlDh-VDzFmS374zE_9hJUBWuWDQZ3mIiqsTz16CXGZGEa10rzPQrGX6S9JAtzEl887X959AO2DFDVxJMX3Y-O-NWaLjespPpsm8FhPjaT1fcJVcwWJrgLG6MPBio1F0RhqiVaMHwqBY3W7fcKgSOdjbyPOfYhJx-RFcURt_4e3Qp3Ow8X_qbYbBuzwYw0YwfVKmXtM", // URL или дефолтная картинка
-                contentDescription = "Profile Picture",
+                model = stringResource(R.string.profile_url),
+                contentDescription = stringResource(R.string.profile_image),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
                     .background(Color.LightGray),
                 contentScale = ContentScale.Crop,
-                error = painterResource(id = R.drawable.ic_launcher_background), // Запасной вариант при ошибке загрузки
-                placeholder = painterResource(id = R.drawable.ic_launcher_background) // Плейсхолдер во время загрузки
+                error = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.ic_launcher_background)
             )
 
             Spacer(modifier = Modifier.width(32.dp))
@@ -95,7 +95,6 @@ fun ProfileScreen(
         }
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Scrollable content
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 20.dp)
@@ -105,21 +104,24 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
+                        .background(
+                            MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column {
                         ProfileMenuItem(
                             icon = R.drawable.profile,
-                            title = "Личная информация",
+                            title = stringResource(R.string.profile_info),
                             backgroundColor = Profile,
                             onClick = onNavigateToPersonalInfo
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         ProfileMenuItem(
                             icon = R.drawable.map,
-                            title = "Адреса",
+                            title = stringResource(R.string.addresses),
                             backgroundColor = MapColor,
                             onClick = onNavigateToAddresses
                         )
@@ -131,28 +133,31 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
+                        .background(
+                            MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column {
                         ProfileMenuItem(
                             icon = R.drawable.cart,
-                            title = "Корзина",
+                            title = stringResource(R.string.cart),
                             backgroundColor = Cart,
                             onClick = onNavigateToCart
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         ProfileMenuItem(
                             icon = R.drawable.fav_profile,
-                            title = "Избранное",
+                            title = stringResource(R.string.favorite),
                             backgroundColor = FavProfile,
                             onClick = onNavigateToFavorites
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         ProfileMenuItem(
                             icon = R.drawable.delivery,
-                            title = "Мои заказы",
+                            title = stringResource(R.string.my_orders),
                             backgroundColor = Notifications,
                             onClick = onNavigateToOrders
                         )
@@ -164,13 +169,16 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
+                        .background(
+                            MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     ProfileMenuItem(
                         icon = R.drawable.faqs,
-                        title = "FAQs",
+                        title = stringResource(R.string.faqs),
                         backgroundColor = Faqs,
                         onClick = onNavigateToFaqs
                     )
@@ -181,14 +189,17 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
+                        .background(
+                            MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column {
                         ProfileMenuItem(
                             icon = R.drawable.log_out,
-                            title = "Выйти",
+                            title = stringResource(R.string.logOut),
                             backgroundColor = LogOut,
                             onClick = {
                                 viewModel.logout()
@@ -204,7 +215,10 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
+                        .background(
+                            MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -212,7 +226,7 @@ fun ProfileScreen(
                         onClick = { themeViewModel.toggleTheme() },
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Сменить тему")
+                        Text(stringResource(R.string.change_theme))
                     }
                 }
 

@@ -47,27 +47,13 @@ class DishDetailsViewModel @Inject constructor(
     private val _count = MutableStateFlow(1)
     val count: StateFlow<Int> = _count
 
-    private val _price = MutableStateFlow<Double?>(null)
-    val price: StateFlow<Double?> = _price
-
     private val _pricesMap = MutableStateFlow<Map<String, Double>>(emptyMap())
-    val pricesMap: StateFlow<Map<String, Double>> = _pricesMap
 
     private val _currentPrice = MutableStateFlow<Double?>(null)
     val currentPrice: StateFlow<Double?> = _currentPrice
 
-    // Добавляем состояние для тоста
     private val _showOrderSuccessToast = MutableStateFlow(false)
     val showOrderSuccessToast: StateFlow<Boolean> = _showOrderSuccessToast
-
-
-
-    suspend fun isDishInCart(dishId: Int): Boolean {
-        loadDish(dishId) // допустим, эта функция suspend или вызывает suspend
-        val dish = dishState.first { it != null }  // дождёмся, пока dishState станет не null
-        return preferencesManager.isDishInCart(dish!!.id, selectedSizeLabel.value)
-    }
-
 
     fun loadDish(dishId: Int) {
         viewModelScope.launch {
@@ -78,7 +64,6 @@ class DishDetailsViewModel @Inject constructor(
                 if (dish != null) {
                     _dishState.value = dish
 
-                    // Загружаем ресторан по ID из блюда
                     val restaurantId = dish.restaurantId
                     val restaurantResponse = restaurantApi.getRestaurantInfoById(restaurantId)
                     if (restaurantResponse.isSuccessful) {
@@ -87,7 +72,6 @@ class DishDetailsViewModel @Inject constructor(
                         _error.value = "Failed to load restaurant: ${restaurantResponse.message()}"
                     }
 
-                    // Создаем мапу цен
                     val prices = dish.sizes.associate { it.sizeLabel to it.price }
                     _pricesMap.value = prices
 
@@ -99,8 +83,6 @@ class DishDetailsViewModel @Inject constructor(
                         _currentPrice.value = dish.basePrice
                     }
 
-
-                    // Получаем список избранных блюд и проверяем, есть ли это блюдо
                     val userId = preferencesManager.getUserId()
                     if (userId != null) {
                         val favoritesResponse = favoriteApi.getFavorites(userId)
@@ -108,7 +90,6 @@ class DishDetailsViewModel @Inject constructor(
                             val favoritesList = favoritesResponse.body() ?: emptyList()
                             _isFavorite.value = favoritesList.any { it == dishId }
                         } else {
-                            println("Ошибка при получении списка избранных: ${favoritesResponse.code()} ${favoritesResponse.message()}")
                             _isFavorite.value = false
                         }
                     } else {
@@ -121,7 +102,6 @@ class DishDetailsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _error.value = "Failed to load dish: ${e.message}"
-                println("Exception: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -134,7 +114,7 @@ class DishDetailsViewModel @Inject constructor(
         val size = selectedSizeLabel.value
 
         preferencesManager.addToCart(dish.id, size, quantity)
-        _showOrderSuccessToast.value = true // Показываем тост
+        _showOrderSuccessToast.value = true
 
     }
 
@@ -150,13 +130,9 @@ class DishDetailsViewModel @Inject constructor(
 
     fun onSizeSelected(sizeLabel: String) {
         _selectedSizeLabel.value = sizeLabel
-        // Получаем цену из мапы цен
         _currentPrice.value = _pricesMap.value[sizeLabel]
 
     }
-
-
-
 
     @SuppressLint("ImplicitSamInstance")
     fun toggleFavorite(dishId: Int) {
@@ -165,35 +141,19 @@ class DishDetailsViewModel @Inject constructor(
                 if (_isFavorite.value) {
                     val response = favoriteApi.removeFavorite(FavoriteRequestDTO(preferencesManager.getUserId()!!, dishId))
                     if (response.isSuccessful) {
-                        println("Удаление из избранного прошло успешно: $dishId")
                         _isFavorite.value = false
-                    } else {
-                        println("Ошибка при удалении из избранного: ${response.code()} ${response.message()}")
                     }
                 } else {
                     val response = favoriteApi.addFavorite(FavoriteRequestDTO(preferencesManager.getUserId()!!, dishId))
                     if (response.isSuccessful) {
-                        println("Добавление в избранное прошло успешно: $dishId")
                         _isFavorite.value = true
-                    } else {
-                        println("Ошибка при добавлении в избранное: ${response.code()} ${response.message()}")
                     }
-                }
-
-                // Получаем и выводим список избранных блюд
-                val favoritesResponse = favoriteApi.getFavorites(preferencesManager.getUserId()!!)
-                if (favoritesResponse.isSuccessful) {
-                    val favoritesList = favoritesResponse.body() ?: emptyList()
-                    println("Текущий список избранных блюд: $favoritesList")
-                } else {
-                    println("Ошибка при получении списка избранных: ${favoritesResponse.code()} ${favoritesResponse.message()}")
                 }
             } catch (e: Exception) {
                 println("Ошибка при toggleFavorite: ${e.message}")
             }
         }
     }
-
 }
 
 
