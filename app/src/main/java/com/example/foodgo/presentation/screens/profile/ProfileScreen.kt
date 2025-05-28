@@ -1,6 +1,7 @@
 package com.example.foodgo.presentation.screens.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,37 +63,19 @@ fun ProfileScreen(
     val profileState = viewModel.profileState.collectAsState()
 
     ScreenHeader(stringResource(R.string.profile), onBackClick = onBack) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            AsyncImage(
-                model = stringResource(R.string.profile_url),
-                contentDescription = stringResource(R.string.profile_image),
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(Color.LightGray),
-                contentScale = ContentScale.Crop,
-                error = painterResource(id = R.drawable.ic_launcher_background),
-                placeholder = painterResource(id = R.drawable.ic_launcher_background)
+        Column {
+            Text(
+                text = profileState.value.username,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
-
-            Spacer(modifier = Modifier.width(32.dp))
-            Column {
-                Text(
-                    text = profileState.value.username,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = profileState.value.description,
-                    color = MaterialTheme.colorScheme.surface,
-                    fontSize = 14.sp
-                )
-            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = profileState.value.description,
+                color = MaterialTheme.colorScheme.surface,
+                fontSize = 14.sp
+            )
         }
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -222,11 +206,25 @@ fun ProfileScreen(
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Button(
-                        onClick = { themeViewModel.toggleTheme() },
-                        shape = RoundedCornerShape(12.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp)
+                            .clickable(onClick = {themeViewModel.toggleTheme()})
                     ) {
-                        Text(stringResource(R.string.change_theme))
+                        Text(
+                            text = stringResource(R.string.change_theme),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            painter = painterResource(id = R.drawable.right),
+                            contentDescription = stringResource(R.string.back),
+                            tint = MaterialTheme.colorScheme.surface,
+                            modifier = Modifier.size(10.dp)
+                        )
                     }
                 }
 

@@ -59,6 +59,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun clearSearchHistory() {
+        viewModelScope.launch {
+            preferencesManager.clearSearchHistory() // Предполагается, что у вас есть репозиторий
+            _searchHistory.value = emptyList()
+        }
+    }
+
+
     fun saveSearchQuery(query: String) {
         viewModelScope.launch {
             val current = _searchHistory.value.toMutableList()

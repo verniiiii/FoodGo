@@ -98,6 +98,11 @@ class PreferencesManager(@ApplicationContext private val appContext: Context) {
     fun getSearchHistory(): List<String> =
         sharedPreferences.getStringSet(SEARCH_HISTORY, emptySet())?.toList() ?: emptyList()
 
+    fun clearSearchHistory() {
+        sharedPreferences.edit { remove(SEARCH_HISTORY) }
+    }
+
+
     // --- Cart ---
     fun saveCartItems(cart: Map<String, Int>) {
         val json = Gson().toJson(cart)

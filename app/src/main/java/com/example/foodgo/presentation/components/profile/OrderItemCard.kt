@@ -80,7 +80,7 @@ fun OrderItemCard(
                 text = dish?.name.toString(),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSecondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

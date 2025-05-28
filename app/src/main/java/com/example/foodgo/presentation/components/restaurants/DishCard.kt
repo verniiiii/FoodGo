@@ -63,7 +63,8 @@ fun DishCard(
             Text(
                 text = name,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSecondary
             )
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -75,8 +76,8 @@ fun DishCard(
                 Text(
                     text = price,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.surface,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }

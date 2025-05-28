@@ -1,5 +1,6 @@
 package com.example.foodgo.presentation.screens.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,13 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.user.UserAddressDTO
 import com.example.foodgo.presentation.components.ScreenHeader
-import com.example.foodgo.presentation.screens.home.RestaurantDetailsScreen
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +48,7 @@ fun UserAddressesScreen(
     ScreenHeader(stringResource(R.string.addresses), onBackClick = onBackClick) {
         if (addressesState.value.isEmpty()) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(stringResource(R.string.adresses_no))
@@ -68,10 +69,12 @@ fun UserAddressesScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
+
+
+            modifier = Modifier.fillMaxWidth(),
             onClick = onAddAddressClick,
-            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(R.string.add_address))
+            Text(text = stringResource(R.string.add_address))
         }
     }
 }
@@ -86,7 +89,7 @@ fun AddressItem(address: UserAddressDTO, onDelete: (UserAddressDTO) -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = address.addressLine, fontSize = 16.sp)
+            Text(text = address.addressLine, fontSize = 16.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(2.dp))
             Text(text = address.city, fontSize = 14.sp, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             address.comment?.let {

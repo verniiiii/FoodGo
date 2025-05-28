@@ -37,7 +37,7 @@ fun FilterOptionButton(
             ),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
-            contentColor = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSecondaryContainer
+            contentColor = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSecondary,
         ),
         contentPadding = PaddingValues(horizontal = if (isCircular) 0.dp else 12.dp)
     ) {
@@ -45,7 +45,8 @@ fun FilterOptionButton(
             text = text,
             fontSize = 16.sp,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.onSecondary,
         )
     }
 }

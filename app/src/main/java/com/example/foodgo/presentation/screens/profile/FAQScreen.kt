@@ -58,7 +58,6 @@ fun FAQScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(28.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF5F5F7))
         ) {
             items(faqList) { item ->
                 FAQItemView(item)
@@ -82,23 +81,23 @@ fun FAQItemView(item: FAQItem) {
             Icon(
                 imageVector = Icons.Default.Call,
                 contentDescription = stringResource(R.string.question_icon),
-                tint = Color(0xFF6200EE),
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSecondary
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = item.question,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = Color(0xFF333333),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onSecondary
             )
         }
         Text(
             text = item.answer,
             fontSize = 15.sp,
-            color = Color(0xFF666666),
-            lineHeight = 22.sp
+            lineHeight = 22.sp,
+            color = MaterialTheme.colorScheme.onSecondary
         )
     }
 }

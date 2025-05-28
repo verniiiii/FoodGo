@@ -34,7 +34,7 @@ fun FavoritesScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(stringResource(R.string.list_favotrits_empty), color = Color.Gray)
+                Text(stringResource(R.string.list_favotrits_empty))
             }
         } else {
             LazyColumn(

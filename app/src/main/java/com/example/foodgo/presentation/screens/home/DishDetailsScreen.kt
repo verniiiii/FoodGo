@@ -263,7 +263,7 @@ fun DishDetailsContent(
                 val isSelected = size.sizeLabel == selectedSizeLabel
                 Box(
                     modifier = Modifier
-                        .size(70.dp)
+                        .size(50.dp)
                         .background(
                             color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.background,
                             shape = CircleShape
@@ -370,7 +370,7 @@ fun DishDetailsContent(
                                 Icon(
                                     painter = painterResource(id = R.drawable.minus),
                                     contentDescription = stringResource(R.string.minus),
-                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    tint = MaterialTheme.colorScheme.inverseOnSurface,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -399,7 +399,7 @@ fun DishDetailsContent(
                                 Icon(
                                     painter = painterResource(id = R.drawable.plus),
                                     contentDescription = stringResource(R.string.plus),
-                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    tint = MaterialTheme.colorScheme.inverseOnSurface,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }

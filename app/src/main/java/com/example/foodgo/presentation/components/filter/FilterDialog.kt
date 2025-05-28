@@ -57,12 +57,12 @@ fun FilterDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = stringResource(R.string.filter), fontSize = 17.sp)
+                        Text(text = stringResource(R.string.filter), fontSize = 17.sp, color = MaterialTheme.colorScheme.onSecondary,)
                         IconButton(onClick = { isDialogOpen.value = false }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.krest),
                                 contentDescription = stringResource(R.string.close),
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                tint = MaterialTheme.colorScheme.onSecondary,
                                 modifier = Modifier.size(15.dp)
                             )
                         }
@@ -70,7 +70,7 @@ fun FilterDialog(
 
                     Spacer(modifier = Modifier.height(19.dp))
 
-                    Text(text = stringResource(R.string.time_delivery), fontSize = 13.sp)
+                    Text(text = stringResource(R.string.time_delivery), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSecondary,)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -91,7 +91,7 @@ fun FilterDialog(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    Text(text = stringResource(R.string.rating).uppercase(), fontSize = 13.sp)
+                    Text(text = stringResource(R.string.rating).uppercase(), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSecondary,)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -117,7 +117,7 @@ fun FilterDialog(
                                 Icon(
                                     painter = painterResource(id = R.drawable.rating),
                                     contentDescription = "$starIndex звезда",
-                                    tint = if (starIndex <= rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
+                                    tint = if (starIndex <= rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondary,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }

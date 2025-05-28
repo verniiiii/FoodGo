@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
 import com.example.foodgo.data.remote.dto.user.UserAddressDTO
+import com.example.foodgo.presentation.components.ScreenHeader
 import com.example.foodgo.presentation.viewmodel.UserViewModel
 
 @Composable
@@ -36,15 +37,7 @@ fun AddAddressScreen(
 
     val context = LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-    ) {
-        Text(text = stringResource(R.string.add_address), fontSize = 20.sp)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+    ScreenHeader(title = stringResource(R.string.add_address), onBackClick = onBack) {
         OutlinedTextField(
             value = city,
             onValueChange = { city = it },
@@ -93,4 +86,5 @@ fun AddAddressScreen(
             Text(stringResource(R.string.save))
         }
     }
+
 }

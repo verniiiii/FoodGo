@@ -72,7 +72,7 @@ fun CartItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = dish.name, color = MaterialTheme.colorScheme.onPrimary, fontSize = 18.sp)
+                Text(text = dish.name, color = Color.White, fontSize = 18.sp)
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
                     modifier = Modifier
@@ -94,11 +94,11 @@ fun CartItem(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(text = "\$${dish.sizePrice}", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(text = "\$${dish.sizePrice}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.weight(1f))
 
             Row(modifier = Modifier.height(22.dp), verticalAlignment = Alignment.Bottom) {
-                Text(text = dish.size ?: "", color = MaterialTheme.colorScheme.surface)
+                Text(text = dish.size ?: "", color = Color.White)
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
                     modifier = Modifier
@@ -122,7 +122,7 @@ fun CartItem(
                             Icon(
                                 painter = painterResource(id = R.drawable.minus),
                                 contentDescription = stringResource(R.string.minus),
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                                tint = Color.White,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -132,7 +132,7 @@ fun CartItem(
                         text = quantity.toString(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = Color.White
                     )
 
                     Box(
@@ -148,7 +148,7 @@ fun CartItem(
                             Icon(
                                 painter = painterResource(id = R.drawable.plus),
                                 contentDescription = stringResource(R.string.plus),
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                                tint = Color.White,
                                 modifier = Modifier.size(18.dp)
                             )
                         }

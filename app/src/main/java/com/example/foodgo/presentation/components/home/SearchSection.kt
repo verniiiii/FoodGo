@@ -37,7 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodgo.R
+import com.example.foodgo.presentation.viewmodel.home.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,7 @@ fun SearchSection(
     searchHistory: List<String>,
     interactionSource: MutableInteractionSource,
     keyboardActionHandler: () -> Unit,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     isDialogOpen: MutableState<Boolean>
 ) {
     var textFieldWidth by remember { mutableIntStateOf(0) }
@@ -151,6 +154,20 @@ fun SearchSection(
                             }
                         )
                     }
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                stringResource(R.string.clearSearchHistory),
+                                color = MaterialTheme.colorScheme.error,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
+                        onClick = {
+                            homeViewModel.clearSearchHistory()
+                            isSearchActive.value = false
+                        }
+                    )
                 }
             }
         }

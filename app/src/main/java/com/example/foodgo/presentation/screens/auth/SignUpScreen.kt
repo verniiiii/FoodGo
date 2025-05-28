@@ -74,7 +74,7 @@ fun SignUpScreen(
             onSuccess = { authResponse ->
                 Toast.makeText(
                     context,
-                    context.getString(R.string.successful_registration, authResponse.token),
+                    context.getString(R.string.successful_registration),
                     Toast.LENGTH_LONG
                 ).show()
                 onBackClick()
@@ -114,7 +114,7 @@ fun SignUpScreen(
             Icon(
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                tint = Color(0xFF5E616F),
                 modifier = Modifier.size(18.dp)
             )
         }

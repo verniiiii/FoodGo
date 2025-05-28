@@ -52,6 +52,9 @@ import com.example.foodgo.data.remote.dto.order.CartDishDTO
 import com.example.foodgo.presentation.components.CartItem
 import com.example.foodgo.presentation.viewmodel.BasketViewModel
 import com.example.foodgo.presentation.viewmodel.UserViewModel
+import com.example.foodgo.ui.theme.DarkBlack
+import com.example.foodgo.ui.theme.IconGrey3
+import com.example.foodgo.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,7 +97,7 @@ fun CartScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onTertiary)
+            .background(DarkBlack)
             .padding(start = 24.dp, end = 24.dp, top = 50.dp)
     ) {
         Row(
@@ -107,20 +110,20 @@ fun CartScreen(
                 modifier = Modifier
                     .size(45.dp)
                     .clickable { onBack() }
-                    .background(MaterialTheme.colorScheme.onSurface, shape = CircleShape),
+                    .background(IconGrey3, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.back),
                     contentDescription = stringResource(R.string.back),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = White,
                     modifier = Modifier.size(18.dp)
                 )
             }
             Spacer(modifier = Modifier.width(18.dp))
             Text(
                 text = stringResource(R.string.cart),
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = White,
                 fontSize = 17.sp,
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -224,7 +227,7 @@ fun CartScreen(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = stringResource(R.string.changed),
+                        text = stringResource(R.string.changed1),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             textDecoration = TextDecoration.Underline

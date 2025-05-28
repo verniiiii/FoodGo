@@ -89,7 +89,6 @@ fun HeaderSection(
                     Icon(
                         painter = painterResource(R.drawable.poligon_bottom),
                         contentDescription = stringResource(R.string.сhoos_address),
-                        tint = MaterialTheme.colorScheme.background,
                         modifier = Modifier
                             .size(24.dp)
                             .clickable { expanded.value = !expanded.value }
