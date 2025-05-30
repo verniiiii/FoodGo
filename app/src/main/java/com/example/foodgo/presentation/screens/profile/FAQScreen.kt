@@ -27,9 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodgo.R
+import com.example.foodgo.data.remote.dto.FAQItem
 import com.example.foodgo.presentation.components.ScreenHeader
 
-data class FAQItem(val question: String, val answer: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

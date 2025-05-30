@@ -26,11 +26,10 @@ class PreferencesManager(@ApplicationContext private val appContext: Context) {
         private const val USERNAME = "username"
         private const val LOGIN = "login"
         private const val DESCRIPTION = "description"
-        private const val PHONE = "phone"
         private const val SEARCH_HISTORY = "search_history"
         private const val SEARCH_HISTORY_MAX_SIZE = 10
         private const val CART_ITEMS = "cart_items"
-        val DARK_THEME = booleanPreferencesKey("dark_theme")
+        private  val DARK_THEME = booleanPreferencesKey("dark_theme")
     }
 
     // --- Onboarding ---
@@ -65,7 +64,6 @@ class PreferencesManager(@ApplicationContext private val appContext: Context) {
             remove(USERNAME)
             remove(LOGIN)
             remove(DESCRIPTION)
-            remove(PHONE)
             remove(USER_TOKEN)
             setUserLoggedIn(false)
         }
@@ -85,7 +83,6 @@ class PreferencesManager(@ApplicationContext private val appContext: Context) {
     fun getUserId(): Int = sharedPreferences.getInt(USER_ID, 1)
     fun getLogin(): String? = sharedPreferences.getString(LOGIN, null)
     fun getDescription(): String? = sharedPreferences.getString(DESCRIPTION, null)
-    fun getPhone(): String? = sharedPreferences.getString(PHONE, null)
 
     // --- Search History ---
     fun saveSearchHistory(history: List<String>) {
